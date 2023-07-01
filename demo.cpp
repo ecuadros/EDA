@@ -16,7 +16,6 @@ void DemoSmartPointers(){
         //  rA.insert(i);
     }
 }
-
 void DemoArray(){   
     cout << "Hello from DemoArray()" <<endl;
     cout << "Vector #1()" <<endl;
@@ -49,6 +48,15 @@ void DemoArray(){
     // (*(0+pV3)).print();
     // 0[pV3].print();
     // delete pV3;
+    // Test of Cin
+    cout<<"Print Value of V2"<<endl;
+    v2.print(cout);
+    cout<<"Leyendo file"<<endl;
+    ifstream ifx("file.txt",ios::in);
+    ifx>>v2;
+    cout<<"Print Value of V2 Update"<<endl;
+    v2.print(cout);
+
 }
 
 void DemoBinaryTree()

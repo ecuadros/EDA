@@ -16,10 +16,12 @@ public:
     void insert       (int val);
     void resize       ();
     void print        (ostream &os);
+    void Get          (ifstream &os , CArray &obj);
     
 };
 
 ostream & operator<<(ostream &os, CArray &obj);
+ifstream & operator>>(ifstream &is, CArray &obj);
 
 
 #endif // __ARRAY_H__

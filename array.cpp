@@ -1,4 +1,6 @@
 #include <iostream>
+#include <fstream>
+#include <string>
 #include "array.h"
 using namespace std;
 
@@ -45,9 +47,21 @@ void CArray::print(ostream &os){
         os << "m_pVect[" << i << "]=" << m_pVect[i] << endl;
     //os << "m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
 }
+void CArray::Get(ifstream &is, CArray &obj){
+    string line;
+    while (getline(is, line)) { 
+        int num = std::stoi(line);
+        obj.insert(num);
+    }
+    is.close();  // Cerrar el archivo después de leerlo
+}
 
 ostream &operator<<(ostream &os, CArray &obj){
     obj.print(os);
     return os;
+}
+ifstream &operator>>(ifstream &is, CArray &obj){
+    obj.Get(is,obj);
+    return is;
 }
 

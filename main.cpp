@@ -9,11 +9,11 @@ using namespace std;
 int main()
 {
     // DemoParameters();
-    // DemoArray();
+    DemoArray();
     // DemoBinaryTree();
     // DemoHash();
 
     // DemoPreandPostIncrement();
-    DemoSmartPointers();
+    //DemoSmartPointers();
     return 0;
 }
