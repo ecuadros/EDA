@@ -23,3 +23,6 @@
 ## Referencias
 - https://git-scm.com/docs/git
 - https://www.freecodecamp.org/news/how-to-sync-your-fork-with-the-original-git-repository/
+
+## Execute
+g++ -pthread -std=c++17 -o main main.cpp demo.cpp

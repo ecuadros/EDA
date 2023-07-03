@@ -3,6 +3,7 @@
 #include <cmath>
 #include "demo.h"
 #include "array.h"
+#include <memory>
 using namespace std;
 
 void DemoSmartPointers(){
@@ -51,7 +52,14 @@ void DemoArray(){
     // Using an array with []
     for(auto i = 0 ; i < v2.size() ; i++)
         cout << "v2[" << i << "] = " << v2[i] << endl;
-    ofstream of("test.txt", ios::out);
+    ofstream of("out.txt", ios::out);
+    ifstream fi("in.txt");
+    if (!fi.is_open())
+    {
+        cout << "Error al abrir ejemplo.dat\n";
+        exit(EXIT_FAILURE);
+    }
+    fi >> v2;
     of << v2 << endl; 
 }
 

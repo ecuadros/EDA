@@ -68,6 +68,12 @@ ostream &operator<<(ostream &os, CArray<T> &obj){
 template <typename T>
 istream & operator>>(istream &is, CArray<T> &obj){
     // TODO
+    T value;
+
+    // Read values from cin until the end-of-file (EOF) is reached
+    while (is >> value) {
+        std::cout << "Inserted: " << value << std::endl;
+    }
     return is;
 }
 
