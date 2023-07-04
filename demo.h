@@ -7,4 +7,6 @@ void DemoHash();
 
 void DemoSmartPointers();
 
+void DemoInputStream();
+
 #endif // __DEMO_H__

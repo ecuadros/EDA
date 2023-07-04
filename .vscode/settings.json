@@ -7,6 +7,9 @@
         "format": "cpp",
         "typeindex": "cpp",
         "typeinfo": "cpp",
-        "chrono": "cpp"
+        "chrono": "cpp",
+        "ostream": "cpp",
+        "*.tcc": "cpp",
+        "algorithm": "cpp"
     }
 }

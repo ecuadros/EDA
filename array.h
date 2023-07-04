@@ -15,7 +15,7 @@ private:
 public:
     CArray(): m_name("Empty"){}
     CArray(string name) : m_name(name) {}
-    ~CArray(){
+    ~CArray(){ 
         cout << "Destroying " << m_name << "..." << endl;
         delete [] m_pVect;
         m_pVect = nullptr;
@@ -35,6 +35,16 @@ public:
         for(size_t i = 0; i < m_vcount ; ++i )
             os << m_pVect[i] << endl;
         //os << "m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
+    }
+    void recover       (istream &is) {
+        value_type f; // It will store the values
+        is >> m_vcount >> m_vmax; // Find values from txt
+        value_type *pTemp = new value_type[m_vmax]; // Temporary pointer
+        for (size_t i = 0; i < m_vcount; ++i) {
+            is >> f;   // It stores the values from txt
+            pTemp[i] = f; // Save value in temporary pointer
+        }
+        m_pVect = pTemp; // Save temporary values
     }
     size_t size()
     {  return m_vcount;    }
@@ -68,6 +78,7 @@ ostream &operator<<(ostream &os, CArray<T> &obj){
 template <typename T>
 istream & operator>>(istream &is, CArray<T> &obj){
     // TODO
+    obj.recover(is);
     return is;
 }
 
