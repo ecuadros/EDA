@@ -3,6 +3,7 @@
 #include <cmath>
 #include "demo.h"
 #include "array.h"
+#include "memory"
 using namespace std;
 
 void DemoSmartPointers(){
@@ -20,6 +21,7 @@ void DemoSmartPointers(){
 
 void DemoArray(){   
     cout << "Hello from DemoArray()" <<endl;
+    /*
     cout << "Vector #1()" <<endl;
     CArray<int> v1("Antonio"); 
     for(auto i = 0 ; i < 15 ; i++)
@@ -53,6 +55,18 @@ void DemoArray(){
         cout << "v2[" << i << "] = " << v2[i] << endl;
     ofstream of("test.txt", ios::out);
     of << v2 << endl; 
+*/
+
+//--------------------------------------------
+    
+   cout<<endl;
+    cout<<"Reading file"<<endl;
+   CArray<int>Myvect;
+   ifstream In("vector.txt");
+   In>>Myvect;
+   In.close();
+   
+
 }
 
 void DemoBinaryTree()

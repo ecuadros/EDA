@@ -36,6 +36,12 @@ public:
             os << m_pVect[i] << endl;
         //os << "m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
+
+    void read(istream &is){
+        value_type value;
+        while(is>>value)
+            cout<<value<<endl;
+    }
     size_t size()
     {  return m_vcount;    }
     value_type &operator[](size_t pos)
@@ -67,7 +73,7 @@ ostream &operator<<(ostream &os, CArray<T> &obj){
 // TODO
 template <typename T>
 istream & operator>>(istream &is, CArray<T> &obj){
-    // TODO
+    obj.read(is);
     return is;
 }
 
