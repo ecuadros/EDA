@@ -36,7 +36,14 @@ public:
             os << m_pVect[i] << endl;
         //os << "m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
+    void cleanArray () {
+        cout << "Cleaning array..." << endl;
+        delete [] m_pVect;
+        m_pVect = nullptr;
+        cout << "Array cleaned!" << endl;
+    }
     void recover       (istream &is) {
+        this->cleanArray();
         value_type f; // It will store the values
         is >> m_vcount >> m_vmax; // Find values from txt
         value_type *pTemp = new value_type[m_vmax]; // Temporary pointer
