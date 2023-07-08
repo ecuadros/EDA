@@ -40,19 +40,19 @@ public:
         cout << "Cleaning array..." << endl;
         delete [] m_pVect;
         m_pVect = nullptr;
-        
+        m_vcount = 0;
+        m_vmax = 0;
         cout << "Array cleaned!" << endl;
     }
     void recover       (istream &is) {
         this->cleanArray();
         value_type f; // It will store the values
         is >> m_vcount >> m_vmax; // Find values from txt
-        value_type *pTemp = new value_type[m_vmax]; // Temporary pointer
+        m_pVect = new value_type[m_vmax]; // Temporary pointer
         for (size_t i = 0; i < m_vcount; ++i) {
             is >> f;   // It stores the values from txt
-            pTemp[i] = f; // Save value in temporary pointer
+            m_pVect[i] = f;
         }
-        m_pVect = pTemp; // Save temporary values
     }
     size_t size()
     {  return m_vcount;    }
