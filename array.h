@@ -40,6 +40,7 @@ public:
         cout << "Cleaning array..." << endl;
         delete [] m_pVect;
         m_pVect = nullptr;
+        
         cout << "Array cleaned!" << endl;
     }
     void recover       (istream &is) {
