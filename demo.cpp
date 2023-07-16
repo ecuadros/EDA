@@ -216,9 +216,9 @@ void DemoIterators(){
     recorrer(v1, ::print<TX>); cout << endl;
 }
 
-void DemoReverseIterators(){
-    cout << "DEMO REVERSE ITERATORS FOR ARRAY AS A CONTEINER : " << endl;
-    CArray< TraitArrayIntInt > v1("Edson Cáceres");
+void DemoReverseIterators() {
+    CArray< TraitArrayIntInt > v1("Pierr Daniel Chino Lurita");
+    
     v1.insert(30, 40);
     v1.insert(18, 45);
     v1.insert(20, 35);
@@ -226,10 +226,11 @@ void DemoReverseIterators(){
     v1.insert(12, 25);
     v1.insert(8 , 17);
 
-    cout << "Printing asc : " << endl;
     cout << v1 << endl;
-    cout << "Printing desc : " << endl;
-    recorrer(v1.rbegin(), v1.rend(), ::print<TX>);
+    cout << "Recorrer directo" << endl;
+    recorrer(v1, ::print<TX>); cout << endl;
+    cout << "Recorrer inverso" << endl;
+    recorrer_inverso(v1, ::print<TX>); cout << endl;
 }
 
 void DemoBinaryTree()
