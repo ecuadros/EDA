@@ -56,6 +56,12 @@ public:
                 // *(y[m_ppMatrix]+x) = val;
                 // x[y[m_ppMatrix]] = val;
     }
+    void fill_index(value_type val,size_t i,size_t j){
+        m_ppMatrix[i][j] = val;
+    }
+    auto get_value(size_t i,size_t j){
+        return m_ppMatrix[i][j]; 
+    }
 
     void print(ostream &os){
         os << m_rows << " " << m_cols << endl;
@@ -72,11 +78,22 @@ public:
         m_ppMatrix = nullptr;
         m_rows = m_cols = 0;
     }
-    // CMatrix<Traits> operator*(const CMatrix<Traits> &other){
-    //     CMatrix<Traits> res(m_rows, other.m_cols);
-        
-    //     return res;
-    // }
+    CMatrix<Traits> operator*(CMatrix<Traits> &other){
+        CMatrix<Traits> res(m_rows, other.m_cols);
+        if (m_rows==other.m_rows && m_cols==other.m_cols){
+            for (int i = 0; i < m_rows; i++) {
+                for (int j = 0; j < other.m_cols; j++) {
+                    //res.fill_index(m_ppMatrix[i][j]*other.get_value(i,j),i,j);
+                    //res[i][j]=m_ppMatrix[i][j]*other[i][j];
+                    res[i][j]=(*this)[i][j]*other[i][j];
+                }
+            }
+        }
+        return res;
+    }
+    value_type* operator[](size_t index) {
+        return m_ppMatrix[index];
+    }
 };
 
 template <typename Traits>

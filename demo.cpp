@@ -90,16 +90,17 @@ void DemoSmartPointers(){
 void DemoDynamicMatrixes(){
 
     CMatrix<MatrixTraitFloat> mat1(3, 4);
-    mat1.fill(1);
+    mat1.fill(1.7);
     cout << mat1;
 
-    CMatrix<MatrixTraitFloat> mat2(4, 5);
+    CMatrix<MatrixTraitFloat> mat2(3, 4);
     mat2.fill(2.5);
+    mat2[1][1]=7;
     cout << mat2;
 
     // TODO #1: overload operator*(CMatrix<Traits> &other)
-    // CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
-
+    CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
+    cout<<mat3;
     // TODO #2: Create Iterator for CMatrix
     // recorrer(mat3, ::print<TX>);
     // cout << endl;
