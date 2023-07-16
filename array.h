@@ -9,26 +9,37 @@ using namespace std;
 
 template <typename Container>
 class array_iterator 
-     : public general_iterator<Container,  class array_iterator<Container> > // 
-{public: 
-    // TODO: subir al padre  
-    typedef class general_iterator<Container, array_iterator<Container> > Parent; 
+{
+public: 
     typedef typename Container::Node           Node; // 
+    typedef typename Node::Type         Type;
     typedef array_iterator<Container>  myself;
+
+protected:
+    Container *m_pContainer;
+    Node *m_pNode;
 
   public:
     array_iterator(Container *pContainer, Node *pNode) 
-            : Parent (pContainer,pNode) {}
-    array_iterator(myself &other)  : Parent (other) {}
-    array_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+            : m_pContainer(pContainer), m_pNode(pNode) {}
+    array_iterator(myself &other)
+            : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode){}
+    array_iterator(myself &&other) 
+        {   
+            m_pContainer = move(other.m_pContainer);
+            m_pNode      = move(other.m_pNode);
+        }
 
 public:
-    array_iterator operator++() { Parent::m_pNode++;  
+    array_iterator operator++() { m_pNode++;  
                                           return *this;
                                         }
-    array_iterator operator--() { Parent::m_pNode--;  
+    array_iterator operator--() { m_pNode--;  
                                           return *this;
                                         }
+    Type &operator*()                    { return m_pNode->getDataRef();}
+    bool operator==(auto iter)   { return m_pNode == iter.m_pNode; }
+    bool operator!=(auto iter)   { return !(*this == iter);        }
 };
 
 
