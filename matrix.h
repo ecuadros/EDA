@@ -2,7 +2,7 @@
 #define __MATRIX_H__
 #include <iostream>
 #include "iterator.h"
-
+/*
 template <typename Container>
 class matrix_iterator 
      : public general_iterator<Container,  class matrix_iterator<Container> > // 
@@ -23,7 +23,7 @@ public:
                                           return *this;
                                  }
 };
-
+*/
 template <typename _K>
 struct MatrixTrait
 {
@@ -80,7 +80,7 @@ public:
     }
 
     void print(ostream &os){
-        os << m_rows << " " << m_cols << endl;
+        os << m_rows << " X " << m_cols << endl;
         for(auto y = 0 ; y < m_rows ; y++){
             for(auto x = 0 ; x < m_cols ; x++)
                 os << m_ppMatrix[y][x] << " ";
@@ -94,14 +94,19 @@ public:
         m_ppMatrix = nullptr;
         m_rows = m_cols = 0;
     }
-    // CMatrix<Traits> operator*(const CMatrix<Traits> &other){
-    //     CMatrix<Traits> res(m_rows, other.m_cols);
-        
-    //     return res;
-    // }
-    
-    // iterator begin() { iterator iter(this, m_ppMatrix);    return iter;    }
-    // iterator end()   { iterator iter(this, m_pVect+m_vcount);    return iter;    }
+   
+
+    value_type * operator[](size_t row){
+            return m_ppMatrix[row];
+    }
+
+    value_type &operator()(size_t row, size_t col){
+         return m_ppMatrix[row][col];
+    }
+
+
+
+
 
 };
 
