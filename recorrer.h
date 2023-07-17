@@ -19,12 +19,29 @@ void recorrer(Iterator ItBegin, Iterator ItEnd, F ope)
       ope(*iter);
 }
 
+template <typename Container, typename F>
+void recorrer_matrix(Container &container, F ope)
+{
+    auto matrix = container.get_matrix();
+    for ( auto x = 0; x < container.rows(); ++x )
+        for ( auto y = 0; y < container.cols(); ++y )
+            ope(matrix[x][y]);
+}
+
 // #1
 template <typename Container, typename F>
 void recorrer(Container &container, F ope)
 {  
     recorrer(container.begin(), container.end(), ope);
 }
+
+
+// #1
+// template <typename Container, typename F>
+// void recorrer_matrix(Container &container, F ope)
+// {  
+//     recorrer_matrix(container.matrix(), ope);
+// }
 
 // TODO implementar el recorrer inverso
 // # 2

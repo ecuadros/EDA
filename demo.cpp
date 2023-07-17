@@ -101,8 +101,11 @@ void DemoDynamicMatrixes(){
     // CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
 
     // TODO #2: Create Iterator for CMatrix
-    // recorrer(mat3, ::print<TX>);
-    // cout << endl;
+    recorrer_matrix(mat1, ::print<FX>);
+    cout << endl;
+
+    recorrer_matrix(mat2, ::print<FX>);
+    cout << endl;
 
     // TX x = 1;
     // // Lambda function

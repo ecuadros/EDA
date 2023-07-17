@@ -5,18 +5,15 @@
 
 template <typename Container>
 class matrix_iterator 
-     : public general_iterator<Container,  class matrix_iterator<Container> > // 
 {public: 
     // TODO: subir al padre  
-    typedef class general_iterator<Container, matrix_iterator<Container> > Parent; 
     typedef typename Container::Node           Node; // 
     typedef matrix_iterator<Container>  myself;
 
   public:
-    array_backward_iterator(Container *pContainer, Node *pNode) 
-            : Parent (pContainer,pNode) {}
-    array_backward_iterator(myself &other)  : Parent (other) {}
-    array_backward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+    matrix_iterator(Container *pContainer, Node pNode){}
+    matrix_iterator(myself &other) {}
+    matrix_iterator(myself &&other){} // Move constructor C++11 en adelante
 
 public:
     matrix_iterator operator++() { // Parent::m_pNode--;
@@ -29,7 +26,7 @@ struct MatrixTrait
 {
     using  value_type      = _K;
     // using  LinkedValueType = _V;
-    // using  Node      = NodeArray<_K, _V>;
+    // using  Node      = size_t;
     // using  CompareFn = _CompareFn;
 };
 
@@ -40,10 +37,9 @@ class CMatrix
 {public:
     using value_type      = typename Traits::value_type;
     //using LinkedValueType = typename Traits::LinkedValueType;
-    //using Node            = typename Traits::Node;
+    // using Node            = typename Traits::Node;
     //using CompareFn       = typename Traits::CompareFn;
     using myself          = CMatrix<Traits>;
-    //using iterator        = matrix_iterator<myself>;
 
     private:
         value_type **m_ppMatrix   = nullptr;
@@ -100,9 +96,9 @@ public:
     //     return res;
     // }
     
-    // iterator begin() { iterator iter(this, m_ppMatrix);    return iter;    }
-    // iterator end()   { iterator iter(this, m_pVect+m_vcount);    return iter;    }
-
+    auto rows() {  return m_rows;    }
+    auto cols() {  return m_cols;    }
+    auto get_matrix() { return m_ppMatrix; }
 };
 
 template <typename Traits>
