@@ -185,7 +185,11 @@ void DemoArray(){
 }
 
 void DemoIterators(){
-    CArray< TraitArrayIntInt > v1("Jorge");
+    //This demo was created in order to test:
+    // 1. Iterator Class into array.h file
+    // 2. fordward and backward iterator definition into de same class
+    // 3. recorrer function to execute both fordbward and backward iterators
+    CArray< TraitArrayIntInt > v1("Jorge Lozano");
     
     v1.insert(30, 40);
     v1.insert(18, 45);
@@ -197,23 +201,29 @@ void DemoIterators(){
     cout << v1 << endl;
     // array_forward_iterator<CArray< TraitArrayIntInt >> iter = v1.begin();
     //CArray< TraitArrayIntInt >::iterator iter = v1.begin();
-    auto iter = v1.begin();
-    recorrer(iter, v1.end(), ::increment<TX, 7>);
+    //auto iter = v1.begin();
+    //recorrer(iter, v1.end(), ::increment<TX, 7>);
+    //cout << v1 << endl;
+    recorrer(v1,::increment<TX, 7>,1); // Recorre en la dirección de inicio a fin
     cout << v1 << endl;
-    recorrer(v1, ::increment<TX, 4>);
-    cout << v1 << endl;
-
-    recorrer(v1, ::print<TX>);
+    recorrer(v1,::increment<TX, 7>,-1); // Recorre en la dirección de fin a inicio
+    // Recorre de inicio a fin
+    cout<<"Recorrido de Inicio a Fin"<<endl;
+    recorrer(v1, ::print<TX>,1);
     cout << endl;
-    // Lambda function
+    cout<<"Recorrido de Fin a Inicio"<<endl;
+    recorrer(v1, ::print<TX>,-1);
+    cout << endl;
+     //Lambda function
+     cout<<"Lambda Function"<<endl;
     int x = 3;
-    recorrer(v1, [x](TX &n){ n *= 2*x; });
-    recorrer(v1, ::print<TX>); cout << endl;
+    recorrer(v1, [x](TX &n){ n *= 2*x; },1);
+    recorrer(v1, ::print<TX>,1); cout << endl;
     ClassX<TX> ope(5);
-    recorrer(v1, ope);
-    recorrer(v1, ::print<TX>); cout << endl;
-    recorrer(v1, ClassX<TX>(8) );
-    recorrer(v1, ::print<TX>); cout << endl;
+    recorrer(v1, ope,1);
+    recorrer(v1, ::print<TX>,1); cout << endl;
+    recorrer(v1, ClassX<TX>(8) ,1);
+    recorrer(v1, ::print<TX>,1); cout << endl;
 }
 
 void DemoReverseIterators(){

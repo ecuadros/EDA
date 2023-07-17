@@ -21,10 +21,15 @@ void recorrer(Iterator ItBegin, Iterator ItEnd, F ope)
 
 // #1
 template <typename Container, typename F>
-void recorrer(Container &container, F ope)
-{  
-    recorrer(container.begin(), container.end(), ope);
+void recorrer(Container &container, F ope,TX dir){  
+    if (dir==1){
+        recorrer(container.begin(), container.end(), ope);
+    }
+    else{
+       recorrer(container.rbegin(), container.rend(), ope); 
+    }
 }
+    
 
 // TODO implementar el recorrer inverso
 // # 2

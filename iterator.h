@@ -23,11 +23,11 @@ public:
           {   m_pContainer = move(other.m_pContainer);
               m_pNode      = move(other.m_pNode);
           }
-    IteratorBase operator=(IteratorBase &iter)
-          {   m_pContainer = move(iter.m_pContainer);
-              m_pNode      = move(iter.m_pNode);
-              return *(IteratorBase *)this; // Pending static_cast?
-          }
+    //IteratorBase operator=(IteratorBase &iter)
+      //    {   m_pContainer = move(iter.m_pContainer);
+        //      m_pNode      = move(iter.m_pNode);
+          //    return *(IteratorBase *)this; // Pending static_cast?
+          //}
 
     bool operator==(IteratorBase iter)   { return m_pNode == iter.m_pNode; }
     bool operator!=(IteratorBase iter)   { return !(*this == iter);        }
