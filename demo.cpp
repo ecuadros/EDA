@@ -98,8 +98,8 @@ void DemoDynamicMatrixes(){
     cout << mat2;
 
     // TODO #1: overload operator*(CMatrix<Traits> &other)
-    // CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
-
+    CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
+    cout << mat3;
     // TODO #2: Create Iterator for CMatrix
     // recorrer(mat3, ::print<TX>);
     // cout << endl;

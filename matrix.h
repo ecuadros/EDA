@@ -72,11 +72,28 @@ public:
         m_ppMatrix = nullptr;
         m_rows = m_cols = 0;
     }
-    // CMatrix<Traits> operator*(const CMatrix<Traits> &other){
-    //     CMatrix<Traits> res(m_rows, other.m_cols);
-        
-    //     return res;
-    // }
+    CMatrix<Traits> operator*(const CMatrix<Traits> &other){
+        CMatrix<Traits> res(m_rows, other.m_cols);
+        if (m_cols == other.m_rows) {
+            for(auto y = 0 ; y < m_rows; y++){
+                for(auto x = 0 ; x < other.m_cols ; x++){
+                    res[y][x] = 0;
+                    for (auto z = 0; z < m_cols; z++) {
+                        res[y][x] += (m_ppMatrix[y][z] * other.m_ppMatrix[z][x]);
+                    }
+                }
+            }
+        } else {
+            cout << "No se puede multiplicar!";
+            cin.get();
+        }
+
+        return res;
+    }
+
+    auto* &operator[] (size_t rows) {
+        return m_ppMatrix[rows];
+    }
 };
 
 template <typename Traits>
