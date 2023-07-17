@@ -119,6 +119,52 @@ void DemoIterators(){
     recorrer(v1, ::print<TX>); cout << endl;
 }
 
+
+void DemoBackIterator(){
+    CArray< TraitArrayIntInt > v3("NewArray");
+    v3.insert(100, 1);
+    v3.insert(200, 2);
+    v3.insert(300, 3);
+    v3.insert(400 , 4);
+    cout<<endl;
+    
+    cout << v3 << endl;
+    cout <<endl;
+    cout<<"-----INICIO-------"<<endl;
+    recorrer(v3.begin(), v3.end(), ::print<TX>);
+    cout <<endl;
+    cout<<"-----FORWARD INCREMENTED-------"<<endl;
+    recorrer(v3.begin(), v3.end(), ::increment<TX, 50>);
+    recorrer(v3.begin(), v3.end(), ::print<TX>);
+    
+    cout << endl;
+    cout<<"-----BACKWARD-------"<<endl;
+    recorrer(v3.back_begin(), v3.back_end(), ::print<TX>);
+    cout<<endl;
+    
+    cout<<"-----BACKWARD WITH LAMDA FUNCTION-------"<<endl;
+    recorrer(v3, [](TX &n){ n *= 10; });
+    recorrer(v3, ::print<TX>); cout << endl;
+
+    cout<<endl;
+    
+    cout<<"-----BACKWARD WITH  OPE INCREMENT-------"<<endl; 
+
+    ClassX<TX> ope(500);
+    recorrer(v3, ope);
+    recorrer(v3, ::print<TX>); 
+    cout << endl;
+
+    //cout << v3 << endl;
+
+   
+    
+
+  
+}
+
+
+
 void DemoBinaryTree()
 {
     cout << "Hello from DemoBinaryTree()" <<endl;

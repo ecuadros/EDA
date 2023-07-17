@@ -11,6 +11,9 @@ template <typename T>
 void f1(T &x)
 {  x+= 5; }
 
+
+
+//---------------------------------------------------------------------
 template <typename Iterator, typename F>
 void recorrer(Iterator ItBegin, Iterator ItEnd, F ope)
 {
@@ -19,6 +22,8 @@ void recorrer(Iterator ItBegin, Iterator ItEnd, F ope)
       ope(*iter);
 }
 
+
+
 // #1
 template <typename Container, typename F>
 void recorrer(Container &container, F ope)
@@ -26,12 +31,7 @@ void recorrer(Container &container, F ope)
     recorrer(container.begin(), container.end(), ope);
 }
 
-// TODO implementar el recorrer inverso
-// # 2
-// template <typename Container, typename F>
-// void recorrer_inverso(Container &container, F ope)
-// { recorrer(container.rbegin(), container.rend(), ope);
-// }
+
 
 template <typename Container>
 void recorrer(Container &container)

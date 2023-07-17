@@ -5,7 +5,7 @@ void DemoArray();
 void DemoIterators();
 void DemoBinaryTree();
 void DemoHash();
-
+void DemoBackIterator();
 void DemoSmartPointers();
 
 #endif // __DEMO_H__
