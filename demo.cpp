@@ -92,10 +92,18 @@ void DemoDynamicMatrixes(){
     CMatrix<MatrixTraitFloat> mat1(3, 4);
     mat1.fill(1);
     cout << mat1;
+    cout << endl;
 
     CMatrix<MatrixTraitFloat> mat2(4, 5);
-    mat2.fill(2.5);
+    mat2.fill(2);
     cout << mat2;
+    cout << endl;
+
+    cout << "°°° Operator * °°°" << endl;
+    CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
+    cout << mat3;
+    cout << endl;
+
 
     // TODO #1: overload operator*(CMatrix<Traits> &other)
     // CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;

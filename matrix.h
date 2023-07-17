@@ -33,6 +33,7 @@ public:
     ~CMatrix(){
         destroy();
     }
+     CMatrix(CMatrix&& other): m_ppMatrix(std::move(other.m_ppMatrix)), m_rows(other.m_rows), m_cols(other.m_cols) {}
 
     void create(size_t rows, size_t cols){
         destroy();
@@ -72,6 +73,30 @@ public:
         m_ppMatrix = nullptr;
         m_rows = m_cols = 0;
     }
+
+    value_type * operator[](size_t row){
+            return m_ppMatrix[row];
+    }
+
+    CMatrix<Traits> operator*(myself &other){
+        CMatrix<Traits> res(m_rows, other.m_cols);
+        if (m_cols == other.m_rows){
+            for (size_t y= 0; y < m_rows; y++) {
+                for (size_t x = 0; x < other.m_cols; x++) {
+                    value_type sum=0;
+                    for (auto k = 0; k < m_cols; k++) {
+                        sum += std::move((*this)[y][k]) * std::move(other[k][x]);
+                        res[y][x] = sum;
+                    }
+                    
+                    
+                }
+            }
+        }
+
+        return res;
+    }
+
     // CMatrix<Traits> operator*(const CMatrix<Traits> &other){
     //     CMatrix<Traits> res(m_rows, other.m_cols);
         
