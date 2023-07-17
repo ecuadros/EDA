@@ -115,10 +115,10 @@ void DemoDynamicMatrixes(){
     // foreach(mat1, ::print<TX>); cout << endl;
 
     // // TODO #3: prepare Matrix to be used as a matrix from outside
-    // // overload operator[](size_t row)
-    // mat1[2][3] = 8.2;
-    // mat1(2, 2) = 7.5; // Operator () is returning a value_type &
-    // cout << mat1;
+    // overload operator[](size_t row)
+    mat1[2][3] = 8.2;
+    mat1(2, 2) = 7.5; // Operator () is returning a value_type &
+    cout << mat1;
 }
 
 void DemoPreandPostIncrement(){
