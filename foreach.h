@@ -12,11 +12,18 @@ void f1(T &x)
 {  x+= 5; }
 
 template <typename Iterator, typename F>
-void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
-{
+void foreach(Iterator ItBegin, Iterator ItEnd, F ope){
   auto iter = ItBegin;
   for(; iter != ItEnd ; ++iter)
       ope(*iter);
+  if(iter==ItEnd)
+    ope(*iter);    
+}
+template <typename Iterator, typename F>
+void foreach_inverso(Iterator ItBegin, Iterator ItEnd, F ope){
+  auto iter = ItBegin;
+  for(; iter != ItEnd ; ++iter)
+      ope(*iter);  
 }
 
 // #1
@@ -25,6 +32,12 @@ void foreach(Container &container, F ope)
 {  
     foreach(container.begin(), container.end(), ope);
 }
+template <typename Container, typename F>
+void foreach_inverso(Container &container, F ope)
+{  
+    foreach_inverso(container.rbegin(), container.rend(), ope);
+}
+
 
 // TODO implementar el foreach inverso
 // # 2

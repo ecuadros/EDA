@@ -18,9 +18,9 @@ void print(T &x)
 
 // Object function
 template <typename T>
-class ClassX
-{          int m_inc = 0;
-    public:  ClassX(int n) : m_inc(n){}
+class ClassX{          
+    T m_inc = 0;
+    public:  ClassX(T n) : m_inc(n){}
     void operator()(T &n){  n += m_inc;     }
 };
 
@@ -90,35 +90,42 @@ void DemoSmartPointers(){
 void DemoDynamicMatrixes(){
 
     CMatrix<MatrixTraitFloat> mat1(3, 4);
-    mat1.fill(1);
+    mat1.fill(0.73);
     cout << mat1;
 
-    CMatrix<MatrixTraitFloat> mat2(4, 5);
+    CMatrix<MatrixTraitFloat> mat2(3, 4);
     mat2.fill(2.5);
+    mat2[2][2]=0.7;
+    mat2(2,3)=0.3;
+    mat2(0,0)=9.3;
     cout << mat2;
-
     // TODO #1: overload operator*(CMatrix<Traits> &other)
-    // CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
-
+     CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
     // TODO #2: Create Iterator for CMatrix
-    // foreach(mat3, ::print<TX>);
-    // cout << endl;
-
-    // TX x = 1;
-    // // Lambda function
-    // foreach(mat1, [x](TX &n){ n += x; x++; });
-    // foreach(mat1, ::print<TX>); cout << endl;
-    // ClassX<TX> ope(5);
-    // foreach(mat1, ope);
-    // foreach(mat1, ::print<TX>); cout << endl;
-    // foreach(mat1, ClassX<TX>(8) );
-    // foreach(mat1, ::print<TX>); cout << endl;
-
-    // // TODO #3: prepare Matrix to be used as a matrix from outside
-    // // overload operator[](size_t row)
-    // mat1[2][3] = 8.2;
-    // mat1(2, 2) = 7.5; // Operator () is returning a value_type &
-    // cout << mat1;
+    cout<<"Iterators"<<endl;
+    foreach(mat3, ::print<TF>);
+    cout << endl;
+    foreach_inverso(mat3, ::print<TF>);
+    cout<<endl;
+     // Lambda function
+    TX x = 1;
+    cout<<"Lambda Function"<<endl;
+    foreach(mat1, [&x](TF &n){ n += x; x++; });
+    foreach(mat1, ::print<TF>); cout << endl;
+    ClassX<TF> ope(5.3);
+    foreach(mat1, ope);
+    foreach(mat1, ::print<TF>); cout << endl;
+    foreach(mat1, ClassX<TF>(8) );
+    foreach(mat1, ::print<TF>); cout << endl;
+    foreach(mat1,::increment<TF,-3>);
+    foreach(mat1, ::print<TF>); cout << endl;
+    foreach(mat1, [](TF &n){ n-= 5;}); cout << endl; // -5 a todos
+    foreach(mat1, ::print<TF>); cout << endl;
+    //TODO #3: prepare Matrix to be used as a matrix from outside
+    // overload operator[](size_t row)
+    mat1[2][3] = 8.2;
+    mat1(2, 2) = 7.5; // Operator () is returning a value_type &
+    cout << mat1;
 }
 
 void DemoPreandPostIncrement(){
