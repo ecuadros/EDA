@@ -8,24 +8,38 @@
 using namespace std;
 
 template <typename Container>
-class array_forward_iterator 
-     : public general_iterator<Container,  class array_forward_iterator<Container> > // 
-{public: 
-    // TODO: subir al padre  
-    typedef class general_iterator<Container, array_forward_iterator<Container> > Parent; 
-    typedef typename Container::Node           Node; // 
-    typedef array_forward_iterator<Container>  myself;
+class array_forward_iterator
+{
+    public: 
+        typedef typename Container::Node           Node; //
+        typedef typename Node::Type         Type;
+        typedef array_forward_iterator<Container>  myself;
 
+    private:
+        Container *m_pContainer;
+        Node      *m_pNode;
   public:
-    array_forward_iterator(Container *pContainer, Node *pNode) 
-            : Parent (pContainer,pNode) {}
-    array_forward_iterator(myself &other)  : Parent (other) {}
-    array_forward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
-
-public:
-    array_forward_iterator operator++() { Parent::m_pNode++;  
-                                          return *this;
-                                        }
+    array_forward_iterator(Container *pContainer, Node *pNode)
+        : m_pContainer(pContainer), m_pNode(pNode) {}
+    array_forward_iterator(myself &other) 
+          : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode){}
+    array_forward_iterator(myself &&other) // Move constructor
+          {   m_pContainer = move(other.m_pContainer);
+              m_pNode      = move(other.m_pNode);
+          }
+    myself operator=(myself &iter){
+        m_pContainer = move(iter.m_pContainer);
+        m_pNode      = move(iter.m_pNode);
+        return *(myself *)this; // Pending static_cast?
+    }
+    public:
+        bool operator==(myself iter)   { return m_pNode == iter.m_pNode; }
+        bool operator!=(myself iter)   { return !(*this == iter);        }
+        Type &operator*()                    { return m_pNode->getDataRef();   }
+        myself operator++() {
+            m_pNode++;  
+            return *this;
+        }
 };
 
 template <typename Container>
