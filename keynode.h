@@ -24,7 +24,14 @@ public:
     KeyNode(KeyNode<T, V>&& other) // Move constructor
         : m_key  (std::move(other.m_key)), 
           m_value(std::move(other.m_value)) {}
+
+    KeyNode(value_type key) : m_key(key){}      
     KeyNode() {}
+
+
+     // Node(float value) : m_value(value) {}
+     //private:
+    //float m_value
 
     KeyNode& operator=(const KeyNode& other) {
         if (this != &other) {

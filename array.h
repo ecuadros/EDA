@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <algorithm> // sort algorithm
+#include <cassert>
 #include "types.h"
 #include "iterator.h"
 #include "keynode.h"
@@ -51,6 +52,7 @@ public:
                                         }
 };
 
+using TraitStringString     =XTrait<string,string>;
 using TraitArrayFloatString = XTrait<float, string>;
 using TraitArrayIntInt      = XTrait<TX  , int   , std::greater<KeyNode<TX  , int > &>>;
 using TraitFloatLong        = XTrait<float, long  , std::greater<KeyNode<float, long> &>>;
@@ -85,12 +87,28 @@ public:
         // cout << "Key=" << key << " Value=" << value << "\tinserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
     // TODO: remove the last element and returns it
-    Node back(){
 
+    value_type last(){
+        assert(size()>0);
+        value_type lastElement= m_pVect[size()-1].getValueRef();
+        return lastElement;
+        }
+
+     Node back(){
+        Node lastElement = last();
+        pop_back();
+        return lastElement;
     }
+
     // TODO: remove the last element only
     void pop_back(){
-
+        assert(m_vcount!=0);
+        Node *pTemp = new Node[m_vcount-1];
+        for(auto i = 0 ; i < m_vcount-1 ; ++i)
+          pTemp[i]   = m_pVect[i];
+        delete [] m_pVect;
+        m_pVect = pTemp;
+        m_vcount--;
     }
     void resize       ();
     void destroy(){
@@ -154,6 +172,13 @@ ostream &operator<<(ostream &os, CArray<T> &obj){
     obj.print(os);
     return os;
 }
+
+// Print type keynodo Obj 
+template <typename T,typename V>
+ostream &operator<<(ostream &os, const KeyNode<T,V>& obj){
+   os<<obj.m_key;
+   return os;
+} 
 
 // TODO
 template <typename T>

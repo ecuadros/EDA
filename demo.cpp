@@ -185,7 +185,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string >;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -246,6 +246,30 @@ void DemoReverseIterators(){
 void DemoHeap()
 {
     cout << "Hello from DemoHeap()" <<endl;
+    cout << "Hello from DemoHeap()" <<endl;
+
+    CArray< TraitArrayIntInt > vx("Guiomar");
+    
+    vx.insert(1, 10);
+    vx.insert(2, 20);
+    vx.insert(3, 30);
+    vx.insert(4 , 40);
+    vx.insert(5, 50);
+    vx.insert(6 , 60);
+    //auto e= vx.last();
+    //auto vect=vx.back();
+    cout << " ORIGINAL ARRAY " << endl;
+    cout << vx << endl;
+     cout << " ARRAY WITH POP_BACK " << endl;
+    vx.pop_back();
+    cout << vx << endl;
+    cout << " ARRAY WITH POP" << endl;
+    auto e= vx.back();
+    cout << vx << endl;
+    cout << e << endl;
+   
+    
+
 }
 
 void DemoBinaryTree()
