@@ -16,6 +16,8 @@ public:
     void insert       (int val);
     void resize       ();
     void print        (ostream &os);
+    void read         (istream &is);
+    void fill         (istream &is);
     int size()
     {  return m_vcount;    }
     int &operator[](int pos)
@@ -24,5 +26,6 @@ public:
 
 ostream & operator<<(ostream &os, CArray &obj);
 
+istream &operator>>(istream &is, CArray &obj);
 
 #endif // __ARRAY_H__

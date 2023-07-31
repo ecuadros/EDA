@@ -32,6 +32,17 @@ void CArray::resize(){
     // cout << "Vector resized m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
 }
 
+void CArray::fill(istream &is){
+    cout<<"filling into array from v5"<<endl;
+    int tmpVal;
+        
+    m_pVect = new int[m_vmax];
+    for(auto i = 0u ; i < m_vcount ; ++i){
+        is>>tmpVal;
+        m_pVect[i] = tmpVal;
+    }    
+}
+
 void CArray::insert(int val){
     if(m_vcount == m_vmax) // Array is already full?
         resize();
@@ -52,3 +63,17 @@ ostream &operator<<(ostream &os, CArray &obj){
     return os;
 }
 
+void CArray::read(istream &is){    
+    cout << "Reading file for: " << m_name << endl;
+    
+    is >> m_vcount>> m_vmax;
+    cout<<"m_vcount: "<<m_vcount<<endl;
+    cout<<"m_vmax: "<<m_vmax<<endl;
+        
+    CArray::fill(is);
+}
+
+istream &operator>>(istream &is, CArray &obj){
+    obj.read(is);
+    return is;
+}

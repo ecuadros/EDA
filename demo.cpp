@@ -2,6 +2,7 @@
 #include <fstream>  // ofstream, ifstream
 #include "demo.h"
 #include "array.h"
+#include <memory>
 using namespace std;
 
 void DemoSmartPointers(){
@@ -24,7 +25,7 @@ void DemoArray(){
     for(auto i = 0 ; i < 15 ; i++)
         v1.insert(i);   //  insert(&v1);
 
-    cout << "Vector #2()" <<endl;
+//    cout << "Vector #2()" <<endl;
     CArray v2("Cristian Vera"), *pV3 = new CArray("Guiomar ABC");
     CArray &rA = *pV3;
     for(auto i = 0 ; i < 12 ; i++)
@@ -33,12 +34,12 @@ void DemoArray(){
         //  (*pv3).insert(i);
         //  rA.insert(i);
     }
-    cout << v1; // v1.print(cout);
-    ostream &tmp = cout << v2 << "More text" << endl;
-    tmp << "Hola !!!" << endl;
-    cout << &tmp << "..." << &cout <<endl;
+//    cout << v1; // v1.print(cout);
+//    ostream &tmp = cout << v2 << "More text" << endl;
+//    tmp << "Hola !!!" << endl;
+//    cout << &tmp << "..." << &cout <<endl;
     // cout << x << f << y << endl;
-    pV3->print(cout);
+//    pV3->print(cout);
     // (*pV3).print();     *pV3 is already an object
     // rA.print();          rA is also an object
     // pV3[0].print();      pV3 is also an array with just 1 element [0]
@@ -50,10 +51,20 @@ void DemoArray(){
     // Using an array with []
     int x = v2[5] + 20;
     v2[5] = 60;
-    for(auto i = 0 ; i < v2.size() ; i++)
-        cout << "v2[" << i << "] = " << v2[i] << endl;
+//    for(auto i = 0 ; i < v2.size() ; i++)
+//        cout << "v2[" << i << "] = " << v2[i] << endl;
     ofstream of("test.txt", ios::out);
     of << v2 << endl; 
+    
+    /*--------------------------------------------------------------------------------*/
+    /*Implementation of Input File Stream, using already created test.txt file*/
+    CArray v5("Task #1"); 
+    int size, capacity;
+    ifstream ifs("test.txt", ios::in);
+    ifs >> v5; //reading file content into v5 CArray m_pVect attribute
+    cout << v5;
+    /*--------------------------------------------------------------------------------*/
+
 }
 
 void DemoBinaryTree()
