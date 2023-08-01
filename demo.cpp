@@ -4,8 +4,12 @@
 #include <memory>
 #include "demo.h"
 #include "array.h"
+#include "heap.h"
 #include "matrix.h"
 #include "foreach.h"
+#include <random>
+//#include "xtrait.h"
+//#include "keynode.h"
 using namespace std;
 
 template <typename T, int N>
@@ -142,62 +146,93 @@ void DemoPreandPostIncrement(){
 }
 
 void DemoArray(){   
-    cout << "Hello from DemoArray()" <<endl;
-    cout << "Vector #1()" <<endl;
+    // cout << "Hello from DemoArray()" <<endl;
+    // cout << "Vector #1()" <<endl;
     
-    CArray< TraitArrayIntInt > v1("Antonio"); 
-    for(auto i = 0 ; i < 15 ; i++)
-        v1.insert(i, i+5);   //  insert(&v1);
+    // CArray< TraitArrayIntInt > v1("Antonio"); 
+    // for(auto i = 0 ; i < 15 ; i++)
+    //     v1.insert(i, i+5);   //  insert(&v1);
 
-    cout << "Vector #2()" <<endl;
-    CArray< TraitFloatLong > v2("Cristian Vera"), 
-           *pV3 = new CArray< TraitFloatLong >("Guiomar ABC");
-    auto &rA = *pV3;
-    for(auto i = 100 ; i < 112 ; i++)
-    {   v2.insert(sqrt(i), i);
-        pV3->insert(i, sqrt(i));
-        //  (*pv3).insert(i);
-        //  rA.insert(i);
+    // cout << "Vector #2()" <<endl;
+    // CArray< TraitFloatLong > v2("Cristian Vera"), 
+    //        *pV3 = new CArray< TraitFloatLong >("Guiomar ABC");
+    // auto &rA = *pV3;
+    // for(auto i = 100 ; i < 112 ; i++)
+    // {   v2.insert(sqrt(i), i);
+    //     pV3->insert(i, sqrt(i));
+    //     //  (*pv3).insert(i);
+    //     //  rA.insert(i);
+    // }
+    // cout << "Printing V1 (TraitArrayIntInt)" << endl;
+    // cout << v1; // v1.print(cout);
+
+    // cout << "Printing V2 (TraitFloatLong)" << endl;
+    // ostream &tmp = cout << v2 << "More text" << endl;
+    // tmp << "Hola !!!" << endl;
+    // cout << &tmp << "..." << &cout <<endl;
+    // // cout << x << f << y << endl;
+
+    // cout << "Printing pv3 (TraitFloatLong)" << endl;
+    // pV3->print(cout);
+    // // (*pV3).print();     *pV3 is already an object
+    // // rA.print();          rA is also an object
+    // // pV3[0].print();      pV3 is also an array with just 1 element [0]
+    // // (*(pV3+0)).print();
+    // // (*(0+pV3)).print();
+    // // 0[pV3].print();
+    // // delete pV3;
+
+    // // Using an array with []
+    // for(auto i = 0 ; i < v2.size() ; i++)
+    //     cout << "v2[" << i << "] = " << v2[i] << endl;
+    // ofstream of("test.txt", ios::out);
+    // of << v2 << endl; 
+    // cout << "DemoArray finished !" << endl;
+
+    // // using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    // // CArray< TraitStringString > vx("Ernesto Cuadros");
+    // // vx.insert("Ernesto", "Cuadros");
+    // // vx.insert("Luis"   , "Tejada");
+    // // vx.insert("Jorge"  , "Lozano");
+    // // vx.insert("Edson"  , "Caceres");
+    // // vx.insert("Franz"  , "Maguiña");
+    // // vx.print(cout);
+    //using TraitArrayIntInt2 = XTrait<int, int, std::less<KeyNode<int,int > >>;
+    // // CArray< TraitStringString > vx("Ernesto Cuadros");c
+    CArray<TraitArrayIntInt> v7("Jorge") , v8("Fer"); 
+    for(auto i = 0 ; i < 3 ; i++){
+        v7.insert(i, i+5);   //  insert(&v1);
+        v8.insert(i,i+7);
     }
-    cout << "Printing V1 (TraitArrayIntInt)" << endl;
-    cout << v1; // v1.print(cout);
+    size_t n=v7.size();
+    while(v7.size()>0){
+        cout<<"Deletion number "<< n-v7.size()+1<<endl;
+        cout<<v7;
+        v7.pop_back();
+    }
+    cout<<"Recovery Value"<<endl;
+    size_t m=v8.size();
+    while(v8.size()>0){
+        cout<<"Deletion number "<< m-v8.size()+1<<endl;
+        cout<<v8;
+        KeyNode<TX,int> tmp;
+        tmp=v8.back();
+        cout<< "Key :"<<tmp.getData()<<" Value :"<<tmp.getValue()<<endl;
+    }
+    cout<<"Reading External File"<<endl;
+    ifstream ifx("file.txt",ios::in);
+    //CArray<TraitArrayStrinfString> v9("Jorge2");
+    CArray<TraitArrayIntInt> v9("Jorge2");
+    ifx>>v9;
+    cout<<"Print Value of V9 Update"<<endl;
+    v9.print(cout);
 
-    cout << "Printing V2 (TraitFloatLong)" << endl;
-    ostream &tmp = cout << v2 << "More text" << endl;
-    tmp << "Hola !!!" << endl;
-    cout << &tmp << "..." << &cout <<endl;
-    // cout << x << f << y << endl;
+    
 
-    cout << "Printing pv3 (TraitFloatLong)" << endl;
-    pV3->print(cout);
-    // (*pV3).print();     *pV3 is already an object
-    // rA.print();          rA is also an object
-    // pV3[0].print();      pV3 is also an array with just 1 element [0]
-    // (*(pV3+0)).print();
-    // (*(0+pV3)).print();
-    // 0[pV3].print();
-    // delete pV3;
-
-    // Using an array with []
-    for(auto i = 0 ; i < v2.size() ; i++)
-        cout << "v2[" << i << "] = " << v2[i] << endl;
-    ofstream of("test.txt", ios::out);
-    of << v2 << endl; 
-    cout << "DemoArray finished !" << endl;
-
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
-    CArray< TraitStringString > vx("Ernesto Cuadros");
-    vx.insert("Ernesto", "Cuadros");
-    vx.insert("Luis"   , "Tejada");
-    vx.insert("Jorge"  , "Lozano");
-    vx.insert("Edson"  , "Caceres");
-    vx.insert("Franz"  , "Maguiña");
-    vx.print(cout);
 }
 
 void DemoIterators(){
     CArray< TraitArrayIntInt > v1("Jorge");
-    
     v1.insert(30, 40);
     v1.insert(18, 45);
     v1.insert(20, 35);
@@ -243,9 +278,37 @@ void DemoReverseIterators(){
     foreach(v1.rbegin(), v1.rend(), ::print<TX>);
 }
 
-void DemoHeap()
-{
+void DemoHeap(){
     cout << "Hello from DemoHeap()" <<endl;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(1,100);
+    CHeap<XTraitIntIntAsc> t1("Jorge_MinHeap");//This line create a MinHeap instance
+    CHeap<XTraitIntIntDes> t2("Jorge MaxHeap");// This line create a MaxHeap Instance
+    for(auto i = 1 ; i < 7 ; i++){
+        int tmp= dist(gen);
+        t1.insert(tmp, i);
+        t2.insert(tmp,i);
+        cout<<tmp<<"->";
+    }
+    cout<<endl;
+    cout<<"MinHeap"<<endl;
+    t1.print(cout);
+    cout<<"Delete First Node"<<endl;
+    t1.pop_back();
+    t1.print(cout);
+    KeyNode<TX,int> N_tmp=t1.back();
+    cout<< "The Key of Min Heap :"<<N_tmp.getData()<<" and the Value :"<<N_tmp.getValue()<<endl;
+    t1.print(cout);
+    cout<<endl;
+    cout<<"MaxHeap"<<endl;
+    t2.print(cout);
+    cout<<"Delete First Node"<<endl;
+    t2.pop_back();
+    t2.print(cout);
+    KeyNode<TX,int> N_tmp2=t2.back();
+    cout<< "The Key of Max Heap :"<<N_tmp2.getData()<<" and the Value :"<<N_tmp2.getValue()<<endl;
+    t2.print(cout);
 }
 
 void DemoBinaryTree()

@@ -11,7 +11,7 @@ public:
 private:
   using Node      = KeyNode<T, V> ;
 public:
-    value_type       m_key;
+    value_type           m_key;
     LinkedValueType      m_value;
 
 public:
@@ -33,11 +33,14 @@ public:
         }
         return *this;
     }
-
     value_type    getData() const   { return m_key; }
     value_type&   getDataRef()      { return m_key; }
     LinkedValueType  getValue() const { return m_value; }
     LinkedValueType& getValueRef()    { return m_value; }
+
+    bool CompareNodes(const KeyNode<T, V>& a, const KeyNode<T, V>& b) {
+        return a < b; 
+    }
 
     bool operator<(const KeyNode<T, V>& other) const { 
         return m_key < other.m_key;

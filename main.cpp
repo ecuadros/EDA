@@ -11,10 +11,10 @@ using namespace std;
 int main()
 {
     // DemoParameters();
-    // DemoArray();
+    //DemoArray();
     // DemoIterators();
     // DemoReverseIterators();
-    // DemoDynamicMatrixes();
+    //DemoDynamicMatrixes();
 
     DemoHeap();
     // DemoBinaryTree();

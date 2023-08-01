@@ -11,8 +11,9 @@
 
 using namespace std;
 
-using XTraitFloatStringDesc = XTraitTrait<float, string, std::less<KeyNode<int, int > &>>;>;
-using XTraitIntIntAsc       = XTraitTrait<int  , int   , std::greater<KeyNode<int, int > &>>;
+using XTraitFloatStringDesc = XTrait<float, string, std::less<KeyNode<int, int > &>>;
+using XTraitIntIntDes      = XTrait<TX,int, std::greater<KeyNode<TX, int > &>>;
+using XTraitIntIntAsc       = XTrait<TX,int, std::less<KeyNode<TX, int > &>>;
 
 // Created by: @ecuadros
 template <typename Traits>
@@ -25,14 +26,17 @@ public:
     using CompareFn       = typename Traits::CompareFn;
     using myself          = CHeap<Traits>;
 private:
-    CArray<Traits>    m_heap;
     string    m_name = "Empty";
+    CArray<Traits>    m_heap;
 public:
     CHeap(string name)  : m_name(name){ destroy();  }
     CHeap()                           { destroy();  }
     virtual ~CHeap(){
         cerr << "Destroying " << m_name << "..." << endl;
         reset();
+    }
+    void reset(){
+        m_heap.destroy();
     }
     void destroy(){
         m_heap.destroy();
@@ -49,22 +53,76 @@ public:
         heapifyAsc();
         // cout << "Key=" << key << " Value=" << value << "\tinserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
-    // TODO: complete heapifyAsc function (useful for insertion)
+
+    // This function sorted function (useful for insertion)
     void heapifyAsc(){
-        // Use CompareFn
+        auto flow=m_heap.size()-1;
+        while (flow >1){
+            Node& Child_Node =m_heap.GetNode(flow);
+            flow=floor(flow/2);
+            Node& Father_Node=m_heap.GetNode(flow);
+            if(m_heap.CompareValue_(Child_Node,Father_Node)){
+                Node tmp_Child_Node= Child_Node;
+                Child_Node=Father_Node;
+                Father_Node=tmp_Child_Node;
+            }
+        }    
     }
-
-    // TODO: complete heapifyDesc function (useful when we remove an element)
     void heapifyDesc(){
-        // Use CompareFn
-    }
+        auto flow=1;
+        while (flow <= m_heap.size()-1){
+            Node& Father_Node =m_heap.GetNode(flow);
+            auto flow_i=2*flow+1;
+            flow=2*flow;
+            if(flow_i<=m_heap.size()-1){
+                Node& Child_Node_1=m_heap.GetNode(flow);
+                Node& Child_Node_2=m_heap.GetNode(flow_i);
+                if(m_heap.CompareValue_(Child_Node_1,Child_Node_2)){
+                    if(m_heap.CompareValue_(Child_Node_1,Father_Node)){
+                         Node tmp_Child_Node= Child_Node_1;
+                         Child_Node_1=Father_Node;
+                         Father_Node=tmp_Child_Node;
+                    }
+                }
+                else{
+                    if(m_heap.CompareValue_(Child_Node_2,Father_Node)){
+                        Node tmp_Child_Node= Child_Node_2;
+                        Child_Node_2=Father_Node;
+                        Father_Node=tmp_Child_Node;
+                        flow=flow_i;
+                    }
+                 }
+            }
+            else{
+                if(flow<=m_heap.size()-1){
+                    Node& Child_Node_1=m_heap.GetNode(flow);
+                    if(m_heap.CompareValue_(Child_Node_1,Father_Node)){
+                        Node tmp_Child_Node= Child_Node_1;
+                        Child_Node_1=Father_Node;
+                        Father_Node=tmp_Child_Node;
+                    }  
+                }
+                
+                }
+            }
+        }    
 
-    Node pop(){
+    void pop_back(){
         assert(m_heap.size() > 1);
-        Node ans = m_heap[1];
-        swap(m_heap[1], m_heap[m_heap.size()-1]);
-        m_heap.pop_back();
+        Node& tmp1 =m_heap.GetNode(1);
+        Node& tmp2 =m_heap.GetNode(m_heap.size()-1);
+        swap(tmp1, tmp2);
+        m_heap.pop_back();//Delete the last element;
         heapifyDesc();
+    }
+    Node back(){
+        assert(m_heap.size() > 1);
+        Node& tmp1 =m_heap.GetNode(1);
+        Node& tmp2 =m_heap.GetNode(m_heap.size()-1);
+        swap(tmp1, tmp2);
+        Node tmp=m_heap.back();//Recover the last element;
+        heapifyDesc();
+        return tmp;
     }
 
     void print        (ostream &os){
@@ -77,10 +135,9 @@ public:
     size_t size()
     {  return m_heap.size();    }
 
-    // TODO : agregar el operator value_type &
+    // : agregar el operator value_type &
     value_type &operator[](size_t pos)
-    {   return m_heap[pos].getDataRef();    }
-
+    {   return m_heap[pos].getDataRef();}
 };
 
 #endif

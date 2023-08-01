@@ -2,14 +2,15 @@
 #define __XTRAIT_H__
 
 #include "keynode.h"
-template <typename _K, typename _V, 
-            typename _CompareFn = std::less< KeyNode<_K, _V> & >>
+template <typename _K, typename _V, typename _CompareFn = std::less<KeyNode<_K, _V> & >>
 struct XTrait
 {
     using  value_type      = _K;
     using  LinkedValueType = _V;
     using  Node      = KeyNode<_K, _V>;
     using  CompareFn = _CompareFn;
+    using  CompareFn_Less= std::less<KeyNode<_K,_V>&>;
+    using  CompareFn_Great= std::greater<KeyNode<_K,_V>&>;
 };
 
 #endif
