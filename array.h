@@ -7,6 +7,7 @@
 #include "iterator.h"
 #include "keynode.h"
 #include "xtrait.h"
+#include <cassert>
 using namespace std;
 
 template <typename Container>
@@ -50,7 +51,7 @@ public:
                                           return *this;
                                         }
 };
-
+using TraitStringString     =XTrait<string,string>;
 using TraitArrayFloatString = XTrait<float, string>;
 using TraitArrayIntInt      = XTrait<TX  , int   , std::greater<KeyNode<TX  , int > &>>;
 using TraitFloatLong        = XTrait<float, long  , std::greater<KeyNode<float, long> &>>;
@@ -85,13 +86,22 @@ public:
         // cout << "Key=" << key << " Value=" << value << "\tinserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
     // TODO: remove the last element and returns it
-    Node back(){
-
+    value_type last(){
+        assert(size()>0);
+        value_type lastElement= m_pVect[size()-1].getValueRef();
+        return lastElement;
     }
-    // TODO: remove the last element only
+    
+     Node back(){
+        Node lastElement = last();
+        pop_back();
+        return lastElement;
+    }
+
     void pop_back(){
-
+         m_vcount--;
     }
+
     void resize       ();
     void destroy(){
         delete [] m_pVect;
@@ -102,7 +112,7 @@ public:
     
     void print        (ostream &os){
         // os << "Printing: " << m_name << endl;
-        os << m_vcount << " " << m_vmax << endl;
+       // os << m_vcount << " " << m_vmax << endl;
         // sort(m_pVect, m_pVect+m_vcount, CompareFn() );
         for(size_t i = 0; i < m_vcount ; ++i )
             os << m_pVect[i].getData() << "\t: " << m_pVect[i].getValue() << endl;
@@ -124,9 +134,17 @@ public:
 
     size_t size()
     {  return m_vcount;    }
-    value_type &operator[](size_t pos)
-    {   return m_pVect[pos].getDataRef();    }
 
+   
+    // To return a Node type
+     Node &operator[](size_t pos){   return m_pVect[pos];    }
+    /*
+     // To return m_key
+    value_type &operator[](size_t pos){   return m_pVect[pos].getDataRef();    }
+
+    // To return m_value   
+   LinkedValueType &operator[](size_t pos){return m_pVect[pos].getValueRef();  }
+ */
     iterator begin() { iterator iter(this, m_pVect);    return iter;    }
     iterator end()   { iterator iter(this, m_pVect+m_vcount);    return iter;    }
     riterator rbegin() { riterator iter(this, m_pVect+m_vcount-1);     return iter;    }
@@ -154,6 +172,12 @@ ostream &operator<<(ostream &os, CArray<T> &obj){
     obj.print(os);
     return os;
 }
+// Print type keynodo Obj 
+template <typename T,typename V>
+ostream &operator<<(ostream &os, const KeyNode<T,V>& obj){
+   os<<obj.m_key;
+   return os;
+} 
 
 // TODO
 template <typename T>

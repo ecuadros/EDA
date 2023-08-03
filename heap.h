@@ -11,9 +11,9 @@
 
 using namespace std;
 
-using XTraitFloatStringDesc = XTraitTrait<float, string, std::less<KeyNode<int, int > &>>;>;
-using XTraitIntIntAsc       = XTraitTrait<int  , int   , std::greater<KeyNode<int, int > &>>;
-
+using XTraitFloatStringDesc = XTrait<float, string, std::less<KeyNode<int, int > &>>;
+using XTraitIntIntMax       = XTrait<int  , int   , std::greater<KeyNode<int, int > &>>;
+using XTraitIntIntMin      = XTrait<int , int,std::less<KeyNode<int, int > &>>;
 // Created by: @ecuadros
 template <typename Traits>
 class CHeap{
@@ -27,12 +27,14 @@ public:
 private:
     CArray<Traits>    m_heap;
     string    m_name = "Empty";
+    CompareFn  Fn;
 public:
     CHeap(string name)  : m_name(name){ destroy();  }
     CHeap()                           { destroy();  }
     virtual ~CHeap(){
         cerr << "Destroying " << m_name << "..." << endl;
-        reset();
+        //reset();
+        destroy();
     }
     void destroy(){
         m_heap.destroy();
@@ -47,24 +49,64 @@ public:
     void insert(const value_type &key, LinkedValueType value){
         m_heap.insert(key, value);
         heapifyAsc();
-        // cout << "Key=" << key << " Value=" << value << "\tinserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
-    }
-    // TODO: complete heapifyAsc function (useful for insertion)
-    void heapifyAsc(){
-        // Use CompareFn
+        
     }
 
-    // TODO: complete heapifyDesc function (useful when we remove an element)
-    void heapifyDesc(){
-        // Use CompareFn
+    // TODO: complete heapifyAsc function (useful for insertion)
+    void heapifyAsc(){
+        
+        size_t son=m_heap.size()-1;
+        while (son>1){
+            size_t parent=son/2;
+                if(Fn(m_heap[son],m_heap[parent]))
+            {   swap(m_heap[parent],m_heap[son]);
+                son=parent;
+            
+            }
+            else {
+            break; 
+        }
+        }                    
+}
+// TODO: complete heapifyDesc function (useful when we remove an element)
+void auxDesc(size_t parent){
+    size_t son_one=2*parent;
+    size_t son_two=2*parent+1;
+    if (son_two<m_heap.size()){
+        if(Fn(m_heap[son_one],m_heap[son_two])){
+        if(!Fn(m_heap[parent],m_heap[son_one])) {
+            swap(m_heap[parent],m_heap[son_one]);
+        }
     }
+    else{
+        if(!Fn(m_heap[parent],m_heap[son_two])) {
+            swap(m_heap[parent],m_heap[son_two]);
+        }
+    }
+
+    }
+    else{
+        if(!Fn(m_heap[parent],m_heap[son_one])) {
+            swap(m_heap[parent],m_heap[son_one]);
+        }
+    }
+    
+    
+}
+     void heapifyDesc(){
+            size_t n=1;
+            while (n!=3){
+                auxDesc(n);
+                n++;
+            }
+
+     }
 
     Node pop(){
         assert(m_heap.size() > 1);
-        Node ans = m_heap[1];
         swap(m_heap[1], m_heap[m_heap.size()-1]);
         m_heap.pop_back();
-        heapifyDesc();
+       heapifyDesc();
     }
 
     void print        (ostream &os){
@@ -78,8 +120,9 @@ public:
     {  return m_heap.size();    }
 
     // TODO : agregar el operator value_type &
-    value_type &operator[](size_t pos)
-    {   return m_heap[pos].getDataRef();    }
+   // value_type &operator[](size_t pos)
+    //{   return m_heap[pos].getDataRef();    }
+
 
 };
 

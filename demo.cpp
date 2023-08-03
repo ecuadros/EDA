@@ -6,6 +6,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include  "heap.h"
 using namespace std;
 
 template <typename T, int N>
@@ -185,7 +186,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -243,10 +244,79 @@ void DemoReverseIterators(){
     foreach(v1.rbegin(), v1.rend(), ::print<TX>);
 }
 
-void DemoHeap()
+void DemoArrayPop()
+{
+
+    CArray< TraitArrayIntInt > vx("Guiomar");
+    
+    vx.insert(1, 10);
+    vx.insert(2, 20);
+    vx.insert(3, 30);
+    vx.insert(4 , 40);
+    vx.insert(5, 50);
+    vx.insert(6 , 60);
+    auto e= vx.last();
+    auto vect=vx.back();
+    cout << vx << endl;
+    cout<<e<<endl;
+    cout << vect << endl;
+   
+}
+
+void DemoHeapMin()
 {
     cout << "Hello from DemoHeap()" <<endl;
+    cout << "MIN HEAP" <<endl;
+    CHeap<XTraitIntIntMin> heap_min("MIN HEAP");
+    heap_min.insert(4,1);
+    heap_min.insert(10,2);
+    heap_min.insert(7,3);
+    heap_min.insert(3,4);
+    heap_min.insert(15,5);
+    heap_min.insert(20,6);
+    heap_min.insert(8,7);
+    heap_min.insert(2,8);
+    heap_min.print(cout);
+    cout << "**********************" <<endl;
+    cout<<"--------------1 remove"<<endl;
+    heap_min.pop();
+    heap_min.print(cout);
+    cout<<"-------------- 2 remove"<<endl;
+     heap_min.pop();
+    heap_min.print(cout);
+    cout<<"----------------3 remove"<<endl;
+     heap_min.pop();
+    heap_min.print(cout);
+    cout<<"-----------------4 remove"<<endl;
+     heap_min.pop();
+    heap_min.print(cout);
+ 
 }
+
+void DemoHeapMax()
+{
+    cout << "Hello from DemoHeap()" <<endl;
+    cout << "MAX HEAP" <<endl;
+    CHeap<XTraitIntIntMax> heap("MAX HEAP");
+    heap.insert(7,1);
+    heap.insert(6,2);
+    heap.insert(2,3);
+    heap.insert(1,4);
+    heap.insert(4,5);
+    heap.print(cout);
+    cout << "**********************" <<endl;
+    cout<<"--------------1 remove"<<endl;
+    heap.pop();
+    heap.print(cout);
+   }
+
+
+
+
+
+
+
+
 
 void DemoBinaryTree()
 {
