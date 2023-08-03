@@ -30,6 +30,11 @@ public:
 
     KeyNode() {}
 
+
+     // Node(float value) : m_value(value) {}
+     //private:
+    //float m_value
+
     KeyNode& operator=(const KeyNode& other) {
         if (this != &other) {
             m_key = other.m_key;

@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <algorithm> // sort algorithm
+#include <cassert>
 #include "types.h"
 #include "iterator.h"
 #include "keynode.h"
