@@ -17,8 +17,8 @@ int main()
     // DemoDynamicMatrixes();
 
    // DemoArrayPop();
-   // DemoHeapMin();
-    DemoHeapMax();
+    DemoHeapMin();
+    //DemoHeapMax();
     // DemoBinaryTree();
     // DemoHash();
 

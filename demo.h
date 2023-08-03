@@ -10,8 +10,8 @@
 //void DemoIterators();
 //void DemoReverseIterators();
 //void DemoArrayPop();
-//void DemoHeapMin();
-void DemoHeapMax();
+void DemoHeapMin();
+//void DemoHeapMax();
 
 //void DemoBinaryTree();
 //void DemoHash();
