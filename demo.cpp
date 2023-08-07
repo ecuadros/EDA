@@ -6,6 +6,9 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "xtrait.h"
+#include "binarytree.h"
+#include <random>
 using namespace std;
 
 template <typename T, int N>
@@ -185,14 +188,14 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
-    CArray< TraitStringString > vx("Ernesto Cuadros");
-    vx.insert("Ernesto", "Cuadros");
-    vx.insert("Luis"   , "Tejada");
-    vx.insert("Jorge"  , "Lozano");
-    vx.insert("Edson"  , "Caceres");
-    vx.insert("Franz"  , "Maguiña");
-    vx.print(cout);
+    // using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    // CArray< TraitStringString > vx("Ernesto Cuadros");
+    // vx.insert("Ernesto", "Cuadros");
+    // vx.insert("Luis"   , "Tejada");
+    // vx.insert("Jorge"  , "Lozano");
+    // vx.insert("Edson"  , "Caceres");
+    // vx.insert("Franz"  , "Maguiña");
+    // vx.print(cout);
 }
 
 void DemoIterators(){
@@ -249,8 +252,39 @@ void DemoHeap()
 }
 
 void DemoBinaryTree()
-{
+{   
     cout << "Hello from DemoBinaryTree()" <<endl;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(1,60);
+    BinaryTree<Traits_BNTAsc> bt;
+    vector<int> vect0={65,22,8,45,20,5,8,46,48,40,141};
+    vector<int> vect1={35,32,30,27,25,22,11,5,3,2,1};
+    vector<int> vect2={35,45,50,57,75,82,91,95,103,112,120};
+    for(auto i=0;i<=20;i++){
+        int tmp= dist(gen);
+        int tmp2= dist(gen);
+        cout<<tmp<<"-->";
+        bt.insert(tmp,tmp2);
+    }
+    cout<<endl;
+    bt.print(cout);
+
+    cout<<"\nRunning in Order"<<endl;
+    bt.inorder(cout);
+
+    cout<<"\nRunning in PostOrder"<<endl;
+    bt.postorder(cout);
+
+    cout<<"\nRunning in PreOrder"<<endl;
+    bt.preorder(cout);
+    cout<<endl;
+    cout<<"\nForeach in Order"<<endl;
+    foreach_btree(bt,::print<int>);
+    cout<<"\nRunning in Order"<<endl;
+    bt.inorder(cout);
+    cout<<"\nForeach in Order"<<endl;
+    foreach_btree(bt,::print<int>);
 }
 
 void DemoHash()

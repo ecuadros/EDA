@@ -15,8 +15,8 @@ public:
     LinkedValueType      m_value;
 
 public:
-    KeyNode(value_type key, LinkedValueType value) 
-        : m_key(key), m_value(value) {}
+    KeyNode(value_type key, LinkedValueType value,bool status=false) 
+        : m_key(key), m_value(value){}
 
     KeyNode(const KeyNode<T, V>& other) : 
         KeyNode(other.m_key, other.m_value) {}

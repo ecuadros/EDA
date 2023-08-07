@@ -12,11 +12,23 @@ void f1(T &x)
 {  x+= 5; }
 
 template <typename Iterator, typename F>
+void foreach_btree(Iterator ItBegin, Iterator ItEnd, F ope)
+{
+  auto iter = ItBegin;
+  for(; iter != ItEnd;++iter){
+    ope(*iter);
+  }
+  ope(*ItEnd);
+  ItEnd.fill_status();
+}
+template <typename Iterator, typename F>
 void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
 {
   auto iter = ItBegin;
-  for(; iter != ItEnd ; ++iter)
-      ope(*iter);
+  for(; iter != ItEnd;++iter){
+    ope(*iter);
+  }
+  ope(*ItEnd);
 }
 
 // template <typename Iterator, typename Callable, typename... Args>
@@ -41,10 +53,14 @@ void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
 
 // #1
 template <typename Container, typename F>
+void foreach_btree(Container &container, F ope)
+{  
+    foreach_btree(container.begin(), container.end() , ope);
+}
+template <typename Container, typename F>
 void foreach(Container &container, F ope)
 {  
-    foreach(container. begin(), container.end() , ope);
-    // foreach(container.rbegin(), container.rend(), ope);
+    foreach(container.begin(), container.end() , ope);
 }
 
 // template <typename Iterator, typename Callable, typename... Args>
