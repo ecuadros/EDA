@@ -258,14 +258,17 @@ void DemoBinaryTree()
     mt19937 gen(rd());
     uniform_int_distribution<int> dist(1,60);
     BinaryTree<Traits_BNTAsc> bt;
-    vector<int> vect0={65,22,8,45,20,5,8,46,48,40,141};
+    vector<int> vect0={65,22,8,45,20,5,7,46,48,40,141};
     vector<int> vect1={35,32,30,27,25,22,11,5,3,2,1};
     vector<int> vect2={35,45,50,57,75,82,91,95,103,112,120};
     for(auto i=0;i<=20;i++){
         int tmp= dist(gen);
         int tmp2= dist(gen);
-        cout<<tmp<<"-->";
-        bt.insert(tmp,tmp2);
+        // cout<<vect2[i]<<"-->";
+        // bt.insert(vect2[i],tmp2);
+         cout<<tmp<<"-->";
+         bt.insert(tmp,tmp2);
+
     }
     cout<<endl;
     bt.print(cout);
@@ -280,11 +283,9 @@ void DemoBinaryTree()
     bt.preorder(cout);
     cout<<endl;
     cout<<"\nForeach in Order"<<endl;
-    foreach_btree(bt,::print<int>);
-    cout<<"\nRunning in Order"<<endl;
-    bt.inorder(cout);
-    cout<<"\nForeach in Order"<<endl;
-    foreach_btree(bt,::print<int>);
+    foreach_btree_inorder(bt,::print<int>);
+    cout<<"\nForeach in Post Order"<<endl;
+    foreach_btree_posorder(bt,::print<int>);
 }
 
 void DemoHash()
