@@ -257,18 +257,20 @@ void DemoBinaryTree()
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<int> dist(1,60);
-    BinaryTree<Traits_BNTAsc> bt;
-    vector<int> vect0={65,22,8,45,20,5,7,46,48,40,141};
+    BinaryTree<Traits_BNTDesc> bt;
+    vector<int> vect0={75,65,22,8,45,20,5,7,46,48,40,41};
     vector<int> vect1={35,32,30,27,25,22,11,5,3,2,1};
     vector<int> vect2={35,45,50,57,75,82,91,95,103,112,120};
+    vector<int> vect3= {49,47,22,20,41,11,23,55,40,35,42,38,10,27,34,60,9,2,6,31,26};
+    vector<int> vect4= {49,47,22,20,41,10,22,55,40,35,42,38,9,27,34,60,9,2,6,31,26};
+    vector<int> vect5={41,49,22,10,26,44,54,25,33,59,8,5,9,1,30,2,55,46,18,43,40};
     for(auto i=0;i<=20;i++){
         int tmp= dist(gen);
         int tmp2= dist(gen);
-        // cout<<vect2[i]<<"-->";
-        // bt.insert(vect2[i],tmp2);
-         cout<<tmp<<"-->";
-         bt.insert(tmp,tmp2);
-
+        // cout<<vect5[i]<<"-->";
+        // bt.insert(vect5[i],tmp2);
+        cout<<tmp<<"-->";
+        bt.insert(tmp,tmp2);
     }
     cout<<endl;
     bt.print(cout);
@@ -286,6 +288,9 @@ void DemoBinaryTree()
     foreach_btree_inorder(bt,::print<int>);
     cout<<"\nForeach in Post Order"<<endl;
     foreach_btree_posorder(bt,::print<int>);
+    cout<<"\nForeach in Pre Order"<<endl;
+    foreach_btree_preorder(bt,::print<int>);
+
 }
 
 void DemoHash()

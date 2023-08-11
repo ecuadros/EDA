@@ -64,6 +64,11 @@ void foreach_btree_posorder(Container &container, F ope)
 {  
     foreach_btree(container.begin_post(), container.end_post() , ope);
 }
+template <typename Container, typename F>
+void foreach_btree_preorder(Container &container, F ope)
+{  
+    foreach_btree(container.begin_pre(), container.end_pre() , ope);
+}
 
 template <typename Container, typename F>
 void foreach(Container &container, F ope)

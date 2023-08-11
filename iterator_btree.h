@@ -9,6 +9,7 @@ public: \
     typedef typename _Container::Node                             Node;       \
     typedef _iter<_Container>                                     myself;
 
+// Iterator in order
 template <typename Container>
 class bt_iter_inorder : public general_iterator<Container,  class bt_iter_inorder<Container>> // 
 {  _DEF(Container, bt_iter_inorder); // TODO: llevar esta misma idea a todos container ya existentes
@@ -92,7 +93,7 @@ class bt_iter_inorder : public general_iterator<Container,  class bt_iter_inorde
 
     
 };
-// 
+// Iterator in pos order
 template <typename Container>
 class bt_iter_postorder : public general_iterator<Container,  class bt_iter_postorder<Container>> // 
 {  _DEF(Container, bt_iter_postorder); // TODO: llevar esta misma idea a todos container ya existentes
@@ -197,6 +198,92 @@ class bt_iter_postorder : public general_iterator<Container,  class bt_iter_post
     bt_iter_postorder operator++() {
         count=count+1;
         Node *NextNode= post_order(Parent::m_pNode);
+        if(NextNode){
+            Parent::m_pNode= NextNode;
+        }
+        return *this;
+    }
+
+    
+};
+// Iterator in pre order
+template <typename Container>
+class bt_iter_preorder : public general_iterator<Container,  class bt_iter_preorder<Container>> // 
+{  _DEF(Container, bt_iter_preorder); // TODO: llevar esta misma idea a todos container ya existentes
+
+  private:
+    Node *m_pRoot=nullptr;
+    size_t count=0;
+  public:
+    bt_iter_preorder(Container *pContainer, Node *pNode,Node *pRoot) : Parent (pContainer,pNode),m_pRoot(pRoot) {}
+    bt_iter_preorder(myself &other)  : Parent (other),m_pRoot(other.m_pRoot) {}
+    bt_iter_preorder(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+
+  private:
+    Node *pre_order(Node *pNode){
+        if(pNode){
+            if(count==1)
+               pNode->setp_status(true);
+            if(pNode->getChild(0) && pNode->getChild(0)->get_status()==false){
+                pNode=pNode->getChild(0);
+                pNode->setp_status(true);
+                return pNode;
+               }
+            else{
+                if(pNode->getChild(1) && pNode->getChild(1)->get_status()==false){
+                    pNode=pNode->getChild(1);
+                    pNode->setp_status(true);
+                    return pNode;
+                }
+                else{
+                    Node *pParent=pNode->getParent();
+                    if(pParent->getChild(0)==pNode){
+                        if(pNode->getParent()->getChild(1)){
+                            pNode=pNode->getParent()->getChild(1);
+                            pNode->setp_status(true);
+                            return pNode;
+                        }
+                        else{
+                            pNode=pre_order(pParent);
+                            return pNode;
+                        } 
+                    }
+                    else{
+                        while(pNode->getParent()->getChild(1)==pNode){
+                            pNode=pNode->getParent();
+                        }
+                        pNode=pNode->getParent();
+                        pNode= pre_order(pNode);
+                        return pNode;
+                    }
+
+                }  
+            }   
+
+        }
+        else{
+            return nullptr;
+        }
+
+    }
+    
+    void fill_status_i(Node *pNode){
+        if(pNode) {
+            Node *pParent = pNode->getParent();
+            fill_status_i(pNode->getChild(0));
+            pNode->setp_status(false);
+            fill_status_i(pNode->getChild(1));
+        }
+    }
+    public:
+    void fill_status(){
+        Node *pNode=m_pRoot; 
+        fill_status_i(pNode);
+        count=0;
+    }
+    bt_iter_preorder operator++() {
+        count=count+1;
+        Node *NextNode= pre_order(Parent::m_pNode);
         if(NextNode){
             Parent::m_pNode= NextNode;
         }

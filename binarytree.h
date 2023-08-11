@@ -75,6 +75,7 @@ class BinaryTree
     using myself = BinaryTree<Traits>;
     typedef bt_iter_inorder<myself>    in_iterator;
     typedef bt_iter_postorder<myself>  post_iterator;
+    typedef bt_iter_preorder<myself> pre_iterator;
 
   protected:
     Node    *m_pRoot = nullptr;
@@ -96,7 +97,7 @@ class BinaryTree
         {   ++m_size;
             return (rpOrigin = CreateNode(pParent,elem,elem2));
         }
-        size_t branch = Compfn(elem, rpOrigin->getDataRef() );
+        size_t branch = Compfn(rpOrigin->getDataRef() ,elem);
         return internal_insert1(elem,elem2,rpOrigin,rpOrigin->getChildRef(branch));
     }
 public:
@@ -181,6 +182,34 @@ protected:
             pNode = pNode->getChild(dir);
         }
         return pNode;
+    }
+     Node* find_last_node_pre(Node* pNode,size_t dir) {
+        if(dir==0){
+            while (pNode->getChild(0)) {
+                pNode = pNode->getChild(0);
+            }
+            return pNode; 
+        }
+        else{
+            Node *tmp=pNode;
+            while(pNode->getChild(1)) {
+                pNode = pNode->getChild(1);
+            }
+            if(pNode!=tmp && pNode->getChild(0)==nullptr){
+                return pNode;
+            }
+            else{
+                if(pNode->getChild(0)){
+                    pNode=pNode->getChild(0);
+                    pNode=find_last_node_pre(pNode,dir);
+                    return pNode;
+                }
+                else{
+                    return pNode;
+                }
+        
+            }
+        }
     }
     Node* find_last_node_pos(Node* pNode,size_t dir) {
         if(dir==1){
@@ -274,6 +303,18 @@ protected:
                 return iter; 
             }
         }       
+     }
+     // Iterator preorder
+    pre_iterator begin_pre() { 
+        pre_iterator iter(this,m_pRoot,m_pRoot);
+        return iter; 
+
+    }
+    pre_iterator end_pre() {
+        Node* lnode_0 = find_last_node_pre(m_pRoot,0);
+        Node* lnode_1 = find_last_node_pre(m_pRoot,1);
+        pre_iterator iter(this,lnode_1,m_pRoot); 
+        return iter;
      }
 };
 
