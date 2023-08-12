@@ -17,3 +17,9 @@ void DemoHash()
     cout << "Hello from DemoHash()" <<endl;
 }
 
+int main() {
+    DemoArray();
+    DemoBinaryTree();
+    DemoHash();
+    return 0;
+}
