@@ -6,6 +6,8 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "binarytree.h"
+#include "keynode.h"
 using namespace std;
 
 template <typename T, int N>
@@ -185,7 +187,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string  , std::less<XTrait<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -251,6 +253,21 @@ void DemoHeap()
 void DemoBinaryTree()
 {
     cout << "Hello from DemoBinaryTree()" <<endl;
+   
+     BinaryTree<BDescTree> Tree;
+    //int key = 30;
+    //int value = 40;
+    Tree.insert(8,0);
+    Tree.insert(10,1);
+    Tree.insert(3,2);
+    Tree.insert(1,3);
+    Tree.insert(6,4);
+    Tree.insert(4,5);
+    Tree.insert(7,6);
+    Tree.insert(14,7);
+    Tree.insert(13,8);
+     cout << "Inserto" <<endl;
+     //Tree.insert(key,value);
 }
 
 void DemoHash()
