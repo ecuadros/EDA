@@ -2,7 +2,7 @@
 #define __HEAP_H__
 
 #include <iostream>
-#include <algorithm> // swap algorithm
+#include <algorithm> 
 #include <cassert>
 #include "types.h"
 #include "keynode.h"
@@ -38,20 +38,16 @@ public:
         m_heap.destroy();
         m_heap.insert(0, 0);
     }
-
-    // CHeap operator=(CHeap &other){
-    //     destroy();
-        
-    // }
+ 
     
     void insert(const value_type &key, LinkedValueType value){
         m_heap.insert(key, value);
         heapifyAsc();
-        // cout << "Key=" << key << " Value=" << value << "\tinserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
+       
     }
-    // TODO: complete heapifyAsc function (useful for insertion)
+    
     void heapifyAsc(){
-        // Use CompareFn
+        
         for (int i = m_heap.size() / 2; i >= 1; --i) {
             int left = 2 * i;
             int right = 2 * i + 1;
@@ -69,9 +65,9 @@ public:
         }
     }
 
-    // TODO: complete heapifyDesc function (useful when we remove an element)
+    
     void heapifyDesc(){
-        // Use CompareFn
+        
         for (int i = m_heap.size() / 2; i >= 1; --i) {
             int left = 2 * i;
             int right = 2 * i + 1;
@@ -107,7 +103,7 @@ public:
     size_t size()
     {  return m_heap.size();    }
 
-    // TODO : agregar el operator value_type &
+  
     value_type &operator[](size_t pos)
     {   return m_heap[pos].getDataRef();    }
 
