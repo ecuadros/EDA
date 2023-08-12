@@ -55,7 +55,6 @@ using TraitArrayFloatString = XTrait<float, string>;
 using TraitArrayIntInt      = XTrait<TX  , int   , std::greater<KeyNode<TX  , int > &>>;
 using TraitFloatLong        = XTrait<float, long  , std::greater<KeyNode<float, long> &>>;
 
-// Created by: @ecuadros
 template <typename Traits>
 class CArray{
 public:
