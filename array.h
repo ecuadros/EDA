@@ -97,4 +97,4 @@ istream & operator>>(istream &is, CArray<T> &obj){
 }
 
 
-#endif // __ARRAY_H__
+#endif 
