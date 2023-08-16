@@ -224,4 +224,3 @@ void DemoHash()
 {
     cout << "Hello from DemoHash()" <<endl;
 }
-
