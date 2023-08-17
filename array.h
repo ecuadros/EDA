@@ -7,7 +7,7 @@
 #include "iterator.h"
 #include "keynode.h"
 #include "xtrait.h"
-using namespace std;..
+using namespace std;
 
 template <typename Container>
 class array_forward_iterator 
