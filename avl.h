@@ -1,5 +1,5 @@
-#ifndef __BINARY_TREE_H__  
-#define __BINARY_TREE_H__ 
+#ifndef __BINARY_TREE_H__
+#define __BINARY_TREE_H__
 //#include <utility>
 //#include <algorithm>
 #include <cassert>
@@ -9,55 +9,72 @@
 using namespace std;
 
 template <typename T>
-class NodeAVL : public NodeBinaryTree
+class NodeAVL : public NodeBinaryTree<T>
 {
 public:
-  typedef T         Type;
+  typedef T Type;
 private:
-  using Parent = NodeBinaryTree<T> Node;
-  public:
-    size_t m_depth = 1; 
-  public:
-    NodeAVL(Node *pParent, T data, Node *p0 = nullptr, Node *p1 = nullptr) 
-        : Parent(pParent, p0, p1)
-    {}
-
+  using Parent = NodeBinaryTree<T>;
+public:
+  size_t m_depth = 1;
+public:
+  NodeAVL(Node *pParent, T data, Node *p0 = nullptr, Node *p1 = nullptr)
+      : Parent(pParent, p0, p1)
+  {}
 };
 
-// template <typename _T>
-// struct BinaryTreeAscTraits
-// {
-//     using  T         = _T;
-//     using  Node      = NodeBinaryTree<T>;
-//     using  CompareFn = less<T>;
-// };
-
-// template <typename _T>
-// struct BinaryTreeDescTraits
-// {
-//     using  T         = _T;
-//     using  Node      = NodeBinaryTree<T>;
-//     using  CompareFn = greater<T>;
-// };
-
-// TODO: AVL
 template <typename Traits>
-class CAVL: public BinaryTree
+class CAVL : public BinaryTree<typename Traits::T, typename Traits::Node>
 {
-  public:
-    typedef typename Traits::T          value_type;
-    typedef typename Traits::Node       Node;
-    
-    typedef typename Traits::CompareFn      CompareFn;
-    typedef CAVL<Traits>                myself;
-    // typedef binary_tree_iterator<myself>    iterator;
+public:
+  typedef typename Traits::T value_type;
+  typedef typename Traits::Node Node;
+
+  typedef typename Traits::CompareFn CompareFn;
+  typedef CAVL<Traits> myself;
+  // typedef binary_tree_iterator<myself> iterator;
 
 protected:
-public: 
-    // TODO: insert must receive two paramaters: elem and LinkedValueType value
-    virtual void    insert(value_type &elem, LinkedValueType value){ 
-        Parent::internal_insert(elem, nullptr, m_pRoot); 
+public:
+  virtual void insert(value_type elem, LinkedValueType value)
+  {
+    Node *newNode = new NodeAVL<Node>(nullptr, elem);
+    if (this->m_pRoot == nullptr)
+    {
+      this->m_pRoot = newNode;
     }
+    else
+    {
+      Node *current = this->m_pRoot;
+      while (true)
+      {
+        if (Traits::CompareFn()(elem, current->m_data))
+        {
+          if (current->m_pLeft == nullptr)
+          {
+            current->m_pLeft = newNode;
+            break;
+          }
+          else
+          {
+            current = current->m_pLeft;
+          }
+        }
+        else
+        {
+          if (current->m_pRight == nullptr)
+          {
+            current->m_pRight = newNode;
+            break;
+          }
+          else
+          {
+            current = current->m_pRight;
+          }
+        }
+      }
+    }
+  }
 };
 
 #endif
