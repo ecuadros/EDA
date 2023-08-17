@@ -12,7 +12,7 @@ using namespace std;
 template <typename Container>
 class array_forward_iterator 
      : public general_iterator<Container,  class array_forward_iterator<Container> > 
-{public:
+{public: 
      
     typedef class general_iterator<Container, array_forward_iterator<Container> > Parent; 
     typedef typename Container::Node           Node; 
