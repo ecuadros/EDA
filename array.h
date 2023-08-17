@@ -2,99 +2,75 @@
 #define __ARRAY_H__
 
 #include <iostream>
-#include <algorithm> 
-#include "types.h"
-#include "iterator.h"
-#include "keynode.h"
-#include "xtrait.h"
-using namespace std;
+#include <algorithm> // sort algorithm
+#include <functional> // for std::less, std::greater
+#include <string>
 
-template <typename Container>
-class array_forward_iterator 
-     : public general_iterator<Container,  class array_forward_iterator<Container> > 
-{public: 
-     
-    typedef class general_iterator<Container, array_forward_iterator<Container> > Parent; 
-    typedef typename Container::Node           Node; 
-    typedef array_forward_iterator<Container>  myself;
-
-  public:
-    array_forward_iterator(Container *pContainer, Node *pNode) 
-            : Parent (pContainer,pNode) {}
-    array_forward_iterator(myself &other)  : Parent (other) {}
-    array_forward_iterator(myself &&other) : Parent(other) {} 
-
+template <typename T, typename V>
+class NodeArray {
 public:
-    array_forward_iterator operator++() { Parent::m_pNode++;  
-                                          return *this;
-                                        }
-};
+    using value_type = T;
+    using LinkedValueType = V;
 
-template <typename Container>
-class array_backward_iterator 
-     : public general_iterator<Container,  class array_backward_iterator<Container> > // 
-{public: 
-   
-    typedef class general_iterator<Container, array_backward_iterator<Container> > Parent; 
-    typedef typename Container::Node           Node; // 
-    typedef array_backward_iterator<Container>  myself;
+    value_type m_key;
+    LinkedValueType m_value;
 
-  public:
-    array_backward_iterator(Container *pContainer, Node *pNode) 
-            : Parent (pContainer,pNode) {}
-    array_backward_iterator(myself &other)  : Parent (other) {}
-    array_backward_iterator(myself &&other) : Parent(other) {} 
+    NodeArray(value_type key, LinkedValueType value)
+        : m_key(key), m_value(value) {}
 
-public:
-    array_backward_iterator operator++() { Parent::m_pNode--;
-                                          return *this;
-                                        }
-};
+    value_type getData() const { return m_key; }
+    value_type& getDataRef() { return m_key; }
+    LinkedValueType getValue() const { return m_value; }
+    LinkedValueType& getValueRef() { return m_value; }
 
-using TraitArrayFloatString = XTrait<float, string>;
-using TraitArrayIntInt      = XTrait<TX  , int   , std::greater<KeyNode<TX  , int > &>>;
-using TraitFloatLong        = XTrait<float, long  , std::greater<KeyNode<float, long> &>>;
-
-template <typename Traits>
-class CArray{
-public:
-    using value_type      = typename Traits::value_type;
-    using KeyType         = typename Traits::value_type;
-    using LinkedValueType = typename Traits::LinkedValueType;
-    using Node      = typename Traits::Node;
-    using CompareFn = typename Traits::CompareFn;
-    using myself    = CArray<Traits>;
-    using iterator  = array_forward_iterator<myself>;
-    using riterator  = array_backward_iterator<myself>; 
-private:
-    Node     *m_pVect = nullptr;
-    size_t    m_vcount = 0, m_vmax = 0;
-    string    m_name = "Empty";
-public:
-    CArray(): m_name("Empty"){}
-    CArray(string name) : m_name(name) {}
-    ~CArray(){
-        cout << "Destroying " << m_name << "..." << endl;
-        destroy();
+    bool operator<(const NodeArray<T, V>& other) const {
+        return m_key < other.m_key;
     }
-    void insert(const value_type &key, LinkedValueType value){
-        if(m_vcount == m_vmax) 
-            resize();
-        m_pVect[m_vcount++] = Node(key, value);
-        
-}
 
-template <typename T>
-ostream &operator<<(ostream &os, CArray<T> &obj){
-    obj.print(os);
-    return os;
-}
+    bool operator>(const NodeArray<T, V>& other) const {
+        return m_key > other.m_key;
+    }
+};
 
-template <typename T>
-istream & operator>>(istream &is, CArray<T> &obj){
+template <typename T, typename V, typename CompareFn = std::less<NodeArray<T, V>>>
+class CArray {
+public:
+    using value_type = T;
+    using KeyType = T;
+    using LinkedValueType = V;
+    using Node = NodeArray<T, V>;
+    using CompareFunc = CompareFn;
+    using iterator = Node*;
 
-    return is;
-}
+private:
+    Node* m_data;
+    size_t m_size;
+    CompareFunc m_compareFunc;
 
+public:
+    CArray(size_t size) : m_size(size) {
+        m_data = new Node[size];
+    }
 
-#endif 
+    ~CArray() {
+        delete[] m_data;
+    }
+
+    size_t size() const {
+        return m_size;
+    }
+
+    iterator begin() {
+        return m_data;
+    }
+
+    iterator end() {
+        return m_data + m_size;
+    }
+
+    void sort() {
+        std::sort(m_data, m_data + m_size, m_compareFunc);
+    }
+};
+
+#endif  // __ARRAY_H__
