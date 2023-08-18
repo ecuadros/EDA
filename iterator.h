@@ -7,7 +7,7 @@ template <typename Container, class IteratorBase> //
 class general_iterator
 {public:
     typedef typename Container::Node    Node;
-    typedef typename Node::Type         Type;
+    typedef typename Node::value_type         Type;
     //typedef class general_iterator<Container> Parent;
     typedef general_iterator<Container, IteratorBase> myself; // 
     

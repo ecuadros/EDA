@@ -6,6 +6,10 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "xtrait.h"
+#include "binarytree.h"
+#include "avl.h"
+#include <random>
 using namespace std;
 
 template <typename T, int N>
@@ -185,14 +189,14 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
-    CArray< TraitStringString > vx("Ernesto Cuadros");
-    vx.insert("Ernesto", "Cuadros");
-    vx.insert("Luis"   , "Tejada");
-    vx.insert("Jorge"  , "Lozano");
-    vx.insert("Edson"  , "Caceres");
-    vx.insert("Franz"  , "Maguiña");
-    vx.print(cout);
+    // using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    // CArray< TraitStringString > vx("Ernesto Cuadros");
+    // vx.insert("Ernesto", "Cuadros");
+    // vx.insert("Luis"   , "Tejada");
+    // vx.insert("Jorge"  , "Lozano");
+    // vx.insert("Edson"  , "Caceres");
+    // vx.insert("Franz"  , "Maguiña");
+    // vx.print(cout);
 }
 
 void DemoIterators(){
@@ -249,12 +253,114 @@ void DemoHeap()
 }
 
 void DemoBinaryTree()
-{
+{   
     cout << "Hello from DemoBinaryTree()" <<endl;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(1,60);
+    BinaryTree<Traits_BNTDesc> bt;
+    vector<int> vect0={75,65,22,8,45,20,5,7,46,48,40,41};
+    vector<int> vect1={35,32,30,27,25,22,11,5,3,2,1};
+    vector<int> vect2={35,45,50,57,75,82,91,95,103,112,120};
+    vector<int> vect3= {49,47,22,20,41,11,23,55,40,35,42,38,10,27,34,60,9,2,6,31,26};
+    vector<int> vect4= {49,47,22,20,41,10,22,55,40,35,42,38,9,27,34,60,9,2,6,31,26};
+    vector<int> vect5={41,49,22,10,26,44,54,25,33,59,8,5,9,1,30,2,55,46,18,43,40};
+    vector<int> vect6= {11,6,15,12,20,3,2,5,9,7,10};
+    vector<int> vect7= {25,13,37,9,18,27,53,45,37};
+    for(auto i=0;i<=8;i++){
+        int tmp= dist(gen);
+        int tmp2= dist(gen);
+        cout<<vect7[i]<<"-->";
+        bt.insert(vect7[i],tmp2);
+        // cout<<tmp<<"-->";
+        // bt.insert(tmp,tmp2);
+    }
+    cout<<endl;
+    bt.print(cout);
+
+    cout<<"\nRunning in Order"<<endl;
+    bt.inorder(cout);
+
+    cout<<"\nRunning in PostOrder"<<endl;
+    bt.postorder(cout);
+
+    cout<<"\nRunning in PreOrder"<<endl;
+    bt.preorder(cout);
+    cout<<endl;
+    cout<<"\nForeach in Order"<<endl;
+    foreach_btree_inorder(bt,::print<int>);
+    cout<<"\nForeach in Post Order"<<endl;
+    foreach_btree_posorder(bt,::print<int>);
+    cout<<"\nForeach in Pre Order"<<endl;
+    foreach_btree_preorder(bt,::print<int>);
+
+}
+void Nodes(){
+    cout<<"Test Node BinaryTree"<<endl;
+    using Node = typename Traits_BNTDesc::Node;
+    Node    *m_pRoot = nullptr;
+    Node bt(m_pRoot,3,5,nullptr,nullptr);
+    cout<<bt.getData()<<endl;
+    
+    cout<<"Test Node AVL"<<endl;
+    using NodeA= typename Traits_AVLDesc::Node;
+    NodeA  *m_pRootA= nullptr;
+    NodeA  btA(m_pRootA,4,6,nullptr,nullptr);
+    cout<<btA.getData()<<endl;
+    cout<<btA.m_depth<<endl;
+
+}
+void DemoAVL()
+{   
+    cout << "Hello from AVL" <<endl;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(1,60);
+    CAVL<Traits_AVLDesc>bt;
+    //BinaryTree<Traits_BNTDesc> bt;
+    vector<int> vect0={75,65,22,8,45,20,5,7,46,48,40,41};
+    vector<int> vect1={35,32,30,27,25,22,11,5,3,2,1};
+    vector<int> vect6= {20,15,12,11,10,9,7,6,5,3,2,1};
+    vector<int> vect2={35,45,50,57,75,82,91,95,103,112,120};
+    vector<int> vect3= {49,47,22,20,41,11,23,55,40,35,42,38,10,27,34,60,9,2,6,31,26};
+    vector<int> vect3k= {49,47,22,20,41,11,30,55,23,35,42,38,10,27,34,60,9,2,6,31,26};
+    vector<int> vect4= {49,47,22,20,41,10,22,55,40,35,42,38,9,27,34,60,9,2,6,31,26};
+    vector<int> vect5={41,49,22,10,26,44,54,25,33,59,8,5,9,1,30,2,55,46,18,43,40};
+    vector<int> vect7={10,20,22,8,16,24};
+    vector<int> vect8={10,20,22,8,15,5,1,16,24,20};
+    vector<int> vect3p={7,40,19,15,18,24,5,41,48,10,9,35,8,25,24};
+    vector<int> vect3q={9,27,37,13,25,18,53,45,37,8,54,55,4,9,28,50,20,55};
+    vector<int> vect3s ={35,9,59,53,39,57,54,27,42,28,9,35,11};
+    for(auto i=0;i<=30;i++){
+        int tmp= dist(gen);
+        int tmp2= dist(gen);
+        // cout<<vect3s[i]<<"-->";
+        // bt.insert(vect3s[i],tmp2);
+        cout<<tmp<<"-->";
+        bt.insert(tmp,tmp2);
+    }
+    cout<<endl;
+    bt.print(cout);
+
+    cout<<"\nRunning in Order"<<endl;
+    bt.inorder(cout);
+
+    cout<<"\nRunning in PostOrder"<<endl;
+    bt.postorder(cout);
+
+    cout<<"\nRunning in PreOrder"<<endl;
+    bt.preorder(cout);
+    cout<<endl;
+    cout<<"\nForeach in Order"<<endl;
+    foreach_btree_inorder(bt,::print<int>);
+    cout<<"\nForeach in Post Order"<<endl;
+    foreach_btree_posorder(bt,::print<int>);
+    cout<<"\nForeach in Pre Order"<<endl;
+    foreach_btree_preorder(bt,::print<int>);
+
 }
 
 void DemoHash()
 {
     cout << "Hello from DemoHash()" <<endl;
 }
-
