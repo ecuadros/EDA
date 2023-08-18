@@ -1,71 +1,140 @@
-#ifndef __BINARY_TREE_H__  
-#define __BINARY_TREE_H__ 
-//#include <utility>
-//#include <algorithm>
-#include <cassert>
-#include "types.h"
-#include "binarytree.h"
-//#include "util.h"
-using namespace std;
+#ifndef __AVL_TREE_H__
+#define __AVL_TREE_H__
+
+#include <iostream>
+#include <functional>
 
 template <typename T>
-class NodeAVL : public NodeBinaryTree
+class AVLNode
 {
 public:
-  typedef T         Type;
-private:
-  using Parent = NodeBinaryTree<T> Node;
-  public:
-    size_t m_depth; 
-  public:
-    NodeAVL(Node *pParent, T data, Node *p0 = nullptr, Node *p1 = nullptr) 
-        : Parent(pParent, p0, p1)
-    {}
+    T data;
+    AVLNode<T> *left;
+    AVLNode<T> *right;
+    int height;
 
+    AVLNode(T value)
+    {
+        data = value;
+        left = nullptr;
+        right = nullptr;
+        height = 1;
+    }
 };
 
-// template <typename _T>
-// struct BinaryTreeAscTraits
-// {
-//     using  T         = _T;
-//     using  Node      = NodeBinaryTree<T>;
-//     using  CompareFn = less<T>;
-// };
-
-// template <typename _T>
-// struct BinaryTreeDescTraits
-// {
-//     using  T         = _T;
-//     using  Node      = NodeBinaryTree<T>;
-//     using  CompareFn = greater<T>;
-// };
-
-// TODO: AVL
-template <typename Traits>
-class CAVL: public BinaryTree
+template <typename T, typename Compare = std::less<T>>
+class AVLTree
 {
-  public:
-    typedef typename Traits::T          value_type;
-    typedef typename Traits::Node       Node;
-    
-    typedef typename Traits::CompareFn      CompareFn;
-    typedef CAVL<Traits>                myself;
-    // typedef binary_tree_iterator<myself>    iterator;
+private:
+    AVLNode<T> *root;
 
-protected:
-public: 
-    // TODO: insert must receive two paramaters: elem and LinkedValueType value
-    virtual void    insert(value_type &elem)
-    { 
-        internal_insert1(elem, nullptr, m_pRoot); 
+    int getHeight(AVLNode<T> *node)
+    {
+        if (node == nullptr)
+            return 0;
+        return node->height;
     }
 
-protected:
-    
+    int getBalanceFactor(AVLNode<T> *node)
+    {
+        if (node == nullptr)
+            return 0;
+        return getHeight(node->left) - getHeight(node->right);
+    }
+
+    AVLNode<T> *rotateLeft(AVLNode<T> *node)
+    {
+        AVLNode<T> *newRoot = node->right;
+        AVLNode<T> *subtree = newRoot->left;
+
+        newRoot->left = node;
+        node->right = subtree;
+
+        node->height = std::max(getHeight(node->left), getHeight(node->right)) + 1;
+        newRoot->height = std::max(getHeight(newRoot->left), getHeight(newRoot->right)) + 1;
+
+        return newRoot;
+    }
+
+    AVLNode<T> *rotateRight(AVLNode<T> *node)
+    {
+        AVLNode<T> *newRoot = node->left;
+        AVLNode<T> *subtree = newRoot->right;
+
+        newRoot->right = node;
+        node->left = subtree;
+
+        node->height = std::max(getHeight(node->left), getHeight(node->right)) + 1;
+        newRoot->height = std::max(getHeight(newRoot->left), getHeight(newRoot->right)) + 1;
+
+        return newRoot;
+    }
+
+    AVLNode<T> *insertNode(AVLNode<T> *node, T value)
+    {
+        if (node == nullptr)
+            return new AVLNode<T>(value);
+
+        Compare compare;
+        if (compare(value, node->data))
+            node->left = insertNode(node->left, value);
+        else
+            node->right = insertNode(node->right, value);
+
+        node->height = std::max(getHeight(node->left), getHeight(node->right)) + 1;
+
+        int balanceFactor = getBalanceFactor(node);
+
+        if (balanceFactor > 1)
+        {
+            if (compare(value, node->left->data))
+                return rotateRight(node->left);
+            else
+            {
+                node->left = rotateLeft(node->left);
+                return rotateRight(node);
+            }
+        }
+        else if (balanceFactor < -1)
+        {
+            if (compare(value, node->right->data))
+            {
+                node->right = rotateRight(node->right);
+                return rotateLeft(node);
+            }
+            else
+                return rotateLeft(node->right);
+        }
+
+        return node;
+    }
+
+    void inorderTraversal(AVLNode<T> *node)
+    {
+        if (node != nullptr)
+        {
+            inorderTraversal(node->left);
+            std::cout << node->data << " ";
+            inorderTraversal(node->right);
+        }
+    }
+
 public:
-    
-protected:
-    
+    AVLTree()
+    {
+        root = nullptr;
+    }
+
+    void insert(T value)
+    {
+        root = insertNode(root, value);
+    }
+
+    void printInorder()
+    {
+        inorderTraversal(root);
+        std::cout << std::endl;
+    }
 };
 
 #endif
