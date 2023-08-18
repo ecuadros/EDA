@@ -11,8 +11,8 @@
 
 using namespace std;
 
-using XTraitFloatStringDesc = XTraitTrait<float, string, std::less<KeyNode<int, int > &>>;>;
-using XTraitIntIntAsc       = XTraitTrait<int  , int   , std::greater<KeyNode<int, int > &>>;
+using XTraitFloatStringDesc = XTrait<float, string, std::less<KeyNode<int, int > &>>;
+using XTraitIntIntAsc       = XTrait<int  , int   , std::greater<KeyNode<int, int > &>>;
 
 // Created by: @ecuadros
 template <typename Traits>
@@ -27,12 +27,40 @@ public:
 private:
     CArray<Traits>    m_heap;
     string    m_name = "Empty";
+    CompareFn compareFn;
+
+    void heapifyAsc(size_t i){
+        size_t parent = (i - 1) / 2;
+        // TODO: Use CompareFn
+        if (compareFn(m_heap[parent], m_heap[i])){
+            swap(m_heap[parent], m_heap[i]);
+            heapifyAsc(parent);
+        }
+    }
+
+    void heapifyDesc(size_t i){
+        size_t left = 2 * i + 1;
+        size_t right = 2 * i + 2;
+        size_t smallest = i;
+        // // Use CompareFn
+        if (left < m_heap.size() && compareFn(m_heap[i], m_heap[left])){
+            smallest = left;
+        }
+        if (right < m_heap.size() && compareFn(m_heap[smallest], m_heap[right])){
+            smallest = right;
+        }
+        if (smallest != i){
+            swap(m_heap[i], m_heap[smallest]);
+            heapifyDesc(smallest);
+        }
+    }
+
 public:
     CHeap(string name)  : m_name(name){ destroy();  }
     CHeap()                           { destroy();  }
     virtual ~CHeap(){
         cerr << "Destroying " << m_name << "..." << endl;
-        reset();
+        destroy();
     }
     void destroy(){
         m_heap.destroy();
@@ -49,22 +77,24 @@ public:
         heapifyAsc();
         // cout << "Key=" << key << " Value=" << value << "\tinserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
+
     // TODO: complete heapifyAsc function (useful for insertion)
     void heapifyAsc(){
-        // Use CompareFn
+        heapifyAsc(m_heap.size() - 1);
     }
 
     // TODO: complete heapifyDesc function (useful when we remove an element)
     void heapifyDesc(){
-        // Use CompareFn
+        heapifyDesc(0);
     }
 
     Node pop(){
         assert(m_heap.size() > 1);
         Node ans = m_heap[1];
-        swap(m_heap[1], m_heap[m_heap.size()-1]);
+        swap(m_heap[1], m_heap[m_heap.size() - 1]);
         m_heap.pop_back();
         heapifyDesc();
+        return ans;
     }
 
     void print        (ostream &os){

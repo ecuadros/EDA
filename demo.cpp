@@ -6,6 +6,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "heap.h"
 using namespace std;
 
 template <typename T, int N>
@@ -185,7 +186,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string  , std::less<KeyNode<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -245,7 +246,19 @@ void DemoReverseIterators(){
 
 void DemoHeap()
 {
-    cout << "Hello from DemoHeap()" <<endl;
+    CHeap<XTraitIntIntAsc> heap("Heap IntIntAsc");
+    heap.insert(30, 40);
+    heap.insert(18, 45);
+    heap.insert(20, 35);
+    heap.insert(7 , 64);
+    heap.insert(12, 25);
+    heap.insert(8 , 17);
+
+    cout << "Before Pop()" << endl;
+    heap.print(cout);
+    cout << "After Pop()" << endl;
+    heap.pop();
+    heap.print(cout);
 }
 
 void DemoBinaryTree()
