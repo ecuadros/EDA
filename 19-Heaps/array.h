@@ -1,166 +1,146 @@
-#ifndef __ARRAY_H__
-#define __ARRAY_H__
-
 #include <iostream>
-#include <algorithm> // sort algorithm
-#include "types.h"
-#include "iterator.h"
-#include "keynode.h"
-#include "xtrait.h"
+#include <algorithm>
+#include <fstream>
 using namespace std;
 
-template <typename Container>
-class array_forward_iterator 
-     : public general_iterator<Container,  class array_forward_iterator<Container> > // 
-{public: 
-    // TODO: subir al padre  
-    typedef class general_iterator<Container, array_forward_iterator<Container> > Parent; 
-    typedef typename Container::Node           Node; // 
-    typedef array_forward_iterator<Container>  myself;
-
-  public:
-    array_forward_iterator(Container *pContainer, Node *pNode) 
-            : Parent (pContainer,pNode) {}
-    array_forward_iterator(myself &other)  : Parent (other) {}
-    array_forward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
-
-public:
-    array_forward_iterator operator++() { Parent::m_pNode++;  
-                                          return *this;
-                                        }
-};
-
-template <typename Container>
-class array_backward_iterator 
-     : public general_iterator<Container,  class array_backward_iterator<Container> > // 
-{public: 
-    // TODO: subir al padre  
-    typedef class general_iterator<Container, array_backward_iterator<Container> > Parent; 
-    typedef typename Container::Node           Node; // 
-    typedef array_backward_iterator<Container>  myself;
-
-  public:
-    array_backward_iterator(Container *pContainer, Node *pNode) 
-            : Parent (pContainer,pNode) {}
-    array_backward_iterator(myself &other)  : Parent (other) {}
-    array_backward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
-
-public:
-    array_backward_iterator operator++() { Parent::m_pNode--;
-                                          return *this;
-                                        }
-};
-
-using TraitArrayFloatString = XTrait<float, string>;
-using TraitArrayIntInt      = XTrait<TX  , int   , std::greater<KeyNode<TX  , int > &>>;
-using TraitFloatLong        = XTrait<float, long  , std::greater<KeyNode<float, long> &>>;
-
-// Created by: @ecuadros
-template <typename Traits>
-class CArray{
-public:
-    using value_type      = typename Traits::value_type;
-    using KeyType         = typename Traits::value_type;
-    using LinkedValueType = typename Traits::LinkedValueType;
-    using Node      = typename Traits::Node;
-    using CompareFn = typename Traits::CompareFn;
-    using myself    = CArray<Traits>;
-    using iterator  = array_forward_iterator<myself>;
-    using riterator  = array_backward_iterator<myself>; //riterator means reverse_iterator
+template <typename T1, typename T2>
+class Node {
 private:
-    Node     *m_pVect = nullptr;
-    size_t    m_vcount = 0, m_vmax = 0;
-    string    m_name = "Empty";
+    T1 m_data;
+    T2 m_value;
 public:
-    CArray(): m_name("Empty"){}
-    CArray(string name) : m_name(name) {}
-    ~CArray(){
-        cout << "Destroying " << m_name << "..." << endl;
-        destroy();
+    Node(T1 data = T1(), T2 value = T2()) : m_data(data), m_value(value) {}
+
+    T1 getData() const {
+        return m_data;
     }
-    void insert(const value_type &key, LinkedValueType value){
-        if(m_vcount == m_vmax) // Array is already full?
-            resize();
+
+    T2 getValue() const {
+        return m_value;
+    }
+
+    T1& getDataRef() {
+        return m_data;
+    }
+
+    void setData(const T1& data) {
+        m_data = data;
+    }
+
+    void setValue(const T2& value) {
+        m_value = value;
+    }
+};
+
+template <typename T1, typename T2>
+class CArray {
+private:
+    typedef Node<T1, T2> Node;
+    Node* m_pVect;
+    size_t m_vcount;
+    size_t m_vmax;
+    string m_name;
+
+public:
+    CArray(size_t size = 0, const string& name = "") : m_name(name), m_vcount(0), m_vmax(size) {
+        m_pVect = new Node[m_vmax];
+    }
+
+    ~CArray() {
+        delete[] m_pVect;
+    }
+
+    void insert(const T1& key, const T2& value) {
+        if (m_vcount == m_vmax) {
+            size_t newVmax = m_vmax * 2 + 1;
+            Node* newVect = new Node[newVmax];
+            for (size_t i = 0; i < m_vcount; ++i) {
+                newVect[i] = m_pVect[i];
+            }
+            delete[] m_pVect;
+            m_pVect = newVect;
+            m_vmax = newVmax;
+        }
         m_pVect[m_vcount++] = Node(key, value);
-        // cout << "Key=" << key << " Value=" << value << "\tinserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
-    // TODO: remove the last element and returns it
-    Node back(){
 
+    Node back() const {
+        return m_pVect[m_vcount - 1];
     }
-    // TODO: remove the last element only
-    void pop_back(){
 
+    void pop_back() {
+        --m_vcount;
     }
-    void resize       ();
-    void destroy(){
-        delete [] m_pVect;
+
+    void resize(size_t newSize) {
+        if (newSize < m_vcount) {
+            m_vcount = newSize;
+        } else if (newSize > m_vmax) {
+            Node* newVect = new Node[newSize];
+            for (size_t i = 0; i < m_vcount; ++i) {
+                newVect[i] = m_pVect[i];
+            }
+            delete[] m_pVect;
+            m_pVect = newVect;
+            m_vmax = newSize;
+        }
+    }
+
+    void destroy() {
+        delete[] m_pVect;
         m_pVect = nullptr;
         m_vcount = 0;
         m_vmax = 0;
     }
-    
-    void print        (ostream &os){
-        // os << "Printing: " << m_name << endl;
+
+    void print(ostream& os) const {
         os << m_vcount << " " << m_vmax << endl;
-        // sort(m_pVect, m_pVect+m_vcount, CompareFn() );
-        for(size_t i = 0; i < m_vcount ; ++i )
+        for (size_t i = 0; i < m_vcount; ++i) {
             os << m_pVect[i].getData() << "\t: " << m_pVect[i].getValue() << endl;
-        //os << "m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
-    }
-    void read(istream &is){
-        //freeing up space if it was already assigned
-        destroy();
-        // read here By Edson Caceres
-        size_t vcount;
-        is>>vcount>>m_vmax;
-        Node *pTemp = new Node[m_vmax];
-        //inserting values from .txt file
-        value_type value;
-        while(is >> value && size() != vcount){ //keeping in mind the m_vmax
-            this->insert(value);
         }
     }
 
-    size_t size()
-    {  return m_vcount;    }
-    value_type &operator[](size_t pos)
-    {   return m_pVect[pos].getDataRef();    }
+    size_t size() const {
+        return m_vcount;
+    }
 
-    iterator begin() { iterator iter(this, m_pVect);    return iter;    }
-    iterator end()   { iterator iter(this, m_pVect+m_vcount);    return iter;    }
-    riterator rbegin() { riterator iter(this, m_pVect+m_vcount-1);     return iter;    }
-    riterator rend()   { riterator iter(this, m_pVect-1);   return iter;    }
+    Node& operator[](size_t pos) {
+        return m_pVect[pos];
+    }
+
+    const Node& operator[](size_t pos) const {
+        return m_pVect[pos];
+    }
+
+    class iterator {
+    private:
+        CArray* m_array;
+        Node* m_current;
+
+    public:
+        iterator(CArray* arr, Node* ptr) : m_array(arr), m_current(ptr) {}
+
+        iterator& operator++() {
+            ++m_current;
+            return *this;
+        }
+
+        bool operator!=(const iterator& other) const {
+            return m_current != other.m_current;
+        }
+
+        Node& operator*() {
+            return *m_current;
+        }
+    };
+
+    iterator begin() {
+        iterator iter(this, m_pVect);
+        return iter;
+    }
+
+    iterator end() {
+        iterator iter(this, m_pVect + m_vcount);
+        return iter;
+    }
 };
-
-template <typename Traits>
-void CArray<Traits>::resize(){
-    Node *pTemp = new Node[m_vmax+10];
-    for(size_t i = 0 ; i < m_vcount ; ++i)
-        pTemp[i]   = m_pVect[i];
-        // *(pTemp+i) = m_pVect[i];
-        // pTemp[i]   = *(m_pVect+i);
-        // *(pTemp+i) = *(m_pVect+i);
-        // *(i+pTemp) = m_pVect[i];
-        // i[pTemp]   = m_pVect[i];
-    delete [] m_pVect;
-    m_pVect = pTemp;
-    m_vmax +=10;
-    // cout << "Vector resized m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
-}
-
-template <typename T>
-ostream &operator<<(ostream &os, CArray<T> &obj){
-    obj.print(os);
-    return os;
-}
-
-// TODO
-template <typename T>
-istream & operator>>(istream &is, CArray<T> &obj){
-    // TODO
-    return is;
-}
-
-
-#endif // __ARRAY_H__

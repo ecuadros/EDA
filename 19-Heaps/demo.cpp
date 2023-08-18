@@ -1,3 +1,7 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <vector>
 #include "demo.h"
 #include "array.h"
 #include "matrix.h"
@@ -5,41 +9,43 @@
 #include "xtrait.h"
 #include "foreach.h"
 #include "heap.h"
+
 using namespace std;
 
 template <typename T, int N>
-void DemoArray()
-{
-    ofstream of("result.txt");
-    Array<T, N> v1;
-    for (int i = 0; i < N; ++i)
-    {
-        v1[i] = i;
-    }
-    Array<T, N> v2 = v1;
-    v2[0] = 100;
-    of << v1 << endl;
-    of << v2 << endl;
+void DemoArray() {
+    ofstream output("demoarray.txt");
+    output << "DemoArray()" << endl;
+    output << "-----------------------------------" << endl;
+    CArray<T> v1("Luceropalomino");
+    CArray<T> v2("Luceropalomino");
+    output << v1 << endl;
+    output << v2 << endl;
     cout << "DemoArray finished!" << endl;
 
-    using TraitStringString = Trait<XNode<string, string>, greater<NodeArray<string, string>>>;
-    Array<TraitStringString> vx("Lucero Palomino");
-    vx.insert("John", "Doe");
-    vx.insert("Jane", "Smith");
+    using TraitStringString = ArrayTrait<string, string, std::less<NodeArray<string, string>&>>;
+    using TraitStringString = XTrait<string, string, std::less<KeyNode<string, string>&>>;
+    CArray<TraitStringString> vx("Luceropalomino");
+    vx.insert("Luceropalomino", "Luceropalomino");
+    vx.insert("Luceropalomino", "Luceropalomino");
+    vx.insert("Luceropalomino", "Luceropalomino");
+    output << vx << endl;
+    cout << "CArray TraitStringString:" << endl;
+    for (auto x : vx) {
+        cout << x << endl;
+    }
 }
 
-void DemoReverseIterators()
-{
+void DemoReverseIterators() {
     // Código de demostración de iteradores inversos
 }
 
-void DemoHeap()
-{
+void DemoHeap() {
     cout << "Hello from DemoHeap()" << endl;
     cout << "Hello from DemoHeap()" << endl << endl;
 
     cout << "--------------------------------Max-Heap---------------------------------" << endl;
-    Heap<TraitIntIntAsc> maxHeap("Lucero Palomino");
+    CHeap<XTraitIntIntAsc> maxHeap("Luceropalomino");
     maxHeap.insert(20, 1);
     maxHeap.insert(50, 1);
     maxHeap.insert(14, 1);
@@ -56,7 +62,7 @@ void DemoHeap()
     maxHeap.print(cout);
 
     cout << "--------------------------------Min-Heap---------------------------------" << endl;
-    Heap<TraitIntIntDesc> minHeap("Lucero Palomino");
+    CHeap<XTraitIntIntDesc> minHeap("Luceropalomino");
     minHeap.insert(1.2, 1);
     minHeap.insert(12.7, 1);
     minHeap.insert(0.9, 1);
@@ -73,7 +79,15 @@ void DemoHeap()
     minHeap.print(cout);
 }
 
-void DemoBinaryTree()
-{
-    // Código de demostración del árbol binario
+void DemoBinaryTree() {
+    // Código de demostración de árbol binario
+}
+
+int main() {
+    DemoArray<int, 5>();
+    DemoReverseIterators();
+    DemoHeap();
+    DemoBinaryTree();
+
+    return 0;
 }
