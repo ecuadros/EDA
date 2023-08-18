@@ -1,100 +1,157 @@
-#ifndef __DOUBLE_LINKEDLIST_H__  
-#define __DOUBLE_LINKEDLIST_H__ 
-
 #include "linkedlist.h"
 
-template <typename Container>
-class backward_iterator : public general_iterator<Container,  class backward_iterator<Container> > // 
-{ public: 
-    // TODO: subir al padre  
-    typedef typename Container::Node                                         Node;
-    typedef class general_iterator<Container, backward_iterator<Container> > Parent;  // 
-    typedef backward_iterator<Container>                                     myself;
-
-  public:
-    backward_iterator(Container *pContainer, Node *pNode) : Parent (pContainer,pNode) {}
-    backward_iterator(myself &other)  : Parent (other) {}
-    backward_iterator(myself &&other) : Parent(other) {}
-
-  public:
-    backward_iterator operator++() { Parent::m_pNode = ((Node *)Parent::m_pNode)->getpPrev();  
-                                     return *this;
-                                   }
-};
-
-// TODO Remove inheritance
-template <typename T>
-class NodeDLL : public NodeLinkedList<T>
+template <typename K, typename V>
+class KeyNode
 {
 public:
-  //typedef T               Type;
-  typedef class NodeLinkedList<T> Parent;
-private:
-  typedef NodeDLL<T> Node;
-  public: 
-    Node   *m_pPrev;//
-  public:
-    NodeDLL(T data, Node *pNext = nullptr, Node *pPrev = nullptr) 
-        : Parent(data, pNext), m_pPrev(pPrev)
-    {}
-   
-    void      setpPrev(Node *pPrev)  {   m_pPrev = pPrev;  }
-    Node     *getpPrev()             {   return getpPrevRef();   }
-    Node    *&getpPrevRef()          {   return m_pPrev;   }
+    K m_key;
+    V m_value;
+
+    KeyNode(K key, V value) : m_key(key), m_value(value) {}
 };
 
-template <typename _T>
-struct DLLAscTraits
+template <typename K, typename V>
+class NodeLinkedList : public KeyNode<K, V>
 {
-    typedef   _T          T;
-    typedef  NodeDLL<T>  Node;
-    typedef  less<T>     CompareFn;
-};
-
-template <typename _T>
-struct DLLDescTraits
-{
-    typedef   _T         T;
-    typedef  NodeDLL<T>  Node;
-    typedef  greater<T>  CompareFn;
-};
-
-// TODO remove inheritance
-template <typename Traits>
-class DoubleLinkedList : public LinkedList<Traits>
-{
- public:
-    typedef typename Traits::T          value_type;
-    typedef typename Traits::Node       Node;
-    typedef typename Traits::CompareFn  CompareFn;
-    typedef DoubleLinkedList<Traits>    myself;
-    typedef LinkedList<Traits>          Parent;
-    typedef forward_iterator<myself>    iterator;
-    typedef backward_iterator<myself>   riterator;
 public:
-    DoubleLinkedList() {}
-    void    insert(value_type elem)
-    {   
-        Node *pPrevTail = Parent::m_pTail;
-        Node *pNew = *Parent::insert_forward(elem);
-        if( pNew != Parent::m_pTail )
-            ::CreateBridge( ((Node *)pNew->getpNext())->getpPrevRef(), pNew, &Node::m_pPrev);
-        else
-            pNew->setpPrev(pPrevTail);
-    }
-    riterator rbegin() { riterator iter(this, Parent::m_pTail);     return iter;    }
-    riterator rend()   { riterator iter(this, nullptr);             return iter;    }
-    void    push_front(value_type elem)
+    NodeLinkedList(K key, V value) : KeyNode<K, V>(key, value) {}
+};
+
+template <typename K, typename V>
+class LinkedList
+{
+public:
+    template <typename T>
+    class NodeDLL : public NodeLinkedList<T, V>
     {
-        Parent::push_front(elem);
-        if(Parent::size() > 1)
-            ((Node *)Parent::m_pHead->m_pNext)->m_pPrev = Parent::m_pHead;
+    public:
+        NodeDLL<T>(T key, V value) : NodeLinkedList<T, V>(key, value), m_pPrev(nullptr), m_pNext(nullptr) {}
+
+        NodeDLL<T> *m_pPrev;
+        NodeDLL<T> *m_pNext;
+    };
+
+    using Type = K;
+    using value_type = K;
+    using LinkedValueType = V;
+
+    template <typename _K, typename _V>
+    struct DLLTrait
+    {
+        using value_type = _K;
+        using LinkedValueType = _V;
+        using Node = NodeDLL<_K, _V>;
+    };
+
+    template <typename Container>
+    class linkedlist_backward_iterator;
+
+    template <typename Container>
+    class general_iterator
+    {
+    public:
+        typedef typename Container::Node Node;
+        typedef class general_iterator<Container> Parent;
+
+        Container *m_pContainer;
+        Node *m_pNode;
+
+    public:
+        general_iterator(Container *pContainer, Node *pNode) : m_pContainer(pContainer), m_pNode(pNode) {}
+        general_iterator(const Parent &other) : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode) {}
+
+        bool operator==(const Parent &iter)
+        {
+            return m_pNode == iter.m_pNode;
+        }
+
+        bool operator!=(const Parent &iter)
+        {
+            return !(*this == iter);
+        }
+
+        Node &operator*()
+        {
+            return *m_pNode;
+        }
+    };
+
+    template <typename Container>
+    class linkedlist_backward_iterator : public general_iterator<Container>
+    {
+    public:
+        typedef typename Container::Node Node;
+        typedef class general_iterator<Container> Parent;
+        typedef linkedlist_backward_iterator<Container> myself;
+
+        linkedlist_backward_iterator(Container *pContainer, Node *pNode) : Parent(pContainer, pNode) {}
+        linkedlist_backward_iterator(const myself &other) : Parent(other) {}
+
+        myself operator++()
+        {
+            Parent::m_pNode = Parent::m_pNode->m_pPrev;
+            return *this;
+        }
+
+        bool operator==(const myself &iter)
+        {
+            return Parent::m_pNode == iter.m_pNode;
+        }
+
+        bool operator!=(const myself &iter)
+        {
+            return !(*this == iter);
+        }
+    };
+
+    using Node = typename DLLTrait<K, V>::Node;
+    using iterator = linkedlist_backward_iterator<LinkedList<K, V>>;
+
+    Node *m_pHead;
+    Node *m_pTail;
+
+public:
+    LinkedList() : m_pHead(nullptr), m_pTail(nullptr) {}
+
+    void push_front(K key, V value)
+    {
+        Node *newNode = new Node(key, value);
+        if (m_pHead == nullptr)
+        {
+            m_pHead = newNode;
+            m_pTail = newNode;
+        }
+        else
+        {
+            newNode->m_pNext = m_pHead;
+            m_pHead->m_pPrev = newNode;
+            m_pHead = newNode;
+        }
     }
-    void    push_back(value_type elem)
-    {   Node *pPrevTail = Parent::m_pTail;
-        Parent::push_back(elem);
-        Parent::m_pTail->setpPrev(pPrevTail);
+
+    iterator begin()
+    {
+        return iterator(this, m_pHead);
+    }
+
+    iterator end()
+    {
+        return iterator(this, nullptr);
     }
 };
 
-#endif
+int main()
+{
+    LinkedList<int, std::string> myList;
+
+    myList.push_front(1, "One");
+    myList.push_front(2, "Two");
+    myList.push_front(3, "Three");
+
+    for (auto it = myList.begin(); it != myList.end(); ++it)
+    {
+        std::cout << it->m_key << ": " << it->m_value << std::endl;
+    }
+
+    return 0;
+}
