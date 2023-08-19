@@ -310,6 +310,19 @@ void Nodes(){
     cout<<btA.m_depth<<endl;
 
 }
+void guardarVectorEnArchivo(const std::vector<int>& vec, const std::string& nombreArchivo) {
+    std::ofstream archivo(nombreArchivo);
+
+    if (archivo.is_open()) {
+        for (const int& numero : vec) {
+            archivo << numero << "\n";
+        }
+        archivo.close();
+        //std::cout << "Vector guardado en " << nombreArchivo << std::endl;
+    } else {
+        //std::cerr << "No se pudo abrir el archivo." << std::endl;
+    }
+}
 void DemoAVL()
 {   
     cout << "Hello from AVL" <<endl;
@@ -331,14 +344,18 @@ void DemoAVL()
     vector<int> vect3p={7,40,19,15,18,24,5,41,48,10,9,35,8,25,24};
     vector<int> vect3q={9,27,37,13,25,18,53,45,37,8,54,55,4,9,28,50,20,55};
     vector<int> vect3s ={35,9,59,53,39,57,54,27,42,28,9,35,11};
-    for(auto i=0;i<=30;i++){
+    vector<int> vect_s= {};
+    vector<int> vect_r={5,11,12,40,4,32,41,20,40,33,27,25,47,24,9,46,3,8,36,20};
+    for(auto i=1;i<=20;i++){
         int tmp= dist(gen);
         int tmp2= dist(gen);
-        // cout<<vect3s[i]<<"-->";
-        // bt.insert(vect3s[i],tmp2);
-        cout<<tmp<<"-->";
-        bt.insert(tmp,tmp2);
+        cout<<vect_r[i]<<"-->";
+        bt.insert(vect_r[i],tmp2);
+        //cout<<tmp<<"-->";
+        // vect_r.push_back(tmp);
+        // bt.insert(tmp,tmp2);
     }
+    //guardarVectorEnArchivo(vect_r, "mi_vector.txt");
     cout<<endl;
     bt.print(cout);
 
@@ -359,6 +376,8 @@ void DemoAVL()
     foreach_btree_preorder(bt,::print<int>);
 
 }
+
+
 
 void DemoHash()
 {
