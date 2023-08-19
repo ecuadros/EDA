@@ -5,7 +5,7 @@
 #include <functional>
 
 template <typename T>
-class AVLNode..
+class AVLNode
 {
 public:
     T data;
