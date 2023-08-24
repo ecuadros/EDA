@@ -6,6 +6,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "heap.h"
 using namespace std;
 
 template <typename T, int N>
@@ -185,7 +186,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string  , std::less<KeyNode<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -246,6 +247,39 @@ void DemoReverseIterators(){
 void DemoHeap()
 {
     cout << "Hello from DemoHeap()" <<endl;
+    cout << "Heap Asc" <<endl;
+    CHeap<XTraitIntIntAsc> max_heap("Heap Asc");
+    max_heap.insert(7, 1);
+    max_heap.insert(6, 2);
+    max_heap.insert(2, 3);
+    max_heap.insert(1, 4);
+    max_heap.insert(4, 5);
+
+    cout << "Antes pop()" <<endl;
+    max_heap.print(cout);
+    // function pop()
+    max_heap.pop();
+
+    cout << "Depois pop()" <<endl;
+
+    max_heap.print(cout);    
+    cout << "=====================================================" <<endl;
+    cout << "Heap Desc" <<endl;
+    CHeap<XTraitIntIntDesc> min_heap("Heap Desc");
+    min_heap.insert(7, 1);
+    min_heap.insert(6, 2);
+    min_heap.insert(2, 3);
+    min_heap.insert(1, 4);
+    min_heap.insert(4, 5);
+
+    cout << "Antes pop()" <<endl;
+    min_heap.print(cout);
+    // function pop()
+    min_heap.pop();
+
+    cout << "Depois pop()" <<endl;
+
+    min_heap.print(cout);
 }
 
 void DemoBinaryTree()

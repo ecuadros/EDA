@@ -24,6 +24,9 @@ public:
     KeyNode(KeyNode<T, V>&& other) // Move constructor
         : m_key  (std::move(other.m_key)), 
           m_value(std::move(other.m_value)) {}
+    
+    KeyNode(value_type key): m_key(key) {}
+
     KeyNode() {}
 
     KeyNode& operator=(const KeyNode& other) {
@@ -33,6 +36,7 @@ public:
         }
         return *this;
     }
+
 
     value_type    getData() const   { return m_key; }
     value_type&   getDataRef()      { return m_key; }
@@ -46,6 +50,7 @@ public:
     bool operator>(const KeyNode<T, V>& other) const { 
         return m_key > other.m_key;
     }
+
 };
 
 #endif

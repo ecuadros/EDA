@@ -3,7 +3,8 @@
 
 #include "keynode.h"
 template <typename _K, typename _V, 
-            typename _CompareFn = std::less< KeyNode<_K, _V> & >>
+    typename _CompareFn = std::less< KeyNode<_K, _V> & >
+    >
 struct XTrait
 {
     using  value_type      = _K;

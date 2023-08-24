@@ -86,11 +86,12 @@ public:
     }
     // TODO: remove the last element and returns it
     Node back(){
-
+        pop_back();
+        return m_pVect[size() - 1].getValueRef();
     }
     // TODO: remove the last element only
     void pop_back(){
-
+        m_vcount--;
     }
     void resize       ();
     void destroy(){
