@@ -249,11 +249,11 @@ void DemoHeap()
     cout << "Hello from DemoHeap()" <<endl;
     cout << "Heap Asc" <<endl;
     CHeap<XTraitIntIntAsc> max_heap("Heap Asc");
-    max_heap.insert(7, 1);
-    max_heap.insert(6, 2);
-    max_heap.insert(2, 3);
-    max_heap.insert(1, 4);
-    max_heap.insert(4, 5);
+    max_heap.insert(7, 0);
+    max_heap.insert(6, 0);
+    max_heap.insert(2, 0);
+    max_heap.insert(1, 0);
+    max_heap.insert(4, 0);
 
     cout << "Antes pop()" <<endl;
     max_heap.print(cout);
@@ -266,11 +266,11 @@ void DemoHeap()
     cout << "=====================================================" <<endl;
     cout << "Heap Desc" <<endl;
     CHeap<XTraitIntIntDesc> min_heap("Heap Desc");
-    min_heap.insert(7, 1);
-    min_heap.insert(6, 2);
-    min_heap.insert(2, 3);
-    min_heap.insert(1, 4);
-    min_heap.insert(4, 5);
+    min_heap.insert(7, 0);
+    min_heap.insert(6, 0);
+    min_heap.insert(2, 0);
+    min_heap.insert(1, 0);
+    min_heap.insert(4, 0);
 
     cout << "Antes pop()" <<endl;
     min_heap.print(cout);

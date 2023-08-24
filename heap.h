@@ -61,10 +61,10 @@ public:
     // TODO: complete heapifyAsc function (useful for insertion)
     void heapifyAsc(size_t i)
     {
-        size_t parent = (i - 1) / 2;
+        size_t parent = (i) / 2;
         if (m_heap[parent] > 0)
         {
-            if ( compareFn(m_heap[parent], m_heap[i]) )
+            if ( compareFn(m_heap[i], m_heap[parent]) )
             // if (m_heap[parent] < m_heap[i])
             {
                 swap(m_heap[parent], m_heap[i]);
@@ -83,10 +83,10 @@ public:
         size_t l = 2 * i + 1 - 1;
         size_t r = 2 * i + 2 - 1;
 
-        if (l < m_heap.size()-1 && m_heap[l] > m_heap[largest])
+        if (l < m_heap.size() && compareFn(m_heap[l], m_heap[largest]) )
             largest = l;
 
-        if (r < m_heap.size()-1 && m_heap[r] > m_heap[largest])
+        if (r < m_heap.size() && compareFn(m_heap[r], m_heap[largest]))
             largest = r;
     
         if (largest != i) {

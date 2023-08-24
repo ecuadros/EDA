@@ -105,7 +105,7 @@ public:
         // os << "Printing: " << m_name << endl;
         os << m_vcount << " " << m_vmax << endl;
         // sort(m_pVect, m_pVect+m_vcount, CompareFn() );
-        for(size_t i = 0; i < m_vcount ; ++i )
+        for(size_t i = 1; i < m_vcount ; ++i )
             os << m_pVect[i].getData() << "\t: " << m_pVect[i].getValue() << endl;
         //os << "m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
@@ -125,8 +125,8 @@ public:
 
     size_t size()
     {  return m_vcount;    }
-    value_type &operator[](size_t pos)
-    {   return m_pVect[pos].getDataRef();    }
+    Node &operator[](size_t pos)
+    {   return m_pVect[pos];    }
 
     iterator begin() { iterator iter(this, m_pVect);    return iter;    }
     iterator end()   { iterator iter(this, m_pVect+m_vcount);    return iter;    }
@@ -153,6 +153,12 @@ void CArray<Traits>::resize(){
 template <typename T>
 ostream &operator<<(ostream &os, CArray<T> &obj){
     obj.print(os);
+    return os;
+}
+
+template <typename T, typename V>
+ostream &operator<<(ostream &os, const KeyNode<T,V> &obj){
+    os << obj.m_key;
     return os;
 }
 
