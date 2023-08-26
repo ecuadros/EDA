@@ -10,11 +10,12 @@ void DemoArray();
 void DemoIterators();
 void DemoReverseIterators();
 void DemoHeap();
+void DemoLinkedList();
+void DemoDoublyLinkedList();
 
 void DemoBinaryTree();
 void DemoHash();
-
-
-
+void DemoBTree();
+void DemoAVL();
 
 #endif // __DEMO_H__
