@@ -97,7 +97,8 @@ class BinaryTree
         {   ++m_size;
             return (rpOrigin = CreateNode(pParent,elem,elem2));
         }
-        size_t branch = Compfn(rpOrigin->getDataRef() ,elem);
+         //size_t branch = Compfn(rpOrigin->getDataRef() ,elem);
+         size_t branch =Compfn(elem,rpOrigin->getDataRef());
         return internal_insert1(elem,elem2,rpOrigin,rpOrigin->getChildRef(branch));
     }
 public:
