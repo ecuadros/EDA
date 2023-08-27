@@ -345,17 +345,24 @@ void DemoAVL()
     vector<int> vect3q={9,27,37,13,25,18,53,45,37,8,54,55,4,9,28,50,20,55};
     vector<int> vect3s ={35,9,59,53,39,57,54,27,42,28,9,35,11};
     vector<int> vect_s= {};
-    vector<int> vect_r={5,11,12,40,4,32,41,20,40,33,27,25,47,24,9,46,3,8,36,20};
-    for(auto i=1;i<=20;i++){
+    vector<int> vect_r2={5,11,12,40,4,32,41,20,40,33,27,25,47,24,9,46,3,8,36,20};
+    vector<int> vect_r={41,54,46,25,53,53,44,39,50,20,39,55,57,46,42,39,12,37,45,10};
+    for (auto i=0;i<=19;i++){
         int tmp= dist(gen);
         int tmp2= dist(gen);
-        cout<<vect_r[i]<<"-->";
-        bt.insert(vect_r[i],tmp2);
+        vect_s.push_back(tmp);
+    }
+    guardarVectorEnArchivo(vect_s, "mi_vector.txt");
+    for(auto i=0;i<=19;i++){
+        // int tmp= dist(gen);
+        // int tmp2= dist(gen);
+        cout<<vect_s[i]<<"-->";
+        bt.insert(vect_s[i],0);
         //cout<<tmp<<"-->";
         // vect_r.push_back(tmp);
         // bt.insert(tmp,tmp2);
     }
-    //guardarVectorEnArchivo(vect_r, "mi_vector.txt");
+    
     cout<<endl;
     bt.print(cout);
 
