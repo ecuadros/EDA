@@ -16,10 +16,10 @@ int main()
     // DemoReverseIterators();
     // DemoDynamicMatrixes();
 
-    DemoHeap();
+    //DemoHeap();
     // DemoBinaryTree();
     // DemoHash();
-
+       demoLinkedListSorted();
     // DemoPreandPostIncrement();
     // DemoSmartPointers();
     

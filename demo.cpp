@@ -6,15 +6,17 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "linkedlist.h"
+#include <random>
 using namespace std;
 
-template <typename T, int N>
-void increment(T &x)
-{  x+= N; }
+// template <typename T, int N>
+// void increment(T &x)
+// {  x+= N; }
 
-template <typename T>
-void print(T &x)
-{  cout << x << "  "; }
+// template <typename T>
+// void print(T &x)
+// {  cout << x << "  "; }
 
 // Object function
 template <typename T>
@@ -23,9 +25,10 @@ class ClassX
     public:  ClassX(int n) : m_inc(n){}
     void operator()(T &n){  n += m_inc;     }
 };
-
-void Fx1(int n ) {    n++;    }
-void Fx2(int &n) {    n++;    }
+template <typename T>
+void Fx1(T n ) {    n++;    }
+template <typename T>
+void Fx2(T &n) {    n++;    }
 void Fx3(int *pi){    ++*pi;  pi = nullptr; }
 void Fx4(int *&rp){   ++*rp;  rp = nullptr; }
 
@@ -185,14 +188,14 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
-    CArray< TraitStringString > vx("Ernesto Cuadros");
-    vx.insert("Ernesto", "Cuadros");
-    vx.insert("Luis"   , "Tejada");
-    vx.insert("Jorge"  , "Lozano");
-    vx.insert("Edson"  , "Caceres");
-    vx.insert("Franz"  , "Maguiña");
-    vx.print(cout);
+    // using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    // CArray< TraitStringString > vx("Ernesto Cuadros");
+    // vx.insert("Ernesto", "Cuadros");
+    // vx.insert("Luis"   , "Tejada");
+    // vx.insert("Jorge"  , "Lozano");
+    // vx.insert("Edson"  , "Caceres");
+    // vx.insert("Franz"  , "Maguiña");
+    // vx.print(cout);
 }
 
 void DemoIterators(){
@@ -258,35 +261,56 @@ void DemoHash()
     cout << "Hello from DemoHash()" <<endl;
 }
 
-// template <typename Container>
-// void demoLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden: ";
-//     //for(size_t pos = 0; pos < mylist.size(); pos++)
-//     //    cout << mylist[pos] << endl;
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
-// }
+template <typename Container>
+void demoLinkedList(Container &mylist)
+{
+    cout<< "Hello LinkedLis"<<endl;
+    cout << "Inserting:       "<<endl;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(1,60);
+    vector<int> vect={};
+    for(auto x=0; x<20; x++) { 
+      //cout<<"Ins"<<endl;  
+      int tmp= dist(gen);
+      cout << tmp << ", "; 
+      mylist.insert(tmp,tmp);
+    }
+    // mylist.push_front(99,3);
+    // mylist.push_back(99,0);
+    cout << endl;
+    cout << "Lista en orden: ";
+    mylist.print(cout);
+    cout<<"\nMy size is: "<<mylist.size()<<endl;
+    for(size_t pos = 0; pos < mylist.size(); pos++)
+       cout << mylist[pos] << "-->";
+    cout<<endl;   
+    cout<<"Test Foreach"<<endl;
+    using T = typename Container::value_type;
+    foreach(mylist, Fx2<T>);  cout << endl;
+    mylist.print(cout);
+    cout<<"\nTest overload <<"<<endl;
+    cout<<mylist;
+    cout<<"\nReading External File"<<endl;
+    ifstream of("file.txt",ios::in);
+    of>>mylist;
+    cout<<"Print Value of MyList Update"<<endl;
+    mylist.print(cout);
+}
 
-// void demoLinkedListSorted()
-// {
-//     cout << "Ascending list" << endl;
-//     LinkedList< LLTraitAsc<TX> > myAscList;
-//     demoLinkedList(myAscList);
-//     foreach(myAscList);
-
-//     cout << "Descending list" << endl;
-//     LinkedList< LLTraitDesc<TX> > myDescList;
-//     demoLinkedList(myDescList);
-//     foreach(myDescList);
-// }
+void demoLinkedListSorted()
+{
+    cout << "Ascending list" << endl;
+    LinkedList<Traits_LLAsc> myAscList;
+    demoLinkedList(myAscList);
+    cout<<endl;
+    foreach(myAscList);
+    cout<<endl;
+    cout << "\nDescending list" << endl;
+    LinkedList<Traits_LLDesc> myDescList;
+    demoLinkedList(myDescList);
+    foreach(myDescList);
+}
 
 // template <typename Container>
 // void demoDoubleLinkedList(Container &mylist)

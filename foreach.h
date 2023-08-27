@@ -4,12 +4,13 @@
 using namespace std;
 
 template <typename T>
-void f2(T &x)
-{  cout << x << "  "; }
-
+void f2(T &x){  cout << x << "  "; }
 template <typename T>
-void f1(T &x)
-{  x+= 5; }
+void f1(T &x){x+= 5; }
+template <typename T>
+void print(T &x){  cout << x << "-->"; }
+template <typename T, int N>
+void increment(T &x){  x+= N; }
 
 template <typename Iterator, typename F>
 void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
@@ -62,22 +63,20 @@ void foreach_reverse(Container &container, F ope){
 // { foreach(container.rbegin(), container.rend(), ope);
 // }
 
-// template <typename Container>
-// void foreach(Container &container)
-// {
-//     using T = typename Container::value_type;
-    // using T = typename Container::value_type;
-    // foreach(container, print<T>);  cout << endl; // recorre imprimiendo
-    // foreach(container, inc<T>);  // recorre incrementando
-    // foreach(container, print<T>);  cout << endl; // recorre imprimiendo
+template <typename Container>
+void foreach(Container &container){
+    using T = typename Container::value_type;
+    foreach(container, print<T>);  cout << endl; // recorre imprimiendo
+    foreach(container, f1<T>);  // recorre incrementando
+    foreach(container, print<T>);  cout << endl; // recorre imprimiendo
 
-//     // funciones lambda
-//     foreach(container, [](T &n){ n-= 5;}); cout << endl; // -5 a todos
-//     foreach(container, print<T>);  cout << endl; // recorre imprimiendo
+    // funciones lambda
+    foreach(container, [](T &n){ n-= 15;}); cout << endl; // -15 a todos
+    foreach(container, print<T>);  cout << endl; // recorre imprimiendo
     
-//     OperacionEspecial<T> ope; 
-//     foreach(container, ope);  
-//     foreach(container, print<T>);  cout << endl;
-// }
+    //OperacionEspecial<T> ope; 
+    //foreach(container, ope);  
+    //foreach(container, print<T>);  cout << endl;
+}
 
 #endif
