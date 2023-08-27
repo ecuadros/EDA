@@ -2,6 +2,7 @@
 #define __MATRIX_H__
 #include <iostream>
 #include "iterator.h"
+#include <cassert>
 
 template <typename Container>
 class matrix_iterator 
@@ -101,9 +102,11 @@ public:
     // }
     
     value_type &operator()(size_t rows, size_t cols){
+        assert( rows < m_rows && cols < m_cols );
         return m_ppMatrix[rows][cols];
     }
     auto* &operator[](size_t rows){
+        assert( rows < m_rows );
         return m_ppMatrix[rows];
     }
 

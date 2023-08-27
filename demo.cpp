@@ -145,8 +145,6 @@ void DemoArray(){
     for(auto i = 100 ; i < 112 ; i++)
     {   v2.insert(sqrt(i), i);
         pV3->insert(i, sqrt(i));
-        //  (*pv3).insert(i);
-        //  rA.insert(i);
     }
     cout << "Printing V1 (TraitArrayIntInt)" << endl;
     cout << v1; // v1.print(cout);
