@@ -13,10 +13,7 @@ template <typename Container>
 class array_forward_iterator 
      : public general_iterator<Container,  class array_forward_iterator<Container> > // 
 {public: 
-    // TODO: subir al padre  
-    typedef class general_iterator<Container, array_forward_iterator<Container> > Parent; 
-    typedef typename Container::Node           Node; // 
-    typedef array_forward_iterator<Container>  myself;
+    _ITER_TYPEDEFS(Container, array_forward_iterator)
 
   public:
     array_forward_iterator(Container *pContainer, Node *pNode) 

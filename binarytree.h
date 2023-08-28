@@ -1,167 +1,385 @@
 #ifndef __BINARY_TREE_H__  
 #define __BINARY_TREE_H__ 
+//#include <utility>
+//#include <algorithm>
 #include <cassert>
+#include <stack>
+#include <vector>
+#include <queue>
 #include "types.h"
-#include "tree_iterators.h"
+//#include "util.h"
 using namespace std;
 
-string operator*(string text, size_t n)
+//*****************************************************************************
+//*                         NodeBinaryTree                                   *
+//*****************************************************************************
+template <typename Traits>
+class NodeBinaryTree
 {
-    for(size_t i = 0;i<n;i++){
-        text += text;
-    }
-    return text;
-}
-
-template <typename K, typename V>
-class NodeBinaryTree : public KeyNode<K,V>{
 public:
-    using Type = K;
-    using value_type   = K;
-    using LinkedValueType = V;
-    using Parent = class KeyNode<K,V>;
+    // DONE: Change T by KeyNode (aka Traits::Node aka InnerNode)
+    using Type = typename Traits::value_type;
+    using value_type = typename Traits::value_type;
+    using KeyType = typename Traits::value_type;
+    using LinkedValueType = typename Traits::LinkedValueType;
+    using InnerNode = typename Traits::Node;
 private:
-  typedef NodeBinaryTree<K,V> Node;
-  private : bool m_printed = 0;
+  typedef NodeBinaryTree<Traits> Node;
   public:
-    //T       m_data;
+    InnerNode       m_data;
     Node *  m_pParent = nullptr;
+    size_t m_height = 1;
     vector<Node *> m_pChild = {nullptr, nullptr}; // 2 hijos inicializados en nullptr
-    size_t m_level;
   public:
+    NodeBinaryTree(Node *pParent, value_type data, LinkedValueType val, Node *p0 = nullptr, Node *p1 = nullptr, size_t height = 1)
+        : m_pParent(pParent), m_data(data, val), m_height(height)
+    {   m_pChild[0] = p0;   m_pChild[1] = p1;   }
 
-    NodeBinaryTree(value_type key, // θɪŋk ðɪs ɪz juːst baɪ kəmˈper
-                   Node *pParent= nullptr,                   
-                   Node *p0 = nullptr,
-                   Node *p1 = nullptr) 
-        : m_pParent(pParent){
-        Parent::m_key = key;
-        m_pChild[0] = p0;   m_pChild[1] = p1;
-    }
-
-    NodeBinaryTree(Node *pParent,
-                   value_type key,
-                   LinkedValueType value,
-                   size_t level,
-                   Node *p0 = nullptr,
-                   Node *p1 = nullptr) 
-        : m_pParent(pParent), Parent(key,value){
-        m_level = level;
-        m_pChild[0] = p0;
-        m_pChild[1] = p1;
-    }
+    // DONE: Keynode (Ahora las funciones son solo wrappers que llaman a las funciones de InnerNode (aka KeyNode))
+    value_type         getData()                {   return m_data.getData();    }
+    value_type        &getDataRef()             {   return m_data.getDataRef();    }
  
+    // DONE: review if these functions must remain public/private
+    // Se mantienen publicas porque son utilizadas desde afuera
     void      setpChild(const Node *pChild, size_t pos)  {   m_pChild[pos] = pChild;  }
     Node    * getChild(size_t branch){ return m_pChild[branch];  }
     Node    *&getChildRef(size_t branch){ return m_pChild[branch];  }
     Node    * getParent() { return m_pParent;   }
-
-    bool getPrinted(){return m_printed;}
-    void setPrinted(bool printed){m_printed = printed;}
-    size_t getLevel(){return m_level;}
-
 };
 
-template <typename _K,
-          typename _V,
-          typename _CompareFn = std::less< NodeBinaryTree<_K, _V> & >>
-struct BinaryTreeTrait{
-    using  value_type      = _K;
-    using  LinkedValueType = _V;
-    using  Node      = NodeBinaryTree<_K,_V>;
-    using  CompareFn = _CompareFn;
+//*****************************************************************************
+//*                               Iterators                                   *
+//*****************************************************************************
+template <typename Container>
+class binary_tree_iterator : public general_iterator<Container, class binary_tree_iterator<Container>> //
+{
+    _ITER_TYPEDEFS(Container, binary_tree_iterator); // DONE: llevar esta misma idea a los demas container ya existentes (iterator.h _ITERTYPEDEFS)
+
+public:
+    binary_tree_iterator(Container *pContainer, Node *pNode) : Parent(pContainer, pNode) {}
+    binary_tree_iterator(myself &other) : Parent(other) {}
+    binary_tree_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+private:
+    binary_tree_iterator operator++()
+    {
+        return *this;
+    }
 };
 
+template <typename Container>
+class binary_tree_iterator_preorder : public general_iterator<Container, class binary_tree_iterator_preorder<Container>> //
+{
+    _ITER_TYPEDEFS(Container, binary_tree_iterator_preorder);
+public:
+    binary_tree_iterator_preorder(Container *pContainer, Node *pNode) : Parent(pContainer, pNode) {
+        if(!pNode) return;
+        Node* node = pNode;
+        m_stack.push(node);
+    }
+    binary_tree_iterator_preorder(myself &other) : Parent(other) {}
+    binary_tree_iterator_preorder(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+    binary_tree_iterator_preorder operator++()
+    { 
+        if(m_stack.empty()) return *this;
+        Node* node = m_stack.top();
+        m_stack.pop();
+        if(!m_stack.empty()) this->m_pNode = m_stack.top();
+        Node* right = node->getChild(1);
+        Node* left = node->getChild(0);
+        if(right) {
+            m_stack.push(right);
+            this->m_pNode = right;
+        }
+        if(left) {
+            m_stack.push(left);
+            this->m_pNode = left;
+        }
+
+        return *this;
+    }
+    bool operator==(const myself &other) const
+    {
+        return this->m_stack == other.m_stack;
+    }
+    bool operator !=(const myself &other) const
+    {
+        return this->m_stack != other.m_stack;
+    }
+private:
+    stack<Node *> m_stack;
+};
+
+template <typename Container>
+class binary_tree_iterator_postorder : public general_iterator<Container, class binary_tree_iterator_postorder<Container>> //
+{
+    _ITER_TYPEDEFS(Container, binary_tree_iterator_postorder);
+public:
+    binary_tree_iterator_postorder(Container *pContainer, Node *pNode) : Parent(pContainer, pNode) {
+        if(!pNode) return;
+        stack<Node *> tmpStack;
+        Node* curr = pNode;
+        Node* prev = nullptr;
+        bool first = true;
+        while(curr || !tmpStack.empty()) {
+            if(curr) {
+                tmpStack.push(curr);
+                curr = curr->getChild(0);
+            } else {
+                curr = tmpStack.top();
+                Node* right = curr->getChild(1);
+                if(right == nullptr || right == prev) {
+                    if(first) {
+                        this->m_pNode = curr;
+                        first = false;
+                    }
+                    m_stack.push(curr);
+                    tmpStack.pop();
+                    prev = curr;
+                    curr = nullptr;
+                }
+                else {
+                    curr = right;
+                }
+            }
+        }
+    }
+    binary_tree_iterator_postorder(myself &other) : Parent(other) {}
+    binary_tree_iterator_postorder(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+    binary_tree_iterator_postorder operator++()
+    { 
+        if(m_stack.empty()) return *this;
+        m_stack.pop();
+        this->m_pNode = m_stack.front();
+
+        return *this;
+    }
+    bool operator==(const myself &other) const
+    {
+        return this->m_stack == other.m_stack;
+    }
+    bool operator !=(const myself &other) const
+    {
+        return this->m_stack != other.m_stack;
+    }
+private:
+    queue<Node *> m_stack;
+};
+
+template<typename Container>
+class binary_tree_iterator_inorder : public general_iterator<Container, class binary_tree_iterator_inorder<Container>> //
+{
+    _ITER_TYPEDEFS(Container, binary_tree_iterator_inorder);
+public:
+    binary_tree_iterator_inorder(Container *pContainer, Node *pNode) : Parent(pContainer, pNode) {
+        pushStackNodes(pNode);
+        if(!this->m_stack.empty()) {
+            this->m_pNode = this->m_stack.top();
+            m_stack.pop();
+        }
+    }
+    binary_tree_iterator_inorder(myself &other) : Parent(other) {}
+    binary_tree_iterator_inorder(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+    binary_tree_iterator_inorder operator++() { 
+        if(m_stack.empty()) {
+            this->m_pNode = nullptr;
+            return *this;
+        }
+        Node* node = this->m_stack.top();
+        this->m_stack.pop();
+        this->m_pNode = node;
+        pushStackNodes(node->getChild(1));
+        return *this;
+    }
+    void pushStackNodes(Node* node) {
+        Node* tmp = node;
+        while(tmp) {
+            this->m_stack.push(tmp);
+            tmp = tmp->getChild(0);
+        }
+    }
+    bool operator==(const myself &other) const
+    {
+        return this->m_stack == other.m_stack;
+    }
+    bool operator !=(const myself &other) const
+    {
+        return this->m_pNode != other.m_pNode;
+    }
+private:
+    stack<Node *> m_stack;
+};
+
+
+template<typename Container>
+class binary_tree_forward_iterator : public general_iterator<Container, class binary_tree_forward_iterator<Container>> //
+{
+    _ITER_TYPEDEFS(Container, binary_tree_forward_iterator);
+public:
+    binary_tree_forward_iterator(Container *pContainer, Node *pNode) : Parent(pContainer, pNode) {
+        pushStackNodes(pNode);
+        if(!m_stack.empty()) {
+            this->m_pNode = m_stack.top();
+            m_stack.pop();
+        }
+    }
+    binary_tree_forward_iterator(myself &other) : Parent(other) {}
+    binary_tree_forward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+    binary_tree_forward_iterator operator++() { 
+        if(m_stack.empty()) {
+            this->m_pNode = nullptr;
+            return *this;
+        }
+        Node* node = m_stack.top();
+        m_stack.pop();
+        this->m_pNode = node;
+        // cout<<"["<<node->getData()<<"]"<<endl;
+        pushStackNodes(node->getChild(0));
+        return *this;
+    }
+    void pushStackNodes(Node* node) {
+        Node* tmp = node;
+        while(tmp) {
+            m_stack.push(tmp);
+            tmp = tmp->getChild(1);
+        }
+    }
+    bool operator==(const myself &other) const
+    {
+        return this->m_stack == other.m_stack;
+    }
+    bool operator !=(const myself &other) const
+    {
+        return this->m_pNode != other.m_pNode;
+    }
+private:
+    stack<Node *> m_stack;
+};
+
+
+//*****************************************************************************
+//*                                  Traits                                  *
+//*****************************************************************************
+template <typename _T>
+struct BinaryTreeAscTraits
+{
+    using  T = _T;
+    using  Node      = NodeBinaryTree<T>;
+    using  CompareFn = less<T>;
+};
+
+template <typename _T>
+struct BinaryTreeDescTraits
+{
+    using  T         = _T;
+    using  Node      = NodeBinaryTree<T>;
+    using  CompareFn = greater<T>;
+};
+
+
+//*****************************************************************************
+//*                               BinaryTree                                  *
+//*****************************************************************************
 template <typename Traits>
 class BinaryTree
 {
   public:
-    typedef typename Traits::value_type      value_type;
+    typedef typename Traits::value_type         value_type;
+    // typedef typename NodeBinaryTree<Traits>     Node;
+    using Node = NodeBinaryTree<Traits>;
     typedef typename Traits::LinkedValueType LinkedValueType;
-    typedef typename Traits::Node       Node;
     
     typedef typename Traits::CompareFn      CompareFn;
     typedef BinaryTree<Traits>              myself;
-    typedef binary_tree_inorder_iterator<myself>    in_iterator; //inorder iterator
-    typedef binary_tree_postorden_iterator<myself>    post_iterator; //postorden iterator
-    typedef binary_tree_preorden_iterator<myself>    pre_iterator; //preorden iterator
-    typedef binary_tree_print_iterator<myself>    print_iterator; //print as tree iterator
+    typedef binary_tree_iterator<myself>    iterator;
 
 protected:
     Node    *m_pRoot = nullptr;
     size_t   m_size  = 0;
     CompareFn Compfn;
 public: 
+    BinaryTree() : m_pRoot(nullptr), m_size(0) {}
     size_t  size()  const       { return m_size;       }
     bool    empty() const       { return size() == 0;  }
-    // TODO: insert must receive two paramaters: elem and LinkedValueType value
-    void    insert(value_type &key, LinkedValueType value) { internal_insert(key, value, nullptr, m_pRoot,0);  }
-
-    in_iterator inbegin(bool printed = 0) { in_iterator iter(this, leftMost(m_pRoot),printed); return iter;    }
-    in_iterator inend(bool printed = 0)   { in_iterator iter(this, rightMost(m_pRoot),printed);return iter;    }
-    post_iterator postbegin(bool printed = 0) { post_iterator iter(this, leftMost(m_pRoot),printed);    return iter;    }
-    post_iterator postend(bool printed = 0)   { post_iterator iter(this, m_pRoot,printed);    return iter;    }
-    pre_iterator prebegin(bool printed = 0) { pre_iterator iter(this, m_pRoot,printed);    return iter;    }
-    pre_iterator preend(bool printed = 0)   { pre_iterator iter(this, rightMost(m_pRoot),printed);    return iter;    }
-    print_iterator printbegin(bool printed = 0) { print_iterator iter(this, rightMost(m_pRoot),printed);    return iter;    }
-    print_iterator printend(bool printed = 0)   { print_iterator iter(this, leftMost(m_pRoot),printed);    return iter;    }
-
+    // DONE: insert must receive two paramaters: elem and LinkedValueType value
+    virtual void    insert(value_type &elem, const LinkedValueType &value) { 
+        Node* n = internal_insert(elem, value, nullptr, m_pRoot);  
+    }
+    binary_tree_iterator_postorder <myself> postorderbegin() { return binary_tree_iterator_postorder<myself>(this, m_pRoot); }
+    binary_tree_iterator_postorder <myself> postorderend()   { return binary_tree_iterator_postorder<myself>(this, nullptr); }
+    binary_tree_iterator_preorder <myself> preorderbegin() { return binary_tree_iterator_preorder<myself>(this, m_pRoot); }
+    binary_tree_iterator_preorder <myself> preorderend()   { return binary_tree_iterator_preorder<myself>(this, nullptr); }
+    binary_tree_iterator_inorder <myself> inorderbegin() { return binary_tree_iterator_inorder<myself>(this, m_pRoot); }
+    binary_tree_iterator_inorder <myself> inorderend()   { return binary_tree_iterator_inorder<myself>(this, nullptr); }
+    binary_tree_forward_iterator <myself> forwardbegin() { return binary_tree_forward_iterator<myself>(this, m_pRoot); }
+    binary_tree_forward_iterator <myself> forwardend()   { return binary_tree_forward_iterator<myself>(this, nullptr); }
 protected:
-    Node *CreateNode(Node *pParent, value_type &key, LinkedValueType value, size_t level){ return new Node(pParent, key, value, level); }
-    Node *internal_insert(value_type &key, LinkedValueType value, Node *pParent, Node *&rpOrigin, size_t level)
+    Node *CreateNode(Node *pParent, value_type &elem, const LinkedValueType &val){ 
+        return new Node(pParent, elem, val); 
+    }
+    Node *internal_insert(value_type &elem, const LinkedValueType &value, Node *pParent, Node *&rpOrigin)
     {
         if( !rpOrigin ) //  llegué al fondo de una rama
         {   ++m_size;
-            return (rpOrigin = CreateNode(pParent, key, value,level));
+            // cout<<level;
+            rpOrigin = CreateNode(pParent, elem, value);
+            rpOrigin->m_height = 1;
+            rpOrigin = balance(rpOrigin);
+            return rpOrigin;
         }
-        size_t branch = Compfn(key, rpOrigin->getDataRef() );
-        return internal_insert(key, value, rpOrigin, rpOrigin->getChildRef(branch), level+1);
+        size_t branch = Compfn(elem, rpOrigin->getDataRef() );
+        Node* ret = internal_insert(elem, value, rpOrigin, rpOrigin->getChildRef(branch));
+        rpOrigin->m_height = max(rpOrigin->getChildRef(0)?rpOrigin->getChildRef(0)->m_height:0, rpOrigin->getChildRef(1)?rpOrigin->getChildRef(1)->m_height:0) + 1;
+        rpOrigin = balance(rpOrigin);
+        return ret;
     }
-
-    Node* leftMost(Node *pNode){
-        assert(pNode != nullptr);
-        while(pNode != nullptr && pNode->getChild(0) != nullptr)
-			pNode = pNode->getChild(0);
-        return pNode;
-    }
-
-    Node* rightMost(Node *pNode){
-        assert(pNode != nullptr);
-        while(pNode != nullptr && pNode->getChild(1) != nullptr)
-			pNode = pNode->getChild(1);
-        return pNode;
-    }
-
+    // virtual Node* balance(Node* tree);
+    virtual Node* balance(Node* tree) { return tree; };
 public:
-    void inorder(ostream &os, void (*func) (Node& node, ostream &os)){
-        foreach(inbegin(),inend(), func, os);
-        foreach(inbegin(1),inend(1), [](Node& node){});
+    void print    (ostream &os)    {   print    (m_pRoot, os, 0);  }
+
+    // DONE: generalize this function by using iterators and apply any function
+    template<typename F>
+    void postorder(F func) {
+        foreach(postorderbegin(), postorderend(), func);
     }
 
-    // TODO: generalize this function by using iterators and apply any function
-    // Create a new iterator to walk in postorder
-    void postorder(ostream &os, void (*func) (Node& node, ostream &os)){
-        foreach(postbegin(),postend(), func,os);
-        foreach(inbegin(1),inend(1), [](Node& node){});
-    }
-
-    // TODO: generalize this function by using iterators and apply any function
-    // Create a new iterator to walk in postorder
-    void preorder(ostream &os, void (*func) (Node& node, ostream &os)){
-        foreach(prebegin(),preend(), func,os);
-        foreach(inbegin(1),inend(1), [](Node& node){});
+    // DONE: generalize this function by using iterators and apply any function
+    template<typename F>
+    void preorder(F func){
+        foreach(preorderbegin(), preorderend(), func);
     }
     
-    // TODO: generalize this function by using iterators and apply any function
-    void print(ostream &os, void (*func) (Node& node, ostream &os)){
-        foreach(printbegin(),printend(), func, os);
-        foreach(inbegin(1),inend(1), [](Node& node){});
+    // DONE: generalize this function by using iterators and apply any function
+    template<typename F>
+    void inorder(F func) {
+        foreach(inorderbegin(), inorderend(), func);
     }
 
-    // TODO: generalize this function by using iterators and apply any function
-    void inorder(void (*func) (Node& Node, LinkedValueType& value),LinkedValueType& value){
-        foreach(inbegin(),inend(), func, value);
-        foreach(inbegin(1),inend(1), [](Node& node){});
+    template<typename F>
+    void forward(F func) {
+        foreach(forwardbegin(), forwardend(), func);
+    }
+
+protected:
+
+    
+    // DONE: generalize this function by using iterators and apply any function
+    // Se mantiene esta pero se crea un iterador que recorre el arbol
+    // En el orden en que se imprime. Lo que un iterador conoce es
+    // El inicio, final y el valor. No conoce el nivel. Por lo que esta funcion
+    // Aun es util
+    void print(Node  *pNode, ostream &os, size_t level)
+    {
+        // foreach(begin(), end(), print);
+        if( pNode ){
+            Node *pParent = pNode->getParent();
+            print(pNode->getChild(1), os, level+1);
+            //os << string(" | ") * level << pNode->getDataRef() << "(" << (pParent?(pNode->getBranch()?"R-":"L-") + to_string(pParent->getData()):"Root") << ")" <<endl;
+            for(int i = 0; i < level; i++)
+                os << " | ";
+            os << pNode->getDataRef() << "(" << (pParent?to_string(pParent->getData()):"Root") << ")" << "[" << pNode->m_height << "]" <<endl;
+            print(pNode->getChild(0), os, level+1);
+        }
     }
 };
 

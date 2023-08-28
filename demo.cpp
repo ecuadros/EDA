@@ -186,7 +186,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = XTrait<string, string  , std::less<KeyNode<string, string> &>>;
+    using TraitStringString = XTrait<string, string, std::less<KeyNode<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -249,66 +249,41 @@ void DemoHeap()
     cout << "Hello from DemoHeap()" <<endl;
 }
 
-template <typename Node>
-void printAsLine(Node &node, ostream &os){
-    os << " --> " << node.getData()<<"("<<node.getValue()<<")";
-}
-
-template <typename Node>
-void printAsTree(Node &node, ostream &os){
-    os << string(" | ") * node.getLevel() << node.getData()<<"(p:"<<(node.getParent()?to_string(node.getParent()->getData()):"Root")<<",v:"<<node.getValue()<<")"<<endl;
-}
-
-template <typename Container>
-void DemoBinaryTree(Container &container){
-    
-    using value_type = typename Container::value_type;
-    using LinkedValueType = typename Container::LinkedValueType;
-    using Node = typename Container::Node;
-    vector<value_type> keys = {50, 30, 20, 80, 60, 70, 40, 90};
-    vector<LinkedValueType> values = {1, 2, 3, 4, 5, 6, 7, 8};
-    size_t n = keys.size();
-    for(size_t i = 0;i<n;i++){
-        container.insert(keys[i],values[i]);
+template<typename Trait>
+void BinaryTreeHelper()
+{
+    using Container = BinaryTree<Trait>;
+    Container container;
+    using T = typename Container::value_type;
+    vector<T> values = {50, 30, 20, 80, 60, 70, 40, 90};
+    for(auto &v: values)
+    {
+        container.insert(v, v);
     }
-    
-    cout << "\nTREE (p: parent, v: linked value): " << endl;
-    container.print(cout,printAsTree<Node>);
-    cout << endl;
-    cout << "Recorrido inorden: " << endl;
-    container.inorder(cout,printAsLine<Node>);
-    cout << "\nRecorrido postorden: " << endl;
-    container.postorder(cout,printAsLine<Node>);
-    cout << "\nRecorrido preorden: " << endl;
-    container.preorder(cout,printAsLine<Node>);
-    cout << "\n\nVisitando la funcion en forma inorder y sumandole (1) a value: " << endl;
-    LinkedValueType value = 1;
-    container.inorder([](Node& node, LinkedValueType& value){
-        node.getValueRef() = node.getValue() + value;
-    },value);
-    cout << "Recorrido preorden: " << endl;
-    container.preorder(cout,printAsLine<Node>);
 
-    cout<<endl;
+    container.print(cout);
+    cout << "Inorder: ";
+    container.inorder([](T &n){ cout << n << " "; });
+    cout<< endl;
+    cout << "Preorder: ";
+    container.preorder([](T &n){ cout << n << " "; });
+    cout<< endl;
+    cout << "Postorder: ";
+    container.postorder([](T &n){ cout << n << " "; });
+    cout<< endl;
+    cout << "The order printed: ";
+    container.forward([](T &n){ cout << n << " "; });
 
+    cout<< endl;
+    cout<< endl;
 }
 
 void DemoBinaryTree()
-{   
-
-    cout <<endl<< "-----------------------------------DemoBinaryTree------------------------------------" << endl;
-
-    using traitAsc = BinaryTreeTrait< INT,INT, std::less< NodeBinaryTree< INT,INT > > >;
-    using traitDesc = BinaryTreeTrait< INT,INT, std::greater< NodeBinaryTree< INT,INT > > >;
-
-    cout << "---------------------Ascending Binary Tree------------------" << endl;
-    BinaryTree< traitAsc > myAscBinaryTree;
-    DemoBinaryTree(myAscBinaryTree);
-    
-    cout <<endl<< "---------------------Descending Binary Tree------------------" << endl;
-    BinaryTree< traitDesc > myDescBinaryTree;
-    DemoBinaryTree(myDescBinaryTree);
-    cout<<endl;
+{
+    cout << "Ascending BinaryTree..." << endl;
+    BinaryTreeHelper<XTraitIntIntAscCompareVal>();
+    cout << "Descending BinaryTree..." << endl;
+    BinaryTreeHelper<XTraitIntIntDescCompareVal>();
 }
 
 void DemoHash()

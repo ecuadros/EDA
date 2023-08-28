@@ -8,10 +8,7 @@ template <typename Container>
 class matrix_iterator 
      : public general_iterator<Container,  class matrix_iterator<Container> > // 
 {public: 
-    // TODO: subir al padre  
-    typedef class general_iterator<Container, matrix_iterator<Container> > Parent; 
-    typedef typename Container::Node           Node; // 
-    typedef matrix_iterator<Container>  myself;
+    _ITER_TYPEDEFS(Container, matrix_iterator)
 
     public:
 
