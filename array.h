@@ -5,8 +5,8 @@
 #include <algorithm> // sort algorithm
 #include "types.h"
 #include "iterator.h"
-#include <cassert>
 #include "keynode.h"
+#include "assert.h"
 #include "xtrait.h"
 using namespace std;
 
@@ -85,16 +85,47 @@ public:
         m_pVect[m_vcount++] = Node(key, value);
         // cout << "Key=" << key << " Value=" << value << "\tinserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
-    // TODO: remove the last element and returns it
-    Node back(){
-        Node lastNode = m_pVect[m_vcount-1];
-        pop_back();
-        return lastNode;
+    // DONE: Return last element (Like c++ std::vector)
+    Node& back()
+    {
+        return m_pVect[m_vcount - 1];
     }
-    // TODO: remove the last element only
-    void pop_back(){
+
+    // DONE: Remove the last element only
+    // No reducimos la capacidad, solo el tamaño
+    void pop_back()
+    {
         assert(m_vcount > 0);
+        value_type empty;
         m_vcount--;
+        m_pVect[m_vcount] = Node(empty, empty);
+    }
+
+    // DONE: Pop from a specific position
+    void pop(size_t i)
+    {
+        assert(m_vcount > 0);
+        assert(i >= 0);
+        assert(i < m_vcount);
+        if(i == m_vcount - 1) {
+            pop_back();
+            return;
+        }
+        
+        for(size_t j = i; j < m_vcount - 1; j++) {
+            m_pVect[j] = m_pVect[j + 1];
+        }
+        m_vcount--;
+    }
+
+    // DONE: Pop from front
+    void pop_front()
+    {
+        pop(0);
+    }
+
+    Node& getNode(size_t i) {
+        return m_pVect[i];
     }
     void resize       ();
     void destroy(){
@@ -128,8 +159,8 @@ public:
 
     size_t size()
     {  return m_vcount;    }
-    Node &operator[](size_t pos)
-    {   return m_pVect[pos];    }
+    value_type &operator[](size_t pos)
+    {   return m_pVect[pos].getDataRef();    }
 
     iterator begin() { iterator iter(this, m_pVect);    return iter;    }
     iterator end()   { iterator iter(this, m_pVect+m_vcount);    return iter;    }

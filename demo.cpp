@@ -186,7 +186,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = XTrait<string, string  , std::less<KeyNode<string, string> &>>;
+    using TraitStringString = XTrait<string, string, std::less<KeyNode<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -244,21 +244,39 @@ void DemoReverseIterators(){
     foreach(v1.rbegin(), v1.rend(), ::print<TX>);
 }
 
+template <typename T>
+void HeapHelper()
+{
+    CHeap<T> heap;
+    heap.insert(3, 4);
+    heap.insert(5, 3);
+    heap.insert(4, 9);
+    heap.insert(6, 2);
+    heap.insert(15, 1);
+    heap.insert(10, 0);
+    heap.insert(9, 6);
+    heap.insert(13, 9);
+    heap.insert(17, 2);
+    heap.insert(1, 4);
+    heap.insert(8, 0);
+    cout<<"Printing heap: "<<endl;
+    heap.print(cout);
+    cout<<"Pulling elements out of heap: "<<endl;
+    while(heap.size() > 1)
+    {
+        KeyNode<int, int> node = heap.pop();
+        cout << node.getData() << " : " << node.getValue() << endl;
+    }
+    cout<<"Printing heap: "<<endl;
+    heap.print(cout);
+}
+
 void DemoHeap()
 {
-    CHeap<XTraitIntIntAsc> heap("Heap IntIntAsc");
-    heap.insert(30, 40);
-    heap.insert(18, 45);
-    heap.insert(20, 35);
-    heap.insert(7 , 64);
-    heap.insert(12, 25);
-    heap.insert(8 , 17);
-
-    cout << "Before Pop()" << endl;
-    heap.print(cout);
-    cout << "After Pop()" << endl;
-    heap.pop();
-    heap.print(cout);
+    cout << "Ascending Heap..." << endl;
+    HeapHelper<XTraitIntIntAsc>();
+    cout << "Descending Heap..." << endl;
+    HeapHelper<XTraitIntIntDesc>();
 }
 
 void DemoBinaryTree()
