@@ -14,8 +14,7 @@ void f1(T &x)
 template <typename Iterator, typename F>
 void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
 {
-  auto iter = ItBegin;
-  for(; iter != ItEnd ; ++iter)
+  for(auto& iter = ItBegin; iter != ItEnd ; ++iter)
       ope(*iter);
 }
 

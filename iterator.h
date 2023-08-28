@@ -8,6 +8,7 @@ class general_iterator
 {public:
     typedef typename Container::Node    Node;
     typedef typename Node::Type         Type;
+    typedef typename Node::Type         value_type;
     //typedef class general_iterator<Container> Parent;
     typedef general_iterator<Container, IteratorBase> myself; // 
     
@@ -33,6 +34,12 @@ public:
     bool operator!=(IteratorBase iter)   { return !(*this == iter);        }
     Type &operator*()                    { return m_pNode->getDataRef();   }
 };
+
+#define _ITER_TYPEDEFS(_Container, _iter)  \
+public: \
+    typedef class general_iterator<_Container, _iter<Container> > Parent;     \
+    typedef typename _Container::Node                             Node;       \
+    typedef _iter<_Container>                                     myself;
 
 #endif
  

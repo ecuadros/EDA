@@ -10,6 +10,7 @@ void DemoArray();
 void DemoIterators();
 void DemoReverseIterators();
 void DemoHeap();
+void DemoAVL();
 
 void DemoBinaryTree();
 void DemoHash();

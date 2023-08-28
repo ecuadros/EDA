@@ -5,7 +5,9 @@
 #include "demo.h"
 #include "array.h"
 #include "matrix.h"
+#include "avl.h"
 #include "foreach.h"
+#include <vector>
 using namespace std;
 
 template <typename T, int N>
@@ -185,7 +187,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string, std::less<KeyNode<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -193,6 +195,26 @@ void DemoArray(){
     vx.insert("Edson"  , "Caceres");
     vx.insert("Franz"  , "Maguiña");
     vx.print(cout);
+}
+
+void DemoAVL() {
+    CAVL<XTraitIntIntAscCompareVal> avl;
+    vector<pair<int, int>> vect = { { 90, 80 }, { 80, 70 }, { 70, 70 }, { 60, 10 }, { 50, 30 }, { 40, 20 }, { 30, 79 }, { 20, 30 }, { 10, 24 } };
+    for(pair<int, int> el: vect) {
+        cout<< endl << "Inserting: " << el.first << endl;
+        avl.insert(el.first, el.second);
+        avl.print(cout);
+    }
+
+    // Mismos metodos que binary tree
+    cout << "Inorder: ";
+    avl.inorder([](int &n){ cout << n << " "; });
+    cout<< endl;
+    cout << "Preorder: ";
+    avl.preorder([](int &n){ cout << n << " "; });
+    cout<< endl;
+    cout << "Postorder: ";
+    avl.postorder([](int &n){ cout << n << " "; });
 }
 
 void DemoIterators(){
