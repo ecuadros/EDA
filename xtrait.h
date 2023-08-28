@@ -12,4 +12,10 @@ struct XTrait
     using  CompareFn = _CompareFn;
 };
 
+using XTraitFloatStringDesc = XTrait<float, std::string, std::less<KeyNode<int, int> &>>;
+using XTraitIntIntAsc = XTrait<int, int, std::greater<KeyNode<int, int>>>;
+using XTraitIntIntDesc = XTrait<int, int, std::less<KeyNode<int, int>>>;
+using XTraitIntIntAscCompareVal = XTrait<int, int, std::greater<int>>;
+using XTraitIntIntDescCompareVal = XTrait<int, int, std::less<int>>;
+
 #endif

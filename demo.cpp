@@ -2,7 +2,9 @@
 #include <fstream>  // ofstream, ifstream
 #include <cmath>
 #include <memory>
+#include <vector>
 #include "demo.h"
+#include "linkedlist.h"
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
@@ -185,7 +187,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string, std::less<KeyNode<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -258,22 +260,30 @@ void DemoHash()
     cout << "Hello from DemoHash()" <<endl;
 }
 
-// template <typename Container>
-// void demoLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden: ";
-//     //for(size_t pos = 0; pos < mylist.size(); pos++)
-//     //    cout << mylist[pos] << endl;
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
-// }
+void DemoLinkedList()
+{
+    LinkedList<XTraitIntIntAscCompareVal> list;
+    // Insercion con orden
+    vector<pair<int, int>> vect = { { 60, 10 }, { 80, 70 }, { 50, 30 }, { 40, 20 }, { 90, 80 } };
+    for(pair<int, int> el: vect) list.insert(el.first, el.second);
+
+    // Operador << (Utiliza la funcion print)
+    cout<< "Lista en orden (Key): " << list;
+
+    // Indexar un elemento (Obtiene la key)
+    cout<< "Elemento en pos 3: " << list[3] << endl;
+
+    // Operador << y mostrar resultado de foreach
+    cout<< "Claves por 2 (foreach): ";
+    auto fx = [](auto &n){ cout<< n * 2 << " "; };
+    foreach(list, fx);  
+    cout<<endl;
+
+    // Operador >> para leer un elemento y agregarlo a la lista
+    cout << "Inserte un elemento (Clave y Valor): ";
+    cin >> list;
+    cout << "Lista con el elemento agregado: " << list;
+}
 
 // void demoLinkedListSorted()
 // {
