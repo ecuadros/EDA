@@ -6,9 +6,11 @@ void DemoSmartPointers();
 void DemoDynamicMatrixes();
 void DemoPreandPostIncrement();
 
-void DemoArray();
-void DemoIterators();
-void DemoReverseIterators();
+//void DemoArray();
+//void DemoBackIterator();
+void MidemoArray();
+//void DemoIterators();
+//void DemoReverseIterators();
 void DemoBinaryTree();
 void DemoHash();
 

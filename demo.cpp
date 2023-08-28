@@ -1,76 +1,11 @@
+#include <cstddef>
 #include <iostream> // cout
 #include <fstream>  // ofstream, ifstream
 #include <cmath>
-#include <memory>
 #include "demo.h"
 #include "array.h"
-#include "matrix.h"
 #include "recorrer.h"
 using namespace std;
-
-template <typename T, int N>
-void increment(T &x)
-{  x+= N; }
-
-template <typename T>
-void print(T &x)
-{  cout << x << "  "; }
-
-// Object function
-template <typename T>
-class ClassX
-{          int m_inc = 0;
-    public:  ClassX(int n) : m_inc(n){}
-    void operator()(T &n){  n += m_inc;     }
-};
-
-void Fx1(int n ) {    n++;    }
-void Fx2(int &n) {    n++;    }
-void Fx3(int *pi){    ++*pi;  pi = nullptr; }
-void Fx4(int *&rp){   ++*rp;  rp = nullptr; }
-
-void DemoBasicPointers(){
-    int i = 10, j = 20, &r = i; 
-    int *b /*Peligro*/, *p = nullptr, *q = nullptr, **pp = nullptr;
-    p = &i;     q = &j;     pp = &p;
-    float f = 3.14;
-    cout << "***** Fx1 *****" << endl;
-    Fx1(i);     cout << i << endl;  //  10
-    Fx1(15);
-    Fx1(*p);    cout << i << endl;  //  10
-    Fx1(**pp);  cout << i << endl;  //  10
-    Fx1(r);     cout << i << endl;  //  10
-    
-    cout << "***** Fx2 *****" << endl;
-    i = 10;     // r = 10;
-    Fx2(i);     cout << i << endl;  // 11
-    // Fx2(20);
-    // Fx2(i+5);
-    // Fx2(i+j);
-    // Fx2(f);
-    Fx2(r);     cout << i << endl;  // 12
-
-    cout << "***** Fx3 *****" << endl;
-    **pp = 10;  // *p = 10;     i = 10;
-    *q = 20;    //  j = 20;
-    Fx3(p);     cout << i << endl;  // 11
-    Fx3(*pp);   cout << i << endl;  // 12
-    Fx3(&i);    cout << i << endl;  // 13
-    Fx3(q);     cout << j << endl;  // 21
-    Fx3(&j);    cout << j << endl;  // 22
-
-    cout << "***** Fx4 *****" << endl;
-    p = &i;     q = &j;     pp = &p;
-    **pp = 50;  // *p = 10;     i = 10;
-    *q   = 60;  //  j = 20;
-    Fx4(p);     cout << i << " p: :" << p << endl;  // 51
-    p = &i;     // *pp = &i;
-    Fx4(*pp);   cout << i << " p: :" << p << endl;  // 52, p: 0x0
-    // Fx4(&i);    Error ! es un valor
-    Fx4(q);     cout << j << " q: :" << q << endl;  // 61 q: 0x0
-    // Fx4(&j);    cout << j << endl;  // 22
-}
-
 void DemoSmartPointers(){
     CArray< TraitArrayIntInt > v2("Lucero"), *pX; //, *pV3 = new CArray("Luis");
     
@@ -86,50 +21,30 @@ void DemoSmartPointers(){
     cout << "Printing pV3 float -> string (greater)" << endl;
     cout << *pV3 ;
 }
+//==============================================
+void MidemoArray(){
+CArray<TraitArrayIntInt> V("Guiomar");
+V.insert(1000, 0);
+V.insert(2000, 1);
+V.insert(3000, 2);
+V.insert(4000, 3);
+V.insert(5000, 4);
+// Using valueType operator []
+cout << "ValueType operator []"<<endl;
+for(size_t i= 0 ; i < V.size() ; i++)
+        cout << "V[" << i << "] = " << V[i] << endl;
+// Using operator >> overloaded
+cout << "Reading File"<<endl;
+CArray<TraitArrayIntInt> F("File");
 
-void DemoDynamicMatrixes(){
+   ifstream Read("file.txt", ios::in);
+   Read>>F;
+   cout<<" Number of elements: " <<F.size()<<endl;
+   
+   F.print(cout);
 
-    CMatrix<MatrixTraitFloat> mat1(3, 4);
-    mat1.fill(1);
-    cout << mat1;
-
-    CMatrix<MatrixTraitFloat> mat2(4, 5);
-    mat2.fill(2.5);
-    cout << mat2;
-
-    // TODO #1: overload operator*(CMatrix<Traits> &other)
-    // CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
-
-    // TODO #2: Create Iterator for CMatrix
-    // recorrer(mat3, ::print<TX>);
-    // cout << endl;
-
-    // TX x = 1;
-    // // Lambda function
-    // recorrer(mat1, [x](TX &n){ n += x; x++; });
-    // recorrer(mat1, ::print<TX>); cout << endl;
-    // ClassX<TX> ope(5);
-    // recorrer(mat1, ope);
-    // recorrer(mat1, ::print<TX>); cout << endl;
-    // recorrer(mat1, ClassX<TX>(8) );
-    // recorrer(mat1, ::print<TX>); cout << endl;
-
-    // // TODO #3: prepare Matrix to be used as a matrix from outside
-    // // overload operator[](size_t row)
-    // mat1[2][3] = 8.2;
-    // mat1(2, 2) = 7.5; // Operator () is returning a value_type &
-    // cout << mat1;
 }
-
-void DemoPreandPostIncrement(){
-    int x = 10, y, z;
-    y = x++;
-    cout << "y=" << y << " x=" << x << endl;
-    x = 10;
-    z = ++x;
-    cout << "z=" << z << " x=" << x << endl;
-}
-
+//====================================================
 void DemoArray(){   
     cout << "Hello from DemoArray()" <<endl;
     cout << "Vector #1()" <<endl;
@@ -137,7 +52,6 @@ void DemoArray(){
     CArray< TraitArrayIntInt > v1("Antonio"); 
     for(auto i = 0 ; i < 15 ; i++)
         v1.insert(i, i+5);   //  insert(&v1);
-
     cout << "Vector #2()" <<endl;
     CArray< TraitFloatLong > v2("Cristian Vera"), 
            *pV3 = new CArray< TraitFloatLong >("Guiomar ABC");
@@ -150,13 +64,11 @@ void DemoArray(){
     }
     cout << "Printing V1 (TraitArrayIntInt)" << endl;
     cout << v1; // v1.print(cout);
-
     cout << "Printing V2 (TraitFloatLong)" << endl;
     ostream &tmp = cout << v2 << "More text" << endl;
     tmp << "Hola !!!" << endl;
     cout << &tmp << "..." << &cout <<endl;
     // cout << x << f << y << endl;
-
     cout << "Printing pv3 (TraitFloatLong)" << endl;
     pV3->print(cout);
     // (*pV3).print();     *pV3 is already an object
@@ -166,14 +78,12 @@ void DemoArray(){
     // (*(0+pV3)).print();
     // 0[pV3].print();
     // delete pV3;
-
     // Using an array with []
     for(auto i = 0 ; i < v2.size() ; i++)
         cout << "v2[" << i << "] = " << v2[i] << endl;
     ofstream of("test.txt", ios::out);
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
-
     using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
@@ -183,7 +93,18 @@ void DemoArray(){
     vx.insert("Franz"  , "Maguiña");
     vx.print(cout);
 }
-
+template <typename T, int N>
+void increment(T &x)
+{  x+= N; }
+template <typename T>
+void print(T &x)
+{  cout << x << "  "; }
+template <typename T>
+class ClassX
+{          int m_inc = 0;
+    public:  ClassX(int n) : m_inc(n){}
+    void operator()(T &n){  n += m_inc;     }
+};
 void DemoIterators(){
     CArray< TraitArrayIntInt > v1("Jorge");
     
@@ -193,21 +114,15 @@ void DemoIterators(){
     v1.insert(7 , 64);
     v1.insert(12, 25);
     v1.insert(8 , 17);
-
     cout << v1 << endl;
-    // array_forward_iterator<CArray< TraitArrayIntInt >> iter = v1.begin();
-    //CArray< TraitArrayIntInt >::iterator iter = v1.begin();
-    auto iter = v1.begin();
-    recorrer(iter, v1.end(), ::increment<TX, 7>);
+    recorrer(v1.begin(), v1.end(), ::increment<TX, 7>);
     cout << v1 << endl;
     recorrer(v1, ::increment<TX, 4>);
     cout << v1 << endl;
-
     recorrer(v1, ::print<TX>);
     cout << endl;
     // Lambda function
-    int x = 3;
-    recorrer(v1, [x](TX &n){ n *= 2*x; });
+    recorrer(v1, [](TX &n){ n *= 2; });
     recorrer(v1, ::print<TX>); cout << endl;
     ClassX<TX> ope(5);
     recorrer(v1, ope);
@@ -216,29 +131,57 @@ void DemoIterators(){
     recorrer(v1, ::print<TX>); cout << endl;
 }
 
-void DemoReverseIterators(){
-    cout << "DEMO REVERSE ITERATORS FOR ARRAY AS A CONTEINER : " << endl;
-    CArray< TraitArrayIntInt > v1("Edson Cáceres");
-    v1.insert(30, 40);
-    v1.insert(18, 45);
-    v1.insert(20, 35);
-    v1.insert(7 , 64);
-    v1.insert(12, 25);
-    v1.insert(8 , 17);
 
-    cout << "Printing asc : " << endl;
-    cout << v1 << endl;
-    cout << "Printing desc : " << endl;
-    recorrer(v1.rbegin(), v1.rend(), ::print<TX>);
+void DemoBackIterator(){
+    CArray< TraitArrayIntInt > v3("NewArray");
+    v3.insert(100, 1);
+    v3.insert(200, 2);
+    v3.insert(300, 3);
+    v3.insert(400 , 4);
+    cout<<endl;
+
+    cout << v3 << endl;
+    cout <<endl;
+    cout<<"-----INICIO-------"<<endl;
+    recorrer(v3.begin(), v3.end(), ::print<TX>);
+    cout <<endl;
+    cout<<"-----FORWARD INCREMENTED-------"<<endl;
+    recorrer(v3.begin(), v3.end(), ::increment<TX, 50>);
+    recorrer(v3.begin(), v3.end(), ::print<TX>);
+
+    cout << endl;
+    cout<<"-----BACKWARD-------"<<endl;
+    recorrer(v3.back_begin(), v3.back_end(), ::print<TX>);
+    cout<<endl;
+
+    cout<<"-----BACKWARD WITH LAMDA FUNCTION-------"<<endl;
+    recorrer(v3, [](TX &n){ n *= 10; });
+    recorrer(v3, ::print<TX>); cout << endl;
+
+    cout<<endl;
+
+    cout<<"-----BACKWARD WITH  OPE INCREMENT-------"<<endl; 
+
+    ClassX<TX> ope(500);
+    recorrer(v3, ope);
+    recorrer(v3, ::print<TX>); 
+    cout << endl;
+
+    //cout << v3 << endl;
+
+
+
+
+
 }
+
+
 
 void DemoBinaryTree()
 {
     cout << "Hello from DemoBinaryTree()" <<endl;
 }
-
 void DemoHash()
 {
     cout << "Hello from DemoHash()" <<endl;
 }
-
