@@ -145,29 +145,29 @@ void DemoBackIterator(){
     cout<<"-----INICIO-------"<<endl;
     recorrer(v3.begin(), v3.end(), ::print<TX>);
     cout <<endl;
-    cout<<"-----FORWARD INCREMENTED-------"<<endl;
-    recorrer(v3.begin(), v3.end(), ::increment<TX, 50>);
+    cout<<"-----FORWARD INCREMENTED by 50-------"<<endl;
+   recorrer(v3.begin(), v3.end(), ::increment<TX, 50>);
     recorrer(v3.begin(), v3.end(), ::print<TX>);
 
     cout << endl;
     cout<<"-----BACKWARD-------"<<endl;
-    recorrer(v3.back_begin(), v3.back_end(), ::print<TX>);
+    recorrer_reverse(v3.rbegin(), v3.rend(), ::print<TX>);
     cout<<endl;
 
-    cout<<"-----BACKWARD WITH LAMDA FUNCTION-------"<<endl;
-    recorrer(v3, [](TX &n){ n *= 10; });
-    recorrer(v3, ::print<TX>); cout << endl;
+   cout<<"-----BACKWARD WITH LAMDA FUNCTION x 10-------"<<endl;
+    recorrer_reverse(v3, [](TX &n){ n *= 10; });
+    recorrer_reverse(v3, ::print<TX>); cout << endl;
 
     cout<<endl;
 
-    cout<<"-----BACKWARD WITH  OPE INCREMENT-------"<<endl; 
+    cout<<"-----BACKWARD WITH  OPE INCREMENT by 500-------"<<endl; 
 
     ClassX<TX> ope(500);
-    recorrer(v3, ope);
-    recorrer(v3, ::print<TX>); 
-    cout << endl;
+   recorrer_reverse(v3, ope);
+    recorrer_reverse(v3, ::print<TX>); 
+   cout << endl;
 
-    //cout << v3 << endl;
+    cout << v3 << endl;
 
 
 

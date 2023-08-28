@@ -4,57 +4,53 @@
 #include <iostream>
 #include <algorithm> // sort algorithm
 #include "types.h"
-#include "iterator.h"
 #include <memory>
 #include <string>
 #include <fstream> 
 
 using namespace std;
-
+//======================================================================
+// Removing general Iterator
+//======================================================================
 template <typename Container>
-class array_forward_iterator 
-     : public general_iterator<Container,  class array_forward_iterator<Container> > // 
+class array_iterator
 {public: 
-    // TODO: subir al padre  
-    typedef class general_iterator<Container, array_forward_iterator<Container> > Parent; 
-    typedef typename Container::Node           Node; // 
-    typedef array_forward_iterator<Container>  myself;
-  public:
-    array_forward_iterator(Container *pContainer, Node *pNode) 
-            : Parent (pContainer,pNode) {}
-    array_forward_iterator(myself &other)  : Parent (other) {}
-    array_forward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
-public:
-    array_forward_iterator operator++() { Parent::m_pNode++;  
-                                          return *this;
-                                        }
-};
+   
+    typedef typename Container::Node           Node; 
+    typedef typename Node::Type         Type;
+    typedef array_iterator<Container>  myself;
 
-
-//------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------
-
-template <typename Container>
-class array_BACK_iterator 
-     : public general_iterator<Container,  class array_BACK_iterator<Container> > // 
-{public: 
-    // TODO: subir al padre  
-    typedef class general_iterator<Container, array_BACK_iterator<Container> > Parent; 
-    typedef typename Container::Node           Node; // 
-    typedef array_BACK_iterator<Container>  myself;
+protected:
+    Container *m_pContainer;
+    Node *m_pNode;
 
   public:
-    array_BACK_iterator(Container *pContainer, Node *pNode) 
-            : Parent (pContainer,pNode) {}
-    array_BACK_iterator(myself &other)  : Parent (other) {}
-    array_BACK_iterator(myself &&other) : Parent(other) {} 
+    array_iterator(Container *pContainer, Node *pNode): m_pContainer(pContainer), m_pNode(pNode) {}
+    array_iterator(myself &other)  : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode){}
+    array_iterator(myself &&other) { m_pContainer = move(other.m_pContainer), m_pNode = move(other.m_pNode);} 
 
 public:
-    array_BACK_iterator operator++() { Parent::m_pNode--;  //TODO
+    array_iterator operator++() { m_pNode++;  
                                           return *this;
                                         }
+
+    array_iterator operator--() { m_pNode--;  
+                                          return *this;
+                                        }
+
+    array_iterator operator=(array_iterator &iter)
+          {   m_pContainer = move(iter.m_pContainer);
+              m_pNode      = move(iter.m_pNode);
+              return *(array_iterator *)this; // Pending static_cast?
+          }
+
+    bool operator==(array_iterator iter)   { return m_pNode == iter.m_pNode; }
+    bool operator!=(array_iterator iter)   { return !(*this == iter);        }
+    Type &operator*()                    { return m_pNode->getDataRef();   }                                  
 };
 
+//=========================================================================================
+//========================================================================================
 
 template <typename T, typename V>
 class NodeArray
@@ -112,6 +108,8 @@ using TraitArrayFloatString = ArrayTrait<float, string>;
 using TraitArrayIntInt      = ArrayTrait<TX  , int   , std::greater<NodeArray<TX  , int > &>>;
 using TraitFloatLong        = ArrayTrait<float, long  , std::greater<NodeArray<float, long> &>>;
 // Created by: @ecuadros
+//========================================================================================================
+//====================================================================================================
 template <typename Traits>
 class CArray{
 public:
@@ -121,8 +119,8 @@ public:
     using Node      = typename Traits::Node;
     using CompareFn = typename Traits::CompareFn;
     using myself    = CArray<Traits>;
-    using iterator  = array_forward_iterator<myself>;
-    using back_iterator  = array_BACK_iterator<myself>;
+    using iterator  = array_iterator<myself>;
+    //using back_iterator  = array_BACK_iterator<myself>;
 private:
     Node     *m_pVect = nullptr;
     size_t    m_vcount = 0, m_vmax = 0;
@@ -170,19 +168,18 @@ void read(istream &is){
     size_t size()
     {  return m_vcount;    }
 
-    //Value Type operator []
     value_type &operator[](size_t pos)
     {   return m_pVect[pos].getDataRef();    }
 
     //LinkedValueType &operator[](size_t pos){return m_pVect[pos].getValueRef();}
 
-    
-
+    // Iterators
     iterator begin() { iterator iter(this, m_pVect);    return iter;    }
-    iterator end()   { iterator iter(this, m_pVect+m_vcount);    return iter;    }
+    iterator end()   { iterator iter(this, m_pVect+m_vcount); return iter;    }
 
-    back_iterator back_begin() { back_iterator iter(this,  m_pVect+m_vcount-1);    return iter;    }
-    back_iterator back_end()   { back_iterator iter(this, m_pVect-1);    return iter;    }
+    iterator rbegin() { iterator iter(this,  m_pVect+m_vcount-1);    return iter;    }
+    iterator rend()   { iterator iter(this, m_pVect-1); return iter;    }
+
 };
 
 template <typename Traits>

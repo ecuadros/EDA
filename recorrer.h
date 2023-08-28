@@ -18,12 +18,26 @@ void recorrer(Iterator ItBegin, Iterator ItEnd, F ope)
   for(; iter != ItEnd ; ++iter)
       ope(*iter);
 }
+// Here 
+template <typename Iterator, typename F>
+void recorrer_reverse(Iterator ItBegin, Iterator ItEnd, F ope)
+{
+  auto iter = ItBegin;
+  for(; iter != ItEnd ; --iter)
+      ope(*iter);
+}
 
 // #1
 template <typename Container, typename F>
 void recorrer(Container &container, F ope)
 {  
     recorrer(container.begin(), container.end(), ope);
+}
+
+template <typename Container, typename F>
+void recorrer_reverse(Container &container, F ope)
+{  
+    recorrer_reverse(container.rbegin(), container.rend(), ope);
 }
 
 // TODO implementar el recorrer inverso
