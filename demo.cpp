@@ -3,6 +3,7 @@
 #include <cmath>
 #include <memory>
 #include "demo.h"
+#include "btree.h"
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
@@ -185,7 +186,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string, std::less<KeyNode<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -246,6 +247,46 @@ void DemoReverseIterators(){
 void DemoHeap()
 {
     cout << "Hello from DemoHeap()" <<endl;
+}
+
+void DemoBTree()
+{
+    BTree<XTraitIntIntAsc> bt;
+    bt.Insert(1, 2);
+    bt.Insert(12, 4);
+    bt.Insert(10, 8);
+    bt.Insert(2, 0);
+    bt.Insert(4, 2);
+    bt.Insert(5, 3);
+    bt.Insert(7, 7);
+    bt.Insert(9, 4);
+    bt.Insert(0, 6);
+    bt.Insert(19, 10);
+    bt.Insert(18, 4);
+    bt.Insert(15, 1);
+    cout << bt;
+    cout << "Insert a new element (key value): ";
+    cin >> bt;
+    cout << "Tree with the new element: " << endl;
+    cout << bt;
+    
+    auto* val = bt.FirstThat([](auto &n){ return n == 10; });
+    if(val) {
+        cout<< "First that has a key with value 10: " << val->key << " -> " << val->ObjID << endl;
+    } else {
+        cout<< "Value not found" << endl;
+    }
+
+    auto* val2 = bt.FirstThat([](auto &n, int v){ return n * v == 120; }, 10);
+    if(val2) {
+        cout<< "First that is 120, when multiplied by 10: " << val2->key << " -> " << val->ObjID << endl;
+    } else {
+        cout<< "Value not found" << endl;
+    }
+
+    cout<< "Printing tree with foreach: ";
+    bt.ForEach([](auto &n){ cout << n << " "; });
+    cout<< endl;
 }
 
 void DemoBinaryTree()
