@@ -7,6 +7,7 @@
 #include "matrix.h"
 #include "foreach.h"
 #include "linkedlist.h"
+#include "doublelinkedlist.h"
 #include <random>
 using namespace std;
 
@@ -312,35 +313,68 @@ void demoLinkedListSorted()
     foreach(myDescList);
 }
 
-// template <typename Container>
-// void demoDoubleLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//       //mylist.push_back(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden : ";
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
-    
-//     cout << "Lista invertida: ";
-//     foreach_inverso(mylist, fx<T>);  cout << endl;
-// }
+template <typename Container>
+void demoDoubleLinkedList(Container &mylist){
+    cout<< "Hello Double LinkedList"<<endl;
+    cout << "Inserting:       "<<endl;
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(1,60);
+    vector<int> vect={26,30,27,35,3,1,100};
+    for(auto x=0; x<=10; x++) { 
+      int tmp= dist(gen);
+      cout << tmp << ", "; 
+      mylist.insert(tmp,tmp);
+        // cout<<vect[x]<<",";
+        // mylist.insert(vect[x],vect[x]);
+    }
+    //mylist.push_front(99,3);
+    //mylist.push_back(99,0);
+    cout << endl;
+    cout << "Run Begin to End: ";
+    mylist.print(cout);
+    cout << endl;
+    cout << "Run End to Begin: ";
+    mylist.r_print(cout);
+    cout << endl;
+    cout<<"Test Foreach"<<endl;
+    using T = typename Container::value_type;
+    foreach(mylist, Fx2<T>);  cout << endl;
+    foreach(mylist, print<T>);  cout << endl;
+    cout<<"\nTest ForeachReverse"<<endl;
+    using T = typename Container::value_type;
+    foreach_reverse(mylist, Fx2<T>);  cout << endl;
+    foreach_reverse(mylist, print<T>);  cout << endl;
+    cout<<"\nTest overload <<"<<endl;
+    cout<<mylist;
+    cout<<"\nReading External File"<<endl;
+    ifstream of("file.txt",ios::in);
+    of>>mylist;
+    cout<<"Print Value of MyList Update"<<endl;
+    mylist.print(cout);
+    cout<<"\nMy size is: "<<mylist.size()<<endl;
+    cout<<"Overload operator []"<<endl;
+    for(size_t pos = 0; pos < mylist.size(); pos++)
+       cout << mylist[pos] << "-->";
+    cout<<endl;  
+}
 
-// void demoDoubleLinkedListSorted()
-// {
-//     cout << "Ascending double list" << endl;
-//     DoubleLinkedList< DLLAscTraits<TX> > myAscList;
-//     demoDoubleLinkedList(myAscList);
 
-//     cout << "Descending double list" << endl;
-//     DoubleLinkedList< DLLDescTraits<TX> > myDescList;
-//     demoDoubleLinkedList(myDescList); 
-// }
+void demoDoubleLinkedListSorted()
+{
+    cout << "Ascending double list" << endl;
+    DoubleLinkedList<Traits_DLLAsc> myAscList;
+    demoDoubleLinkedList(myAscList);
+    cout<<"\nTest Foreach some Functions"<<endl;
+    foreach(myAscList);
+    cout<<endl;
+    cout << "Descending double list" << endl;
+    DoubleLinkedList<Traits_DLLDesc> myDescList;
+    demoDoubleLinkedList(myDescList); 
+    cout<<"\nTest Foreach some Functions"<<endl;
+    foreach(myDescList);
+    cout<<endl;
+}
 
 // template <typename Container>
 // void DemoBinaryTree(Container &container)

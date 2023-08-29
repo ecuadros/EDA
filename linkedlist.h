@@ -37,8 +37,7 @@ class iterator_list{
 };
 
 template <typename Node, typename MemberType>
-void CreateBridge(Node *&rParent, Node *pNew, MemberType _pMember)
-{
+void CreateBridge(Node *&rParent, Node *pNew, MemberType _pMember){
     Node *Node::*pMember = (Node *Node::*)_pMember;
     pNew->*pMember = rParent;
     rParent = pNew; 
@@ -117,8 +116,7 @@ class LinkedList
       insert_forward(val_1,val_2);
       m_size++;
     }
-    value_type &operator[](size_t pos)
-    {
+    value_type &operator[](size_t pos){
       assert(pos <= size());
       Node *pTmp = m_pHead;
       for(auto i= 0 ; i < pos ; i++)
@@ -166,6 +164,15 @@ class LinkedList
        return new Node(val_1,val_2 ,pNext); 
     }
     Node **insert_forward(value_type &elem,LinkedValueType &elem_2)
+    {
+        Node **pParent = findPrev(elem);
+        Node *pNew = CreateNode(elem,elem_2);
+        ::CreateBridge(*pParent, pNew, &Node::m_pNext);
+        if(!pNew->getpNext() )
+          m_pTail = pNew;
+        return pParent;
+    }
+    Node **insert_forward_2(value_type &elem,LinkedValueType &elem_2)
     {
         Node **pParent = findPrev(elem);
         Node *pNew = CreateNode(elem,elem_2);
