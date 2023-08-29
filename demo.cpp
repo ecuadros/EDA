@@ -104,10 +104,10 @@ void DemoDynamicMatrixes(){
     // TODO #1: overload operator*(CMatrix<Traits> &other)
     CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
     cout << mat3;
-
+    cout << "Elemento en la fila 1 columna 2: "<<mat3(1,2)<<endl;
     // TODO #2: Create Iterator for CMatrix
-    // recorrer(mat3, ::print<TX>);
-    // cout << endl;
+   recorrer(mat3, ::print<FX>);
+    cout << endl;
 
     // TX x = 1;
     // // Lambda function
