@@ -5,6 +5,7 @@
 #include <vector>
 #include "demo.h"
 #include "linkedlist.h"
+#include "doublelinkedlist.h"
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
@@ -298,24 +299,16 @@ void DemoLinkedList()
 //     foreach(myDescList);
 // }
 
-// template <typename Container>
-// void demoDoubleLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//       //mylist.push_back(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden : ";
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
-    
-//     cout << "Lista invertida: ";
-//     foreach_inverso(mylist, fx<T>);  cout << endl;
-// }
+void DemoDoubleLinkedList()
+{
+    DoubleLinkedList<XTraitIntIntAscCompareVal> list;
+    vector<pair<int, int>> vect = { { 60, 10 }, { 80, 70 }, { 50, 30 }, { 40, 20 }, { 90, 80 } };
+    for(pair<int, int> el: vect) list.insert(el.first, el.second);
+    cout<<"Lista con operator<<: " <<list;
+    cout<<"Lista al reves con iterator y foreach: ";
+    foreach(list.rbegin(), list.rend(), [](auto &n){ cout<< n << " "; });
+    cout << endl;
+}
 
 // void demoDoubleLinkedListSorted()
 // {

@@ -17,7 +17,8 @@ int main()
     // DemoDynamicMatrixes();
 
     // DemoHeap();
-    DemoLinkedList();
+    // DemoLinkedList();
+    DemoDoubleLinkedList();
     // DemoBinaryTree();
     // DemoHash();
 

@@ -11,6 +11,7 @@ void DemoIterators();
 void DemoReverseIterators();
 void DemoHeap();
 void DemoLinkedList();
+void DemoDoubleLinkedList();
 
 void DemoBinaryTree();
 void DemoHash();
