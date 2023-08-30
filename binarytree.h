@@ -381,6 +381,38 @@ protected:
             print(pNode->getChild(0), os, level+1);
         }
     }
+
+    void read(istream &is)
+    {
+        using value_type = typename BinaryTree<Traits>::value_type;
+        using LinkedValueType = typename BinaryTree<Traits>::LinkedValueType;
+        value_type key;
+        LinkedValueType value;
+
+        is>>key;
+        is>>value;
+        insert(key, value);
+    }
+
+    template<typename T>
+    friend ostream &operator<<(ostream &os, BinaryTree<T> &obj);
+
+    template<typename T>
+    friend istream &operator>>(istream &is, BinaryTree<T> &obj);
 };
+
+template<typename Traits>
+ostream& operator<<(ostream& os, BinaryTree<Traits>& obj)
+{
+    obj.print(os);
+    return os;
+}
+
+template<typename Traits>
+istream& operator>>(istream& is, BinaryTree<Traits>& obj)
+{
+    obj.read(is);
+    return is;
+}
 
 #endif

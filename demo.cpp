@@ -261,7 +261,8 @@ void BinaryTreeHelper()
         container.insert(v, v);
     }
 
-    container.print(cout);
+    // container.print(cout);
+    cout << container;
     cout << "Inorder: ";
     container.inorder([](T &n){ cout << n << " "; });
     cout<< endl;
@@ -273,6 +274,11 @@ void BinaryTreeHelper()
     cout<< endl;
     cout << "The order printed: ";
     container.forward([](T &n){ cout << n << " "; });
+
+    cout<<"\nInsert a new element: ";
+    cin>>container;
+    cout<< "Tree with the new element: " << endl;
+    cout<<container;
 
     cout<< endl;
     cout<< endl;
