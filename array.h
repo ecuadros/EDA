@@ -64,10 +64,16 @@ ostream &operator<<(ostream &os, CArray<T> &obj){
     return os;
 }
 
-// TODO
 template <typename T>
 istream & operator>>(istream &is, CArray<T> &obj){
-    // TODO
+    size_t vcount;
+    is >> vcount;
+    
+    T value;
+
+    while(is>>value)
+        obj.insert(value);
+
     return is;
 }
 

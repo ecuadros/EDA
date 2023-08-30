@@ -7,4 +7,6 @@ void DemoHash();
 
 void DemoSmartPointers();
 
+void DemoTarea1();
+
 #endif // __DEMO_H__
