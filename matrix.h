@@ -3,11 +3,44 @@
 #include <iostream>
 #include <cassert>
 
+template <typename Container>
+class matrix_iterator 
+     : public general_iterator<Container,  class matrix_iterator<Container> > // 
+{
+public: 
+    typedef class general_iterator<Container, matrix_iterator<Container> > Parent; 
+    typedef typename Container::Node           Node; // 
+    typedef matrix_iterator<Container>  myself;
+public:
+        size_t i = 0;
+        size_t j = 0;
+public:
+    matrix_iterator(Container *pContainer, Node *pNode) : Parent (pContainer,pNode) {}
+    matrix_iterator(myself &other)  : Parent (other) {}
+    matrix_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+
+public:
+    matrix_iterator operator++(){
+        if(j == Parent::m_pContainer->m_cols - 1){ //t
+            j = 0;
+            i++;
+            Parent::m_pNode = Parent::m_pContainer->firstPtrRow(i);
+        }else{
+            j++;
+            Parent::m_pNode++;
+        }        
+        return *this;
+    }
+};
+
+
+
 template <typename T>
 class NodeMatrix
 {
 public:
   using value_type   = T;
+  using Type = T;
 private:
   using myself      = NodeMatrix<T> ;
 public:
@@ -50,12 +83,13 @@ class CMatrix
     using value_type      = typename Traits::value_type;
     using Node            = typename Traits::Node;
     using myself          = CMatrix<Traits>;
-    //using iterator        = matrix_iterator<myself>;
+    using iterator        = matrix_iterator<myself>;
 
     private:
         Node **m_ppMatrix   = nullptr;
         size_t m_rows = 0, m_cols = 0;
 public:
+    friend class matrix_iterator<myself>;
     CMatrix(size_t rows, size_t cols)
     {   create(rows, cols); 
     }
@@ -115,7 +149,7 @@ public:
         myself &me = *this;
         for(auto row = 0; row < m_rows; row++){
             for(auto col = 0; col < other.m_cols; col++){
-                answer[row][col] = 0 ; //elimino valores proximos al 0
+                answer[row][col] = 0 ;
                 for(auto i = 0 ; i < m_cols ; i++){
                     answer[row][col] +=  me[row][i] * other[i][col];
                 }
@@ -124,17 +158,21 @@ public:
         return answer;
     }
     
-    // value_type &operator()(size_t rows, size_t cols){
-
-    // }
+    value_type &operator()(size_t row, size_t col){
+        assert( row < m_rows && col < m_cols );
+        return m_ppMatrix[row][col].getDataRef();
+    }
     
-    Node* operator[](size_t row){//a
+    Node* operator[](size_t row){
         assert( row < m_rows );
+        return m_ppMatrix[row];
+    } 
+    Node* firstPtrRow(size_t row){
         return m_ppMatrix[row];
     }
 
-    // iterator begin() { iterator iter(this, m_ppMatrix);    return iter;    }
-    // iterator end()   { iterator iter(this, m_pVect+m_vcount);    return iter;    }
+    iterator begin() { iterator iter(this, m_ppMatrix[0]);    return iter;    }
+    iterator end()   { iterator iter(this, m_ppMatrix[m_rows]);    return iter;    }
 
 };
 

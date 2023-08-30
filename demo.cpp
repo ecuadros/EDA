@@ -95,35 +95,32 @@ void DemoDynamicMatrixes(){
     //cout << "k : " << mat1.m_rows<<endl;
     cout << mat1;
 
-    cout << "----------------mat1--------------------" << endl;
+    cout << "----------------mat2--------------------" << endl;
     CMatrix<MatrixTraitFloat> mat2(4, 5);
     mat2.fill(2.5);
     cout << mat2;
 
     cout << "----------------mat1*mat2--------------------" << endl;
-    // TODO #1: overload operator*(CMatrix<Traits> &other)
+    // DONE #1: overload operator*(CMatrix<Traits> &other)
     CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
     cout << mat3;
 
-    // TODO #2: Create Iterator for CMatrix
-    // recorrer(mat3, ::print<TX>);
-    // cout << endl;
+    // DONE #2: Create Iterator for CMatrix
+    cout<<"Recorrer mat3: ";
+    recorrer(mat3, [](auto &n) { cout<<n<<" "; });
+    cout << endl;
 
-    // TX x = 1;
+    TX x = 1;
     // // Lambda function
-    // recorrer(mat1, [x](TX &n){ n += x; x++; });
-    // recorrer(mat1, ::print<TX>); cout << endl;
-    // ClassX<TX> ope(5);
-    // recorrer(mat1, ope);
-    // recorrer(mat1, ::print<TX>); cout << endl;
-    // recorrer(mat1, ClassX<TX>(8) );
-    // recorrer(mat1, ::print<TX>); cout << endl;
+    recorrer(mat1, [&x](auto &n){ n += x; x++; });
+    cout<< "Mat 1 despues de cambios (foreach):";
+    recorrer(mat1, [](auto &n) { cout << n << " "; }); cout << endl;
 
-    // // TODO #3: prepare Matrix to be used as a matrix from outside
+    // // DONE #3: prepare Matrix to be used as a matrix from outside
     // // overload operator[](size_t row)
-    // mat1[2][3] = 8.2;
-    // mat1(2, 2) = 7.5; // Operator () is returning a value_type &
-    // cout << mat1;
+    mat1[2][3] = 8.2;
+    mat1(2, 2) = 7.5; // Operator () is returning a value_type &
+    cout << "Mat 1 despues de cambios con operator [] y ():" << endl << mat1;
 }
 
 void DemoPreandPostIncrement(){
