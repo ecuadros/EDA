@@ -11,7 +11,7 @@ using namespace std;
 int main()
 {
     // DemoParameters();
-    // DemoArray();
+    DemoArray();
     // DemoIterators();
     // DemoReverseIterators();
     // DemoBinaryTree();
@@ -19,6 +19,6 @@ int main()
 
     // DemoPreandPostIncrement();
     // DemoSmartPointers();
-    DemoDynamicMatrixes();
+    // DemoDynamicMatrixes();
     return 0;
 }

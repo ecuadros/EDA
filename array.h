@@ -3,66 +3,10 @@
 
 #include <iostream>
 #include <algorithm> // sort algorithm
+#include <cassert>
 #include "types.h"
 #include "iterator.h"
 using namespace std;
-
-template <typename Container>
-class array_forward_iterator
-{
-    public: 
-        typedef typename Container::Node           Node; //
-        typedef typename Node::Type         Type;
-        typedef array_forward_iterator<Container>  myself;
-
-    private:
-        Container *m_pContainer;
-        Node      *m_pNode;
-  public:
-    array_forward_iterator(Container *pContainer, Node *pNode)
-        : m_pContainer(pContainer), m_pNode(pNode) {}
-    array_forward_iterator(myself &other) 
-          : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode){}
-    array_forward_iterator(myself &&other) // Move constructor
-          {   m_pContainer = move(other.m_pContainer);
-              m_pNode      = move(other.m_pNode);
-          }
-    myself operator=(myself &iter){
-        m_pContainer = move(iter.m_pContainer);
-        m_pNode      = move(iter.m_pNode);
-        return *(myself *)this; // Pending static_cast?
-    }
-    public:
-        bool operator==(myself iter)   { return m_pNode == iter.m_pNode; }
-        bool operator!=(myself iter)   { return !(*this == iter);        }
-        Type &operator*()                    { return m_pNode->getDataRef();   }
-        myself operator++() {
-            m_pNode++;  
-            return *this;
-        }
-};
-
-template <typename Container>
-class array_backward_iterator 
-     : public general_iterator<Container,  class array_backward_iterator<Container> > // 
-{public: 
-    // TODO: subir al padre  
-    typedef class general_iterator<Container, array_backward_iterator<Container> > Parent; 
-    typedef typename Container::Node           Node; // 
-    typedef array_backward_iterator<Container>  myself;
-
-  public:
-    array_backward_iterator(Container *pContainer, Node *pNode) 
-            : Parent (pContainer,pNode) {}
-    array_backward_iterator(myself &other)  : Parent (other) {}
-    array_backward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
-
-public:
-    array_backward_iterator operator++() { Parent::m_pNode--;
-                                          return *this;
-                                        }
-};
-
 
 template <typename T, typename V>
 class NodeArray
@@ -111,10 +55,6 @@ public:
     }
 };
 
-template <typename Node>
-bool xless (Node &obj1, Node &obj2) 
-{ return (obj1.getData() < obj2.getData()); }
-
 template <typename _K, typename _V, 
             typename _CompareFn = std::less< NodeArray<_K, _V> & >>
 struct ArrayTrait
@@ -125,108 +65,247 @@ struct ArrayTrait
     using  CompareFn = _CompareFn;
 };
 
+template <typename Container>
+class array_forward_iterator
+    : public general_iterator<Container, class array_forward_iterator<Container>> //
+{
+public:
+    typedef class general_iterator<Container, array_forward_iterator<Container>> Parent;
+    typedef typename Container::Node Node; //
+    typedef array_forward_iterator<Container> myself;
+
+
+public:
+    array_forward_iterator(Container *pContainer, Node *pNode)
+        : Parent(pContainer, pNode) {}
+    array_forward_iterator(myself &other) : Parent(other) {}
+    array_forward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+
+public:
+    array_forward_iterator operator++()
+    {
+        Parent::m_pNode++;
+        return *this;
+    }
+};
+
+template <typename Container>
+class array_backward_iterator
+    : public general_iterator<Container, class array_backward_iterator<Container>> //
+{
+public:
+    typedef class general_iterator<Container, array_backward_iterator<Container>> Parent;
+    typedef typename Container::Node Node; //
+    typedef array_backward_iterator<Container> myself;
+public:
+    array_backward_iterator(Container *pContainer, Node *pNode)
+        : Parent(pContainer, pNode) {}
+    array_backward_iterator(myself &other) : Parent(other) {}
+    array_backward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+
+public:
+    array_backward_iterator operator++()
+    {
+        Parent::m_pNode--;
+        return *this;
+    }
+};
+
 using TraitArrayFloatString = ArrayTrait<float, string>;
-using TraitArrayIntInt      = ArrayTrait<TX  , int   , std::greater<NodeArray<TX  , int > &>>;
-using TraitFloatLong        = ArrayTrait<float, long  , std::greater<NodeArray<float, long> &>>;
+using TraitArrayIntInt = ArrayTrait<TX, int, std::greater<NodeArray<TX, int> &>>;
+using TraitFloatLong = ArrayTrait<float, long, std::greater<NodeArray<float, long> &>>;
 
 // Created by: @ecuadros
 template <typename Traits>
-class CArray{
+class CArray
+{
 public:
-    using value_type      = typename Traits::value_type;
-    using KeyType         = typename Traits::value_type;
+    using value_type = typename Traits::value_type;
+    using KeyType = typename Traits::value_type;
     using LinkedValueType = typename Traits::LinkedValueType;
-    using Node      = typename Traits::Node;
+    using Node = typename Traits::Node;
     using CompareFn = typename Traits::CompareFn;
-    using myself    = CArray<Traits>;
-    using iterator  = array_forward_iterator<myself>;
-    using riterator  = array_backward_iterator<myself>; //riterator means reverse_iterator
+    using myself = CArray<Traits>;
+    using iterator = array_forward_iterator<myself>;
+    using riterator = array_backward_iterator<myself>; // riterator means reverse_iterator
 private:
-    Node     *m_pVect = nullptr;
-    size_t    m_vcount = 0, m_vmax = 0;
-    string    m_name = "Empty";
+    Node *m_pVect = nullptr;
+    size_t m_vcount = 0, m_vmax = 0;
+    string m_name = "Empty";
+
 public:
-    CArray(): m_name("Empty"){}
+    CArray() : m_name("Empty") {}
     CArray(string name) : m_name(name) {}
-    ~CArray(){
+
+    ~CArray()
+    {
         cout << "Destroying " << m_name << "..." << endl;
         destroy();
     }
-    void insert(value_type key, LinkedValueType value){
-        if(m_vcount == m_vmax) // Array is already full?
+
+    void insert(const value_type &key, LinkedValueType value)
+    {
+        if (m_vcount == m_vmax) // Array is already full?
             resize();
         m_pVect[m_vcount++] = Node(key, value);
         // cout << "Key=" << key << " Value=" << value << "\tinserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
-    void resize       ();
-    void destroy(){
-        delete [] m_pVect;
+
+    // DONE: Return last element (Like c++ std::vector)
+    Node& back()
+    {
+        return m_pVect[m_vcount - 1];
+    }
+
+    // DONE: Remove the last element only
+    // No reducimos la capacidad, solo el tamaño
+    void pop_back()
+    {
+        assert(m_vcount > 0);
+        value_type empty;
+        m_vcount--;
+        m_pVect[m_vcount] = Node(empty, empty);
+    }
+
+    // DONE: Pop from a specific position
+    void pop(size_t i)
+    {
+        assert(m_vcount > 0);
+        assert(i >= 0);
+        assert(i < m_vcount);
+        if(i == m_vcount - 1) {
+            pop_back();
+            return;
+        }
+        
+        for(size_t j = i; j < m_vcount - 1; j++) {
+            m_pVect[j] = m_pVect[j + 1];
+        }
+        m_vcount--;
+    }
+
+    // DONE: Pop from front
+    void pop_front()
+    {
+        pop(0);
+    }
+
+    Node& getNode(size_t i) {
+        return m_pVect[i];
+    }
+
+    void resize();
+
+    void destroy()
+    {
+        delete[] m_pVect;
         m_pVect = nullptr;
         m_vcount = 0;
         m_vmax = 0;
     }
-    
-    void print        (ostream &os){
+
+    void print(ostream &os)
+    {
         // os << "Printing: " << m_name << endl;
-        os << m_vcount << " " << m_vmax << endl;
+        os << "Size: " << m_vcount << " Capacity: " << m_vmax << endl;
         // sort(m_pVect, m_pVect+m_vcount, CompareFn() );
-        for(size_t i = 0; i < m_vcount ; ++i )
+        for (size_t i = 0; i < m_vcount; ++i)
             os << m_pVect[i].getData() << "\t: " << m_pVect[i].getValue() << endl;
-        //os << "m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
+        // os << "m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
-    void read(istream &is){
-        //freeing up space if it was already assigned
+
+    void read(istream &is)
+    {
+        // freeing up space if it was already assigned
         destroy();
         // read here By Edson Caceres
         size_t vcount;
-        is>>vcount>>m_vmax;
+        is >> vcount >> m_vmax;
         Node *pTemp = new Node[m_vmax];
-        //inserting values from .txt file
+        // inserting values from .txt file
         value_type value;
-        while(is >> value && size() != vcount){ //keeping in mind the m_vmax
+        while (is >> value && size() != vcount)
+        { // keeping in mind the m_vmax
             this->insert(value);
         }
     }
 
     size_t size()
-    {  return m_vcount;    }
-    value_type &operator[](size_t pos)
-    {   return m_pVect[pos].getDataRef();    }
+    {
+        return m_vcount;
+    }
 
-    iterator begin() { iterator iter(this, m_pVect);    return iter;    }
-    iterator end()   { iterator iter(this, m_pVect+m_vcount);    return iter;    }
-    riterator rbegin() { riterator iter(this, m_pVect+m_vcount-1);     return iter;    }
-    riterator rend()   { riterator iter(this, m_pVect-1);   return iter;    }
+    value_type &operator[](size_t pos)
+    {
+        return m_pVect[pos].getDataRef();
+    }
+
+    iterator begin()
+    {
+        iterator iter(this, m_pVect);
+        return iter;
+    }
+
+    iterator end()
+    {
+        iterator iter(this, m_pVect + m_vcount);
+        return iter;
+    }
+
+    riterator rbegin()
+    {
+        riterator iter(this, m_pVect + m_vcount - 1);
+        return iter;
+    }
+    
+    riterator rend()
+    {
+        riterator iter(this, m_pVect - 1);
+        return iter;
+    }
+
+    template <typename T>
+    friend ostream &operator<<(ostream &os, CArray<T> &obj);
+
+    template <typename T>
+    friend istream &operator>>(istream &is, CArray<T> &obj);
 };
 
 template <typename Traits>
-void CArray<Traits>::resize(){
-    Node *pTemp = new Node[m_vmax+10];
-    for(size_t i = 0 ; i < m_vcount ; ++i)
-        pTemp[i]   = m_pVect[i];
-        // *(pTemp+i) = m_pVect[i];
-        // pTemp[i]   = *(m_pVect+i);
-        // *(pTemp+i) = *(m_pVect+i);
-        // *(i+pTemp) = m_pVect[i];
-        // i[pTemp]   = m_pVect[i];
-    delete [] m_pVect;
+void CArray<Traits>::resize()
+{
+    Node *pTemp = new Node[m_vmax + 10];
+    for (size_t i = 0; i < m_vcount; ++i)
+        pTemp[i] = m_pVect[i];
+    // *(pTemp+i) = m_pVect[i];
+    // pTemp[i]   = *(m_pVect+i);
+    // *(pTemp+i) = *(m_pVect+i);
+    // *(i+pTemp) = m_pVect[i];
+    // i[pTemp]   = m_pVect[i];
+    delete[] m_pVect;
     m_pVect = pTemp;
-    m_vmax +=10;
+    m_vmax += 10;
     // cout << "Vector resized m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
 }
 
 template <typename T>
-ostream &operator<<(ostream &os, CArray<T> &obj){
+ostream &operator<<(ostream &os, CArray<T> &obj)
+{
     obj.print(os);
     return os;
 }
 
-// TODO
 template <typename T>
-istream & operator>>(istream &is, CArray<T> &obj){
-    // TODO
+istream &operator>>(istream &is, CArray<T> &obj)
+{
+    // DONE: Read from stream
+    using value_type = typename CArray<T>::value_type;
+    using key_type = typename CArray<T>::KeyType;
+    key_type key;
+    value_type val;
+    is >> key >> val;
+    obj.insert(key, val);
     return is;
 }
-
 
 #endif // __ARRAY_H__

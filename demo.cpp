@@ -182,6 +182,29 @@ void DemoArray(){
     vx.insert("Edson"  , "Caceres");
     vx.insert("Franz"  , "Maguiña");
     vx.print(cout);
+
+    // Read from stream
+    cout << "Insert an element in the array: " << endl;
+    cin >> vx;
+    cout << "Array with the added element: " << endl;
+    cout << vx << endl;
+
+    // Pop back
+    cout << "Pop back (Removing " << vx[vx.size() - 1] << "): " << endl;
+    vx.pop_back();
+    cout << vx << endl;
+
+    // Pop from a specific position
+    cout << "Pop from a specific position (2): " << endl;
+    cout << "Element to be removed: " << vx[2] << endl;
+    vx.pop(2);
+    cout << vx << endl;
+
+    // Pop from the front
+    cout << "Pop from the front: " << endl;
+    cout << "Element to be removed: " << vx[0] << endl;
+    vx.pop_front();
+    cout << vx << endl;
 }
 
 void DemoIterators(){
