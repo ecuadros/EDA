@@ -1,6 +1,8 @@
 #ifndef __BINARY_TREE_AVL_H__
 #define __BINARY_TREE_AVL_H__
 #include <cassert>
+#include <istream>
+#include <ostream>
 #include "types.h"
 #include "binarytree.h"
 
@@ -143,6 +145,31 @@ public:
     {
         Parent::print(os);
     }
+
+    void read(istream &is)
+    {
+        Parent::read(is);
+    }
+
+    template <typename T>
+    friend ostream &operator<<(ostream &os, CAVL<T> &obj);
+
+    template <typename T>
+    friend istream &operator>>(istream &is, CAVL<T> &obj);
 };
+
+template<typename T>
+ostream& operator<<(ostream& os, CAVL<T>& obj)
+{
+    obj.print(os);
+    return os;
+}
+
+template<typename T>
+istream& operator>>(istream& is, CAVL<T>& obj)
+{
+    obj.read(is);
+    return is;
+}
 
 #endif

@@ -203,7 +203,7 @@ void DemoAVL() {
     for(pair<int, int> el: vect) {
         cout<< endl << "Inserting: " << el.first << endl;
         avl.insert(el.first, el.second);
-        avl.print(cout);
+        cout<<avl;
     }
 
     // Mismos metodos que binary tree
@@ -215,6 +215,11 @@ void DemoAVL() {
     cout<< endl;
     cout << "Postorder: ";
     avl.postorder([](int &n){ cout << n << " "; });
+
+    cout<<"\nInsert a new element: ";
+    cin>>avl;
+    cout<< "Tree with the new element: " << endl;
+    cout<<avl;
 }
 
 void DemoIterators(){

@@ -172,8 +172,8 @@ class binary_tree_iterator_inorder : public general_iterator<Container, class bi
 public:
     binary_tree_iterator_inorder(Container *pContainer, Node *pNode) : Parent(pContainer, pNode) {
         pushStackNodes(pNode);
-        if(!m_stack.empty()) {
-            this->m_pNode = m_stack.top();
+        if(!this->m_stack.empty()) {
+            this->m_pNode = this->m_stack.top();
             m_stack.pop();
         }
     }
@@ -184,17 +184,16 @@ public:
             this->m_pNode = nullptr;
             return *this;
         }
-        Node* node = m_stack.top();
-        m_stack.pop();
+        Node* node = this->m_stack.top();
+        this->m_stack.pop();
         this->m_pNode = node;
-        // cout<<"["<<node->getData()<<"]"<<endl;
         pushStackNodes(node->getChild(1));
         return *this;
     }
     void pushStackNodes(Node* node) {
         Node* tmp = node;
         while(tmp) {
-            m_stack.push(tmp);
+            this->m_stack.push(tmp);
             tmp = tmp->getChild(0);
         }
     }
@@ -382,6 +381,38 @@ protected:
             print(pNode->getChild(0), os, level+1);
         }
     }
+
+    void read(istream &is)
+    {
+        using value_type = typename BinaryTree<Traits>::value_type;
+        using LinkedValueType = typename BinaryTree<Traits>::LinkedValueType;
+        value_type key;
+        LinkedValueType value;
+
+        is>>key;
+        is>>value;
+        insert(key, value);
+    }
+
+    template<typename T>
+    friend ostream &operator<<(ostream &os, BinaryTree<T> &obj);
+
+    template<typename T>
+    friend istream &operator>>(istream &is, BinaryTree<T> &obj);
 };
+
+template<typename Traits>
+ostream& operator<<(ostream& os, BinaryTree<Traits>& obj)
+{
+    obj.print(os);
+    return os;
+}
+
+template<typename Traits>
+istream& operator>>(istream& is, BinaryTree<Traits>& obj)
+{
+    obj.read(is);
+    return is;
+}
 
 #endif
