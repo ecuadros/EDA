@@ -3,10 +3,10 @@
 #include <cmath>
 #include <memory>
 #include "demo.h"
-#include "btree.h"
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "binarytree.h"
 using namespace std;
 
 template <typename T, int N>
@@ -249,169 +249,51 @@ void DemoHeap()
     cout << "Hello from DemoHeap()" <<endl;
 }
 
-void DemoBTree()
+template<typename Trait>
+void BinaryTreeHelper()
 {
-    BTree<XTraitIntIntAsc> bt;
-    bt.Insert(1, 2);
-    bt.Insert(12, 4);
-    bt.Insert(10, 8);
-    bt.Insert(2, 0);
-    bt.Insert(4, 2);
-    bt.Insert(5, 3);
-    bt.Insert(7, 7);
-    bt.Insert(9, 4);
-    bt.Insert(0, 6);
-    bt.Insert(19, 10);
-    bt.Insert(18, 4);
-    bt.Insert(15, 1);
-    cout << bt;
-    cout << "Insert a new element (key value): ";
-    cin >> bt;
-    cout << "Tree with the new element: " << endl;
-    cout << bt;
-    
-    auto* val = bt.FirstThat([](auto &n){ return n == 10; });
-    if(val) {
-        cout<< "First that has a key with value 10: " << val->key << " -> " << val->ObjID << endl;
-    } else {
-        cout<< "Value not found" << endl;
+    using Container = BinaryTree<Trait>;
+    Container container;
+    using T = typename Container::value_type;
+    vector<T> values = {50, 30, 20, 80, 60, 70, 40, 90};
+    for(auto &v: values)
+    {
+        container.insert(v, v);
     }
 
-    auto* val2 = bt.FirstThat([](auto &n, int v){ return n * v == 120; }, 10);
-    if(val2) {
-        cout<< "First that is 120, when multiplied by 10: " << val2->key << " -> " << val->ObjID << endl;
-    } else {
-        cout<< "Value not found" << endl;
-    }
+    // container.print(cout);
+    cout << container;
+    cout << "Inorder: ";
+    container.inorder([](T &n){ cout << n << " "; });
+    cout<< endl;
+    cout << "Preorder: ";
+    container.preorder([](T &n){ cout << n << " "; });
+    cout<< endl;
+    cout << "Postorder: ";
+    container.postorder([](T &n){ cout << n << " "; });
+    cout<< endl;
+    cout << "The order printed: ";
+    container.forward([](T &n){ cout << n << " "; });
 
-    cout<< "Printing tree with foreach: ";
-    bt.ForEach([](auto &n){ cout << n << " "; });
+    cout<<"\nInsert a new element: ";
+    cin>>container;
+    cout<< "Tree with the new element: " << endl;
+    cout<<container;
+
+    cout<< endl;
     cout<< endl;
 }
 
 void DemoBinaryTree()
 {
-    cout << "Hello from DemoBinaryTree()" <<endl;
+    cout << "Ascending BinaryTree..." << endl;
+    BinaryTreeHelper<XTraitIntIntAscCompareVal>();
+    cout << "Descending BinaryTree..." << endl;
+    BinaryTreeHelper<XTraitIntIntDescCompareVal>();
 }
 
 void DemoHash()
 {
     cout << "Hello from DemoHash()" <<endl;
 }
-
-// template <typename Container>
-// void demoLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden: ";
-//     //for(size_t pos = 0; pos < mylist.size(); pos++)
-//     //    cout << mylist[pos] << endl;
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
-// }
-
-// void demoLinkedListSorted()
-// {
-//     cout << "Ascending list" << endl;
-//     LinkedList< LLTraitAsc<TX> > myAscList;
-//     demoLinkedList(myAscList);
-//     foreach(myAscList);
-
-//     cout << "Descending list" << endl;
-//     LinkedList< LLTraitDesc<TX> > myDescList;
-//     demoLinkedList(myDescList);
-//     foreach(myDescList);
-// }
-
-// template <typename Container>
-// void demoDoubleLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//       //mylist.push_back(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden : ";
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
-    
-//     cout << "Lista invertida: ";
-//     foreach_inverso(mylist, fx<T>);  cout << endl;
-// }
-
-// void demoDoubleLinkedListSorted()
-// {
-//     cout << "Ascending double list" << endl;
-//     DoubleLinkedList< DLLAscTraits<TX> > myAscList;
-//     demoDoubleLinkedList(myAscList);
-
-//     cout << "Descending double list" << endl;
-//     DoubleLinkedList< DLLDescTraits<TX> > myDescList;
-//     demoDoubleLinkedList(myDescList); 
-// }
-
-// template <typename Container>
-// void DemoBinaryTree(Container &container)
-// {   using T = typename Container::value_type;
-//     vector<T> values = {50, 30, 20, 80, 60, 70, 40, 90};
-//     for(auto &v: values)
-//     {
-//         container.insert(v);
-//     }    
-//     cout << endl;
-//     cout << "Recorrido inorden: " << endl;
-//     container.inorder(cout);
-//     cout << "\nRecorrido postorden: " << endl;
-//     container.postorder(cout);
-//     cout << "\nRecorrido preorden: " << endl;
-//     container.preorder(cout);
-//     cout << "\nTREE: " << endl;
-//     container.print(cout);
-
-//     /*
-//     // aplicando función
-//     cout << "Recorrido aplicando funci'on duplicar (recorrido inorden) " << endl;               
-//     //container.inorder(duplicate);
-//     cout << "Aplicando funci'on imprimir: " << endl;               
-//     //container.inorder(printTree);
-//     */
-// }
-
-// #include "binarytree.h"
-// void DemoBinaryTree()
-// {   
-//     cout << "Ascending Binarytree ..." << endl;
-//     BinaryTree< BinaryTreeAscTraits<TX> > myAscBinaryTree;
-//     DemoBinaryTree(myAscBinaryTree);
-    
-//     cout << "Descending Binarytree ..." << endl;
-//     BinaryTree< BinaryTreeDescTraits<TX> > myDescBinaryTree;
-//     DemoBinaryTree(myDescBinaryTree);
-// }
-
-// #include "btree.h"
-// void DemoTree()
-// {
-//     BTree < BtreeTrait<char,long> > bt;
-//     const char * keys = "DYZakHIUwxVJ203ejOP9Qc8AdtuEop1XvTRghSNbW567BfiCqrs4FGMyzKLlmn";
-//     for(size_t i = 0; keys[i]; i++)
-//         {
-//             //cout<<"Inserting "<<keys[i]<<endl;
-//             //result = bt.Insert(keys4[i], i*i);
-//             bt.Insert(keys[i], i*i);
-//             //bt.Print(cout);
-//         }
-//     bt.Print(cout);
-//     exit(0);
-
-// }
 
