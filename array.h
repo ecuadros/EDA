@@ -67,46 +67,79 @@ struct ArrayTrait
 
 template <typename Container>
 class array_forward_iterator
-    : public general_iterator<Container, class array_forward_iterator<Container>> //
 {
 public:
-    typedef class general_iterator<Container, array_forward_iterator<Container>> Parent;
-    typedef typename Container::Node Node; //
-    typedef array_forward_iterator<Container> myself;
+    typedef typename Container::Node    Node;
+    typedef typename Node::Type         Type;
+    typedef array_forward_iterator<Container> myself; // 
+    
+protected:
+    Container *m_pContainer;
+    Node      *m_pNode;
+public:
+    myself operator=(myself &iter)
+          {   m_pContainer = move(iter.m_pContainer);
+              m_pNode      = move(iter.m_pNode);
+              return *(myself *)this; // Pending static_cast?
+          }
 
+    bool operator==(myself iter)   { return m_pNode == iter.m_pNode; }
+    bool operator!=(myself iter)   { return !(*this == iter);        }
+    Type &operator*()                    { return m_pNode->getDataRef();   }
 
 public:
-    array_forward_iterator(Container *pContainer, Node *pNode)
-        : Parent(pContainer, pNode) {}
-    array_forward_iterator(myself &other) : Parent(other) {}
-    array_forward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
 
+    array_forward_iterator(Container *pContainer, Node *pNode)
+        : m_pContainer(pContainer), m_pNode(pNode) {}
+    array_forward_iterator(myself &other) 
+          : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode){}
+    array_forward_iterator(myself &&other) // Move constructor
+          {   m_pContainer = move(other.m_pContainer);
+              m_pNode      = move(other.m_pNode);
+          }
 public:
     array_forward_iterator operator++()
     {
-        Parent::m_pNode++;
+        m_pNode++;
         return *this;
     }
 };
 
 template <typename Container>
 class array_backward_iterator
-    : public general_iterator<Container, class array_backward_iterator<Container>> //
 {
 public:
-    typedef class general_iterator<Container, array_backward_iterator<Container>> Parent;
-    typedef typename Container::Node Node; //
-    typedef array_backward_iterator<Container> myself;
+    typedef typename Container::Node    Node;
+    typedef typename Node::Type         Type;
+    typedef array_backward_iterator<Container> myself; // 
+    
+protected:
+    Container *m_pContainer;
+    Node      *m_pNode;
 public:
+    myself operator=(myself &iter)
+    {   
+        m_pContainer = move(iter.m_pContainer);
+        m_pNode      = move(iter.m_pNode);
+        return *(myself *)this; // Pending static_cast?
+    }
+    bool operator==(myself iter)   { return m_pNode == iter.m_pNode; }
+    bool operator!=(myself iter)   { return !(*this == iter);        }
+    Type &operator*()                    { return m_pNode->getDataRef();   }
+
     array_backward_iterator(Container *pContainer, Node *pNode)
-        : Parent(pContainer, pNode) {}
-    array_backward_iterator(myself &other) : Parent(other) {}
-    array_backward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+        : m_pContainer(pContainer), m_pNode(pNode) {}
+    array_backward_iterator(myself &other) 
+          : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode){}
+    array_backward_iterator(myself &&other) // Move constructor
+          {   m_pContainer = move(other.m_pContainer);
+              m_pNode      = move(other.m_pNode);
+          }
 
 public:
     array_backward_iterator operator++()
     {
-        Parent::m_pNode--;
+        m_pNode--;
         return *this;
     }
 };

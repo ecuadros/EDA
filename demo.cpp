@@ -200,11 +200,20 @@ void DemoArray(){
     vx.pop(2);
     cout << vx << endl;
 
+
     // Pop from the front
     cout << "Pop from the front: " << endl;
     cout << "Element to be removed: " << vx[0] << endl;
     vx.pop_front();
     cout << vx << endl;
+
+    cout<<"Recorrer: ";
+    recorrer(vx, [](auto &n){ cout<<n<<" "; });
+    cout<<endl;
+    cout<<"Recorrer inverso: ";
+    recorrer_inverso(vx, [](auto &n){ cout<<n<<" "; });
+    cout<<endl;
+
 }
 
 void DemoIterators(){
