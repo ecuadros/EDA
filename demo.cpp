@@ -65,3 +65,56 @@ void DemoHash()
     cout << "Hello from DemoHash()" <<endl;
 }
 
+//=====================================================
+void DemoLecturaDeTxt()
+{
+    CArray <int> enteros("Numeros Enteros");
+    CArray <float> flotantes("Numeros Flotantes");
+    CArray <char> letras("Letras");
+
+    //Se generan diferentes tipos de CArrays
+    for(auto i = 10; i<= 100; i+=10)
+        enteros.insert(i);
+
+    for(auto i = 1; i<= 15; i++)
+        flotantes.insert(0.1*i);
+
+    for(auto i = 0; i< 26; i++)
+        letras.insert('a'+i);
+
+
+    //Se guarda los datos del objeto creado en un archivo txt
+    ofstream of1("testEnteros.txt", ios::out);
+    of1 << enteros << endl; of1.close();
+    ofstream of2("testFlotantes.txt", ios::out);
+    of2 << flotantes << endl; of2.close();
+    ofstream of3("testLetras.txt", ios::out);
+    of3 << letras << endl; of3.close();
+
+    cout << endl;
+    cout<< "***Se guarda el Array de Enteros de 10 elementos (10, 20, 30 ... 90, 100) en testEnteros.txt***" << endl;
+    cout<< "***Se guarda el Array de Flotantes de 15 elementos (0.1, 0.2, 0.3 ... 1.4, 1.5) en testFlotantes.txt***" << endl;  
+    cout<< "***Se guarda el Array de Char de 25 elementos (a, b, c ... y, z) en testLetras.txt***" << endl << endl;
+
+
+    CArray <int> enterosLeidos("Enteros Leidos");
+    CArray <float> flotantesLeidos("Flotantes Leidos");
+    CArray <char> letrasLeidas("Letras Leidas");
+    ifstream file1, file2, file3;
+
+    cout << "Se lee e imprime el Array de Enteros" << endl;
+    file1.open("testEnteros.txt");
+    file1 >> enterosLeidos;
+    cout<< enterosLeidos << endl;
+
+    cout << "Se lee e imprime el Array de Flotantes" << endl;
+    file2.open("testFlotantes.txt");
+    file2 >> flotantesLeidos;
+    cout<< flotantesLeidos << endl;
+
+    cout << "Se lee e imprime el Array de Caracteres" << endl;
+    file3.open("testLetras.txt");
+    file3 >> letrasLeidas;
+    cout<< letrasLeidas;
+
+}

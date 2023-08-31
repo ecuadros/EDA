@@ -4,7 +4,7 @@
 void DemoArray();
 void DemoBinaryTree();
 void DemoHash();
-
+void DemoLecturaDeTxt();
 void DemoSmartPointers();
 
 #endif // __DEMO_H__
