@@ -6,6 +6,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "linkedlist.h"
 using namespace std;
 
 template <typename T, int N>
@@ -185,7 +186,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string  , std::less<KeyNode<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -258,35 +259,37 @@ void DemoHash()
     cout << "Hello from DemoHash()" <<endl;
 }
 
-// template <typename Container>
-// void demoLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden: ";
-//     //for(size_t pos = 0; pos < mylist.size(); pos++)
-//     //    cout << mylist[pos] << endl;
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
-// }
+template <typename Container>
+void demoLinkedList(Container &mylist)
+{
+    auto nElem = 8;
+    TX vect[nElem] = {4,3,76,1,4,88,45,3};
+    cout << "Inserting:       ";
+    for(auto x=0; x<nElem; x++)
+    {   
+      cout << vect[x] << ", "; 
+      mylist.insert(vect[x], -vect[x]);
+    }
+    cout << endl;
+    cout << "Lista en orden: ";
+    //for(size_t pos = 0; pos < mylist.size(); pos++)
+    //    cout << mylist[pos] << endl;
+    using T = typename Container::value_type;
+    foreach(mylist, ::print<TX>);  cout << endl;
+}
 
-// void demoLinkedListSorted()
-// {
-//     cout << "Ascending list" << endl;
-//     LinkedList< LLTraitAsc<TX> > myAscList;
-//     demoLinkedList(myAscList);
-//     foreach(myAscList);
+void demoLinkedListSorted()
+{
+    cout << "Ascending list" << endl;
+    LinkedList< LLTraitAsc<TX> > myAscList;
+    demoLinkedList(myAscList);
+    foreach(myAscList, ::print<TX>);
 
-//     cout << "Descending list" << endl;
-//     LinkedList< LLTraitDesc<TX> > myDescList;
-//     demoLinkedList(myDescList);
-//     foreach(myDescList);
-// }
+    // cout << "Descending list" << endl;
+    // LinkedList< LLTraitDesc<TX> > myDescList;
+    // demoLinkedList(myDescList);
+    // foreach(myDescList, ::print<TX>);
+}
 
 // template <typename Container>
 // void demoDoubleLinkedList(Container &mylist)

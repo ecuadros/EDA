@@ -5,6 +5,7 @@
 #include <cassert>
 #include "iterator.h"
 #include "types.h"
+#include "keynode.h"
 using namespace std;
 
 template <typename Node, typename MemberType>
@@ -15,24 +16,26 @@ void CreateBridge(Node *&rParent, Node *pNew, MemberType _pMember)
     rParent = pNew; 
 }
 
-template <typename T>
+template <typename T, typename V>
 class NodeLinkedList
 {
 public:
-  typedef T         Type;
+  using value_type   = T;
+  using Type      = T;
+  using LinkedValueType = V;
 private:
-  typedef NodeLinkedList<T> Node;
+  typedef NodeLinkedList<T,V> Node;
   public:
   // TODO change T y KeyNode
-    T       m_data;
+    KeyNode<T,V>       m_data;
     Node   *m_pNext;//
   public:
-    NodeLinkedList(T data, Node *pNext = nullptr) 
+    NodeLinkedList(KeyNode data, Node *pNext = nullptr) 
         : m_data(data), m_pNext(pNext)
     {};
     // TODO Move to KeyNode
-    T         getData()                {   return m_data;    }
-    T        &getDataRef()             {   return m_data;    }
+    value_type         getData()                {   return m_data.getData;    }
+    value_type        &getDataRef()             {   return m_data.getDataRef;    }
 
     void      setpNext(NodeLinkedList *pNext)  {   m_pNext = pNext;  }
     Node     *getpNext()               {   return getpNextRef();   }
@@ -65,6 +68,7 @@ struct LLTraitAsc
     using  T         = _T;
     using  Node      = NodeLinkedList<T>;
     using  CompareFn = less<T>;
+    using  LinkedValueType = _T;
 };
 
 template <typename _T>
@@ -73,6 +77,7 @@ struct LLTraitDesc
     using  T         = _T;
     using  Node      = NodeLinkedList<T>;
     using  CompareFn = greater<T>;
+    using  LinkedValueType = _T;
 };
 
 template <typename Traits>
@@ -81,10 +86,12 @@ class LinkedList
   public:
     typedef typename Traits::T          value_type;
     typedef typename Traits::Node       Node;
+    typedef typename Traits::LinkedValueType LinkedValueType;
     
     typedef typename Traits::CompareFn  CompareFn;
     typedef LinkedList<Traits>          myself;
     typedef forward_iterator<myself>    iterator;
+
     
   protected:
     Node    *m_pHead = nullptr, 
@@ -98,7 +105,7 @@ class LinkedList
   public:
     LinkedList() {}
     // TODO add LinkedValueType value
-    void    insert(value_type &elem) { insert_forward(elem);  }
+    void    insert(const value_type &key, LinkedValueType value) { insert_forward(key);  }
     value_type &operator[](size_t pos)
     {
       assert(pos <= size());
@@ -163,10 +170,22 @@ class LinkedList
         throw "hola excepcion"; // Create custom exception pending
     }
     // TODO add print
+    void print        (ostream &os){
+        foreach(begin(), end(), cout);
+    }
 };
 
 // TODO add operator<<
-
+template <typename T>
+ostream &operator<<(ostream &os, LinkedList<T> &obj){
+    obj.print(os);
+    return os;
+}
 // TODO add operator>>
+template <typename T>
+istream & operator>>(istream &is, LinkedList<T> &obj){
+    // TODO
+    return is;
+}
 
 #endif
