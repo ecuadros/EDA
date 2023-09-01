@@ -19,11 +19,25 @@ void recorrer(Iterator ItBegin, Iterator ItEnd, F ope)
       ope(*iter);
 }
 
+template <typename Iterator, typename F>
+void retroceder(Iterator ItBegin, Iterator ItEnd, F ope)
+{
+  auto iter = ItEnd;
+  for(; iter >= ItBegin ; --iter)
+      ope(*iter);
+}
+
 // #1
 template <typename Container, typename F>
 void recorrer(Container &container, F ope)
 {  
     recorrer(container.begin(), container.end(), ope);
+}
+
+template <typename Container, typename F>
+void retroceder(Container &container, F ope)
+{  
+    retroceder(container.begin(), container.end(), ope);
 }
 
 // TODO implementar el recorrer inverso

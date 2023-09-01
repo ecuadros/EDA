@@ -18,6 +18,7 @@ class array_forward_iterator
     private:
         Container *m_pContainer;
         Node      *m_pNode;
+        bool reverse = false;
   public:
     array_forward_iterator(Container *pContainer, Node *pNode)
         : m_pContainer(pContainer), m_pNode(pNode) {}
@@ -33,11 +34,16 @@ class array_forward_iterator
         return *(myself *)this; // Pending static_cast?
     }
     public:
+        bool operator>=(myself iter)   { return m_pNode >= iter.m_pNode; }
         bool operator==(myself iter)   { return m_pNode == iter.m_pNode; }
         bool operator!=(myself iter)   { return !(*this == iter);        }
         Type &operator*()                    { return m_pNode->getDataRef();   }
         myself operator++() {
             m_pNode++;  
+            return *this;
+        }
+        myself operator--() {
+            m_pNode--;  
             return *this;
         }
 };

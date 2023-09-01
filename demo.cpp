@@ -216,6 +216,20 @@ void DemoIterators(){
     recorrer(v1, ::print<TX>); cout << endl;
 }
 
+void DemoTarea2(){
+    CArray< TraitArrayIntInt > arrayEjemplo("FranciscoGamarra");
+    arrayEjemplo.insert(13,10);
+    arrayEjemplo.insert(26,20);
+    arrayEjemplo.insert(39,30);
+    arrayEjemplo.insert(52,40);
+    arrayEjemplo.insert(65,50);
+
+    cout << "Impresion ascendente: "<< endl;
+    cout << arrayEjemplo << endl; //Por utilizacion del print a traves de la recarga del <<
+    cout << "Impresion descendente: "<< endl;
+    retroceder(arrayEjemplo, ::print<TX>);
+}
+
 void DemoReverseIterators(){
     cout << "DEMO REVERSE ITERATORS FOR ARRAY AS A CONTEINER : " << endl;
     CArray< TraitArrayIntInt > v1("Edson Cáceres");

@@ -8,6 +8,7 @@ void DemoPreandPostIncrement();
 
 void DemoArray();
 void DemoIterators();
+void DemoTarea2();
 void DemoReverseIterators();
 void DemoBinaryTree();
 void DemoHash();
