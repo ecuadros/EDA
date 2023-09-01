@@ -2,6 +2,7 @@
 #define __MATRIX_H__
 #include <iostream>
 #include <cassert>
+#include "keynode.h"
 
 template <typename Container>
 class matrix_iterator 
@@ -39,48 +40,53 @@ template <typename T>
 class NodeMatrix
 {
 public:
-  using value_type   = T;
-  using Type = T;
+  using value_type   = typename T::value_type;
+  using InnerNode = typename T::InnerNode;
+  using Type = typename T::value_type;
+    using LinkedValueType = typename T::LinkedValueType;
 private:
   using myself      = NodeMatrix<T> ;
 public:
-    value_type       m_key;
+    InnerNode      m_data;
 
 public:
     
     NodeMatrix() {}
     
-    NodeMatrix(value_type key) 
-        : m_key(key) {}
+    NodeMatrix(value_type key, LinkedValueType value) 
+        : m_data(key, value) {}
 
-    value_type    getData() const   { return m_key; }
-    value_type&   getDataRef()      { return m_key; }
+    value_type    getData() const   { return m_data.m_key; }
+    value_type&   getDataRef()      { return m_data.m_key; }
 
     value_type operator+=(const value_type value) {//c
-        m_key += value;
-        return m_key;
+        m_data.m_key += value;
+        return m_data.m_key;
     }
 
     constexpr operator value_type() const noexcept { //d since C++14
-        return m_key;
+        return m_data.m_key;
     }
 
 };
 
-template <typename _K>
+template <typename _K, typename _V>
 struct MatrixTrait
 {
-    using  value_type   = _K;
-    using  Node      = NodeMatrix<_K>;
+    using value_type   = _K;
+    using LinkedValueType = _V;
+    using Node      = NodeMatrix<MatrixTrait<_K, _V>>;
+    using InnerNode = KeyNode<_K, _V>;
     //using  CompareFn = _CompareFn;
 };
 
-using MatrixTraitFloat = MatrixTrait<float>;
+using MatrixTraitFloatFloat = MatrixTrait<float, float>;
 
 template <typename Traits>
 class CMatrix
 {public:
     using value_type      = typename Traits::value_type;
+    using LinkedValueType = typename Traits::LinkedValueType;
     using Node            = typename Traits::Node;
     using myself          = CMatrix<Traits>;
     using iterator        = matrix_iterator<myself>;
@@ -115,10 +121,10 @@ public:
             // i[res]   = new TX[m_cols];
     }
     
-    void fill(value_type val){
+    void fill(value_type val, LinkedValueType val2){
         for(auto y = 0 ; y < m_rows ; y++)
             for(auto x = 0 ; x < m_cols ; x++)
-                m_ppMatrix[y][x] = Node(val);
+                m_ppMatrix[y][x] = Node(val, val2);
                 //m_ppMatrix[y][x] = val;
                 // *(m_ppMatrix+y)[x] = val;
                 // *(*(m_ppMatrix+y)+x) = val;
@@ -131,7 +137,7 @@ public:
         for(auto y = 0 ; y < m_rows ; y++){
             for(auto x = 0 ; x < m_cols ; x++)
                 //os << m_ppMatrix[y][x] << " ";
-                os << m_ppMatrix[y][x] << " ";
+                os << m_ppMatrix[y][x].getDataRef() << " ";
             os << endl;
         }
     }
@@ -149,9 +155,9 @@ public:
         myself &me = *this;
         for(auto row = 0; row < m_rows; row++){
             for(auto col = 0; col < other.m_cols; col++){
-                answer[row][col] = 0 ;
+                answer[row][col].getDataRef() = 0 ;
                 for(auto i = 0 ; i < m_cols ; i++){
-                    answer[row][col] +=  me[row][i] * other[i][col];
+                    answer[row][col].getDataRef() +=  me[row][i].getDataRef() * other[i][col].getDataRef();
                 }
             }
         }

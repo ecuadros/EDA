@@ -90,19 +90,19 @@ void DemoSmartPointers(){
 void DemoDynamicMatrixes(){
 
     cout << "----------------mat1--------------------" << endl;
-    CMatrix<MatrixTraitFloat> mat1(3, 4);
-    mat1.fill(1);
+    CMatrix<MatrixTraitFloatFloat> mat1(3, 4);
+    mat1.fill(1, 1);
     //cout << "k : " << mat1.m_rows<<endl;
     cout << mat1;
 
     cout << "----------------mat2--------------------" << endl;
-    CMatrix<MatrixTraitFloat> mat2(4, 5);
-    mat2.fill(2.5);
+    CMatrix<MatrixTraitFloatFloat> mat2(4, 5);
+    mat2.fill(2.5, 2.5);
     cout << mat2;
 
     cout << "----------------mat1*mat2--------------------" << endl;
     // DONE #1: overload operator*(CMatrix<Traits> &other)
-    CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
+    CMatrix<MatrixTraitFloatFloat> mat3 = mat1 * mat2;
     cout << mat3;
 
     // DONE #2: Create Iterator for CMatrix
@@ -118,9 +118,23 @@ void DemoDynamicMatrixes(){
 
     // // DONE #3: prepare Matrix to be used as a matrix from outside
     // // overload operator[](size_t row)
-    mat1[2][3] = 8.2;
+    mat1[2][3].getDataRef() = 8.2;
     mat1(2, 2) = 7.5; // Operator () is returning a value_type &
     cout << "Mat 1 despues de cambios con operator [] y ():" << endl << mat1;
+    
+    // *********************************************
+    // Operator value_type (aca value_type es float)
+    // *********************************************
+
+    // Inicializamos un NodeMatrix
+    NodeMatrix<MatrixTraitFloatFloat> n = mat1[2][3];
+    
+    // Obtiene m_key del keynode con el metodo getDataRef
+    cout << "Usando getDataRef: " << n.getDataRef() << endl;
+
+    // Convierte NodeMatrix a float
+    cout << "Usando operator value_type: " << (float) n << endl;
+    cout << "Usando operator value_type implicito: " << n << endl;
 }
 
 void DemoPreandPostIncrement(){
