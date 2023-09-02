@@ -1,6 +1,6 @@
 #ifndef __ITERATOR_H__
 #define __ITERATOR_H__
-#include <algorithm>
+/*#include <algorithm>
 #include <utility>
 
 template <typename Container, class IteratorBase> // 
@@ -33,6 +33,6 @@ public:
     bool operator!=(IteratorBase iter)   { return !(*this == iter);        }
     Type &operator*()                    { return m_pNode->getDataRef();   }
 };
-
+*/
 #endif
  

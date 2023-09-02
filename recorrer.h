@@ -26,12 +26,35 @@ void recorrer(Container &container, F ope)
     recorrer(container.begin(), container.end(), ope);
 }
 
+
+//=======================================================
+
 // TODO implementar el recorrer inverso
 // # 2
-// template <typename Container, typename F>
-// void recorrer_inverso(Container &container, F ope)
-// { recorrer(container.rbegin(), container.rend(), ope);
-// }
+// Se declara la sobrecarga de recorrer_inverso en el que se le da
+// la dirección del ultimo elemento del contenedor y va recorriendo
+// de posición en posición hasta el primero. Para realizar esta lógica
+// se ha sobrecargado el operador >= (en array.h, línea 38) y el 
+// operador -- // (en array.h, línea 44-48). 
+
+template <typename Iterator, typename F>
+void recorrer_inverso(Iterator ItEnd, Iterator ItBegin, F ope)
+{
+  auto iter = ItEnd;
+  for(auto iter = ItEnd; iter >= ItBegin; --iter)
+      ope(*iter);
+}
+
+// Se declara recorrer_inverso dándole como parámetro el container y 
+// el operador. Internamente usa la dirección del último valor del contenedor,
+// la dirección del primer valor del contenedor y la operación. 
+template <typename Container, typename F>
+void recorrer_inverso(Container &container, F ope)
+{
+
+    recorrer_inverso(container.last(), container.begin(), ope);
+}
+//========================================================
 
 template <typename Container>
 void recorrer(Container &container)

@@ -6,6 +6,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "recorrer.h"
+#include <string>
 using namespace std;
 
 template <typename T, int N>
@@ -91,34 +92,19 @@ void DemoDynamicMatrixes(){
 
     CMatrix<MatrixTraitFloat> mat1(3, 4);
     mat1.fill(1);
-    cout << mat1;
+
+    cout <<mat1<< endl;
 
     CMatrix<MatrixTraitFloat> mat2(4, 5);
     mat2.fill(2.5);
-    cout << mat2;
-
+    cout << "Matriz B:" << endl;
+    cout << mat2 << endl;
+  
     // TODO #1: overload operator*(CMatrix<Traits> &other)
-    // CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
+    CMatrix<MatrixTraitFloat> c = mat1 * mat2;
+    cout << "Matriz C = (A x B):" << endl;
+    cout << c << endl;
 
-    // TODO #2: Create Iterator for CMatrix
-    // recorrer(mat3, ::print<TX>);
-    // cout << endl;
-
-    // TX x = 1;
-    // // Lambda function
-    // recorrer(mat1, [x](TX &n){ n += x; x++; });
-    // recorrer(mat1, ::print<TX>); cout << endl;
-    // ClassX<TX> ope(5);
-    // recorrer(mat1, ope);
-    // recorrer(mat1, ::print<TX>); cout << endl;
-    // recorrer(mat1, ClassX<TX>(8) );
-    // recorrer(mat1, ::print<TX>); cout << endl;
-
-    // // TODO #3: prepare Matrix to be used as a matrix from outside
-    // // overload operator[](size_t row)
-    // mat1[2][3] = 8.2;
-    // mat1(2, 2) = 7.5; // Operator () is returning a value_type &
-    // cout << mat1;
 }
 
 void DemoPreandPostIncrement(){
@@ -185,18 +171,22 @@ void DemoArray(){
 }
 
 void DemoIterators(){
-    CArray< TraitArrayIntInt > v1("Jorge");
+    CArray< TraitArrayIntInt > v1("ArrayDeEnteroEntero");
     
-    v1.insert(30, 40);
-    v1.insert(18, 45);
-    v1.insert(20, 35);
-    v1.insert(7 , 64);
-    v1.insert(12, 25);
-    v1.insert(8 , 17);
+    v1.insert(15, 35);
+    v1.insert(20, 40);
+    v1.insert(25, 45);
+    v1.insert(30, 50);
+    v1.insert(35, 55);
+    v1.insert(40, 60);
 
     cout << v1 << endl;
-    // array_forward_iterator<CArray< TraitArrayIntInt >> iter = v1.begin();
-    //CArray< TraitArrayIntInt >::iterator iter = v1.begin();
+
+    // Se llama a recorrer inverso y se utiliza el op print 
+    // Para mostrar en el terminal el sentido (inverso) del
+    // recorrido.
+    recorrer_inverso(v1.last(), v1.begin(), ::print<TX>); cout << endl;
+    /*
     auto iter = v1.begin();
     recorrer(iter, v1.end(), ::increment<TX, 7>);
     cout << v1 << endl;
@@ -214,22 +204,8 @@ void DemoIterators(){
     recorrer(v1, ::print<TX>); cout << endl;
     recorrer(v1, ClassX<TX>(8) );
     recorrer(v1, ::print<TX>); cout << endl;
-}
-
-void DemoReverseIterators(){
-    cout << "DEMO REVERSE ITERATORS FOR ARRAY AS A CONTEINER : " << endl;
-    CArray< TraitArrayIntInt > v1("Edson Cáceres");
-    v1.insert(30, 40);
-    v1.insert(18, 45);
-    v1.insert(20, 35);
-    v1.insert(7 , 64);
-    v1.insert(12, 25);
-    v1.insert(8 , 17);
-
-    cout << "Printing asc : " << endl;
-    cout << v1 << endl;
-    cout << "Printing desc : " << endl;
-    recorrer(v1.rbegin(), v1.rend(), ::print<TX>);
+    */
+    
 }
 
 void DemoBinaryTree()

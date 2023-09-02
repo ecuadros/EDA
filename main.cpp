@@ -10,15 +10,21 @@ using namespace std;
 // g++ -pthread -std=gnu++2b -o main main.cpp demo.cpp
 int main()
 {
+    //Demostración de la iterador_reverso.
+    DemoIterators();
+    //Demostración de la multiplicación matricial.
+    //DemoDynamicMatrixes();
+
+    
+
+
     // DemoParameters();
     // DemoArray();
-    // DemoIterators();
     // DemoReverseIterators();
     // DemoBinaryTree();
     // DemoHash();
-
     // DemoPreandPostIncrement();
     // DemoSmartPointers();
-    DemoDynamicMatrixes();
+    
     return 0;
 }
