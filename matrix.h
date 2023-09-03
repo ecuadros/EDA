@@ -25,29 +25,73 @@ public:
                                  }
 };
 
+template <typename T>
+class NodeMatrix
+{
+public:
+  using value_type   = T;
+  using Type      = T;
+//   using LinkedValueType = V;
+private:
+  using Node      = NodeMatrix<T> ;
+public:
+    value_type       m_key;
+    // LinkedValueType      m_value;
+
+public:
+    NodeMatrix(value_type key) 
+        : m_key(key) {}
+
+    NodeMatrix(const NodeMatrix<T>& other) : 
+        NodeMatrix(other.m_key) {}
+
+    NodeMatrix(NodeMatrix<T>&& other) // Move constructor
+        : m_key  (std::move(other.m_key)) {}
+    NodeMatrix() {}
+
+    NodeMatrix& operator=(const NodeMatrix& other) {
+        if (this != &other) {
+            m_key = other.m_key;
+        }
+        return *this;
+    }
+
+    value_type    getData() const   { return m_key; }
+    value_type&   getDataRef()      { return m_key; }
+
+    bool operator<(const NodeMatrix<T>& other) const { 
+        return m_key < other.m_key;
+    }
+    // Error was here. Next line was missing
+    bool operator>(const NodeMatrix<T>& other) const { 
+        return m_key > other.m_key;
+    }
+    
+};
+
 template <typename _K>
 struct MatrixTrait
 {
     using  value_type      = _K;
-    // using  LinkedValueType = _V;
-    // using  Node      = NodeArray<_K, _V>;
+    using  Node      = NodeMatrix<_K>;
     // using  CompareFn = _CompareFn;
 };
 
-using MatrixTraitFloat = MatrixTrait<float>;
+using MatrixTraitFloat = MatrixTrait<TX>;
 
 template <typename Traits>
 class CMatrix
 {public:
     using value_type      = typename Traits::value_type;
-    //using LinkedValueType = typename Traits::LinkedValueType;
-    //using Node            = typename Traits::Node;
+    using Node            = typename Traits::Node;
     //using CompareFn       = typename Traits::CompareFn;
     using myself          = CMatrix<Traits>;
     //using iterator        = matrix_iterator<myself>;
 
+    using nodeMatrix          = NodeMatrix<value_type>;
+
     private:
-        value_type **m_ppMatrix   = nullptr;
+        Node **m_ppMatrix   = nullptr;
         size_t m_rows = 0, m_cols = 0;
 public:
     CMatrix(size_t rows, size_t cols)
@@ -61,9 +105,9 @@ public:
         destroy();
         m_rows = rows;
         m_cols = cols;
-        m_ppMatrix = new value_type *[m_rows];
+        m_ppMatrix = new Node *[m_rows];
         for(auto i = 0 ; i < m_rows ; i++)
-            m_ppMatrix[i] = new value_type[m_cols];
+            m_ppMatrix[i] = new Node[m_cols];
             // *(res+i) = new TX[m_cols];
             // *(i+res) = new TX[m_cols];
             // i[res]   = new TX[m_cols];
@@ -84,7 +128,7 @@ public:
         os << m_rows << " " << m_cols << endl;
         for(auto y = 0 ; y < m_rows ; y++){
             for(auto x = 0 ; x < m_cols ; x++)
-                os << m_ppMatrix[y][x] << " ";
+                os << m_ppMatrix[y][x].getDataRef() << " ";
             os << endl;
         }
     }
@@ -103,9 +147,9 @@ public:
     
     value_type &operator()(size_t rows, size_t cols){
         assert( rows < m_rows && cols < m_cols );
-        return m_ppMatrix[rows][cols];
+        return m_ppMatrix[rows][cols].getDataRef();
     }
-    auto* &operator[](size_t rows){
+    Node* &operator[](size_t rows){
         assert( rows < m_rows );
         return m_ppMatrix[rows];
     }
