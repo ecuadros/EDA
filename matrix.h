@@ -13,8 +13,8 @@ public:
     typedef typename Container::Node           Node; // 
     typedef matrix_iterator<Container>  myself;
 public:
-        size_t i = 0;
-        size_t j = 0;
+    size_t i = 0;
+    size_t j = 0;
 public:
     matrix_iterator(Container *pContainer, Node *pNode) : Parent (pContainer,pNode) {}
     matrix_iterator(myself &other)  : Parent (other) {}
@@ -22,14 +22,17 @@ public:
 
 public:
     matrix_iterator operator++(){
-        if(j == Parent::m_pContainer->m_cols - 1){ //t
+        j++;
+        if(j >= Parent::m_pContainer->m_cols){
             j = 0;
             i++;
-            Parent::m_pNode = Parent::m_pContainer->firstPtrRow(i);
-        }else{
-            j++;
-            Parent::m_pNode++;
-        }        
+        }
+        if(i < Parent::m_pContainer->m_rows){
+            Parent::m_pNode = &((*Parent::m_pContainer)[i][j]);
+        }
+        else {
+            Parent::m_pNode = nullptr;
+        }
         return *this;
     }
 };
