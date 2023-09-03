@@ -5,6 +5,8 @@
 #include "array.h"
 using namespace std;
 
+
+/*
 void DemoSmartPointers(){
     CArray<int> v2("Lucero"), *pX; //, *pV3 = new CArray("Luis");
     shared_ptr< CArray<float> > pV3(new CArray<float>("Luis")), pV4;
@@ -17,6 +19,7 @@ void DemoSmartPointers(){
         //  rA.insert(i);
     }
 }
+*/
 
 void DemoArray(){   
     cout << "Hello from DemoArray()" <<endl;
@@ -34,11 +37,6 @@ void DemoArray(){
         //  (*pv3).insert(i);
         //  rA.insert(i);
     }
-    cout << v1; // v1.print(cout);
-    ostream &tmp = cout << v2 << "More text" << endl;
-    tmp << "Hola !!!" << endl;
-    cout << &tmp << "..." << &cout <<endl;
-    // cout << x << f << y << endl;
     pV3->print(cout);
     // (*pV3).print();     *pV3 is already an object
     // rA.print();          rA is also an object
@@ -49,10 +47,21 @@ void DemoArray(){
     // delete pV3;
 
     // Using an array with []
+    /*
     for(auto i = 0 ; i < v2.size() ; i++)
         cout << "v2[" << i << "] = " << v2[i] << endl;
     ofstream of("test.txt", ios::out);
     of << v2 << endl; 
+    */
+    ifstream ArchivoIngreso("entrada.txt"); // archivo generado que sirve de entrada
+    CArray<int> *v4 = new CArray<int>("Erickson Vera");
+    ArchivoIngreso >> *v4;
+    //cout << v4;
+    ofstream of2("test2.txt" , ios::out);
+    of2 << *v4 << endl; 
+
+
+    
 }
 
 void DemoBinaryTree()

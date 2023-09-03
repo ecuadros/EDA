@@ -29,9 +29,9 @@ public:
         cout << "Val=" << val << " inserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
     void resize       ();
-    void print        (ostream &os){
+    void print(ostream &os){
         // os << "Printing: " << m_name << endl;
-        os << m_vcount << " " << m_vmax << endl;
+        //os << m_vcount << " " << m_vmax << endl;
         for(size_t i = 0; i < m_vcount ; ++i )
             os << m_pVect[i] << endl;
         //os << "m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
@@ -40,6 +40,16 @@ public:
     {  return m_vcount;    }
     value_type &operator[](size_t pos)
     {   return m_pVect[pos];    }
+    void leer(istream &is, CArray<T> &obj){
+        is >> m_vcount;
+        for (size_t cont = 0; cont < m_vcount; cont++)
+        {
+            cout << m_vcount;
+            T valor;
+            is >> valor;
+            obj.insert(valor);
+        }        
+    }
 };
 
 template <typename T>
@@ -67,7 +77,14 @@ ostream &operator<<(ostream &os, CArray<T> &obj){
 // TODO
 template <typename T>
 istream & operator>>(istream &is, CArray<T> &obj){
-    // TODO
+    //obj.leer(is,obj);
+    size_t count;
+    is >> count;
+    T valor;
+    while (is >> valor)
+    {
+        obj.insert(valor);
+    }    
     return is;
 }
 
