@@ -160,6 +160,14 @@ public:
         return m_ppMatrix[row];
     }
 
+    value_type &operator()(size_t rows, size_t cols){
+        return m_ppMatrix[rows][cols].getDataRef();
+    }
+
+    Node* operator [] (size_t rows){
+        return m_ppMatrix[rows];
+    }
+
 };
 
 template <typename Traits>
