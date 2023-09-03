@@ -1,5 +1,6 @@
 #include <iostream> // cout
 #include <fstream>  // ofstream, ifstream
+#include <map>
 #include <cmath>
 #include <memory>
 #include "demo.h"
@@ -7,6 +8,7 @@
 #include "matrix.h"
 #include "foreach.h"
 #include "linkedlist.h"
+#include "doublelinkedlist.h"
 using namespace std;
 
 template <typename T, int N>
@@ -267,59 +269,66 @@ void demoLinkedList(Container &mylist)
     cout << "Inserting:       ";
     for(auto x=0; x<nElem; x++)
     {   
-      cout << vect[x] << ", "; 
+      cout << "{"<< vect[x] << "," << -vect[x] << "}, "; 
       mylist.insert(vect[x], -vect[x]);
     }
     cout << endl;
     cout << "Lista en orden: ";
     //for(size_t pos = 0; pos < mylist.size(); pos++)
     //    cout << mylist[pos] << endl;
-    using T = typename Container::value_type;
-    foreach(mylist, ::print<TX>);  cout << endl;
+    // using T = typename Container::value_type;
+    // foreach(mylist, ::print<TX>); 
+    cout << mylist;
+    cout << endl;
 }
 
 void demoLinkedListSorted()
 {
     cout << "Ascending list" << endl;
-    LinkedList< LLTraitAsc<TX> > myAscList;
+    LinkedList< LLTraitAsc<TX, TX> > myAscList;
     demoLinkedList(myAscList);
-    foreach(myAscList, ::print<TX>);
+    // foreach(myAscList, ::print<TX>);
 
-    // cout << "Descending list" << endl;
-    // LinkedList< LLTraitDesc<TX> > myDescList;
-    // demoLinkedList(myDescList);
+    cout << "Descending list" << endl;
+    LinkedList< LLTraitDesc<TX, TX> > myDescList;
+    demoLinkedList(myDescList);
     // foreach(myDescList, ::print<TX>);
+
+    cout << "=================================================="<<endl;
 }
 
-// template <typename Container>
-// void demoDoubleLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//       //mylist.push_back(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden : ";
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
+template <typename Container>
+void demoDoubleLinkedList(Container &mylist)
+{
+    auto nElem = 8;
+    TX vect[nElem] = {4,3,76,1,6,88,45,2};
+    cout << "Inserting:       ";
+    for(auto x=0; x<nElem; x++)
+    {   
+      cout << vect[x] << ", "; 
+      mylist.insert(vect[x], -vect[x]);
+      //mylist.push_back(vect[x]);
+    }
+    cout << endl;
+    cout << "Lista en orden : ";
+    cout << mylist;
+    cout << endl;
     
-//     cout << "Lista invertida: ";
-//     foreach_inverso(mylist, fx<T>);  cout << endl;
-// }
+    cout << "Lista invertida: ";
+    mylist.print_reverse(cout);
+    // foreach_reverse(mylist, ::print<TX>);  cout << endl;
+}
 
-// void demoDoubleLinkedListSorted()
-// {
-//     cout << "Ascending double list" << endl;
-//     DoubleLinkedList< DLLAscTraits<TX> > myAscList;
-//     demoDoubleLinkedList(myAscList);
+void demoDoubleLinkedListSorted()
+{
+    cout << "Ascending double list" << endl;
+    DoubleLinkedList< DLLAscTraits<TX, TX>> myAscList;
+    demoDoubleLinkedList(myAscList);
 
-//     cout << "Descending double list" << endl;
-//     DoubleLinkedList< DLLDescTraits<TX> > myDescList;
-//     demoDoubleLinkedList(myDescList); 
-// }
+    cout << "Descending double list" << endl;
+    DoubleLinkedList< DLLDescTraits<TX, TX> > myDescList;
+    demoDoubleLinkedList(myDescList); 
+}
 
 // template <typename Container>
 // void DemoBinaryTree(Container &container)

@@ -30,12 +30,19 @@ private:
     KeyNode<T,V>       m_data;
     Node   *m_pNext;//
   public:
-    NodeLinkedList(KeyNode data, Node *pNext = nullptr) 
+    NodeLinkedList(KeyNode<T,V> data, Node *pNext = nullptr) 
         : m_data(data), m_pNext(pNext)
     {};
+    NodeLinkedList(value_type key, LinkedValueType value, Node *pNext = nullptr){
+        m_data = KeyNode(key, value);
+        m_pNext = pNext;
+      }
     // TODO Move to KeyNode
-    value_type         getData()                {   return m_data.getData;    }
-    value_type        &getDataRef()             {   return m_data.getDataRef;    }
+    value_type         getData()                {   return m_data.getData();    }
+    value_type        &getDataRef()             {   return m_data.getDataRef();    }
+
+    LinkedValueType         getValue()                {   return m_data.getValue();    }
+    LinkedValueType        &getValueRef()             {   return m_data.getValueRef();    }
 
     void      setpNext(NodeLinkedList *pNext)  {   m_pNext = pNext;  }
     Node     *getpNext()               {   return getpNextRef();   }
@@ -62,22 +69,24 @@ public:
                                   }
 };
 
-template <typename _T>
+template <typename _T, typename _V>
 struct LLTraitAsc
 {
     using  T         = _T;
-    using  Node      = NodeLinkedList<T>;
+    using  V         = _V;
+    using  Node      = NodeLinkedList<T,V>;
     using  CompareFn = less<T>;
-    using  LinkedValueType = _T;
+    using  LinkedValueType = _V;
 };
 
-template <typename _T>
+template <typename _T, typename _V>
 struct LLTraitDesc
 {
     using  T         = _T;
-    using  Node      = NodeLinkedList<T>;
+    using  V         = _V;
+    using  Node      = NodeLinkedList<T,V>;
     using  CompareFn = greater<T>;
-    using  LinkedValueType = _T;
+    using  LinkedValueType = _V;
 };
 
 template <typename Traits>
@@ -87,11 +96,12 @@ class LinkedList
     typedef typename Traits::T          value_type;
     typedef typename Traits::Node       Node;
     typedef typename Traits::LinkedValueType LinkedValueType;
-    
+
     typedef typename Traits::CompareFn  CompareFn;
     typedef LinkedList<Traits>          myself;
     typedef forward_iterator<myself>    iterator;
 
+    using  NodeLL      = NodeLinkedList<value_type, LinkedValueType>;
     
   protected:
     Node    *m_pHead = nullptr, 
@@ -105,7 +115,7 @@ class LinkedList
   public:
     LinkedList() {}
     // TODO add LinkedValueType value
-    void    insert(const value_type &key, LinkedValueType value) { insert_forward(key);  }
+    void    insert(value_type key, LinkedValueType value) { insert_forward(key, value);  }
     value_type &operator[](size_t pos)
     {
       assert(pos <= size());
@@ -144,11 +154,11 @@ class LinkedList
         return &rpPrev; // Retorna la direccion del puntero que me apunta
       return findPrev((Node *&)rpPrev->getpNextRef(), elem);
     }
-    Node *CreateNode(value_type &data, Node *pNext=nullptr){ return new Node(data, pNext); }
-    Node **insert_forward(value_type &elem)
+    Node *CreateNode(value_type &data, LinkedValueType &value,  Node *pNext=nullptr){ return new Node(data, value, pNext); }
+    Node **insert_forward(value_type &elem, LinkedValueType &value)
     {
         Node **pParent = findPrev(elem);
-        Node *pNew = CreateNode(elem);
+        Node *pNew = CreateNode(elem, value);
         ::CreateBridge(*pParent, pNew, &Node::m_pNext);
         if( !pNew->getpNext() )
           m_pTail = pNew;
@@ -171,7 +181,16 @@ class LinkedList
     }
     // TODO add print
     void print        (ostream &os){
-        foreach(begin(), end(), cout);
+      NodeLL *pTmp = m_pHead;    
+      // auto iter = begin();
+      // for(; iter != end() ; ++iter)
+      //   os << "{" << *iter << "," << pTmp->getValue() << "}";
+      //   pTmp = pTmp->getpNext();
+
+      while (pTmp) {
+        os << "{" << pTmp->getData() << ", " << pTmp->getValue() << "}, ";
+        pTmp = pTmp->getpNext();
+      }
     }
 };
 
@@ -184,7 +203,7 @@ ostream &operator<<(ostream &os, LinkedList<T> &obj){
 // TODO add operator>>
 template <typename T>
 istream & operator>>(istream &is, LinkedList<T> &obj){
-    // TODO
+    obj.insert(obj.value_type, obj.LinkedValueType);
     return is;
 }
 

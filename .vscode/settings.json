@@ -48,6 +48,15 @@
         "scoped_allocator": "cpp",
         "stop_token": "cpp",
         "regex": "cpp",
-        "valarray": "cpp"
+        "valarray": "cpp",
+        "compare": "cpp",
+        "cwchar": "cpp",
+        "exception": "cpp",
+        "istream": "cpp",
+        "new": "cpp",
+        "stdexcept": "cpp",
+        "streambuf": "cpp",
+        "*.tcc": "cpp",
+        "variant": "cpp"
     }
 }
