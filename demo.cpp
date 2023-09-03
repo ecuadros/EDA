@@ -138,7 +138,7 @@ void DemoDynamicMatrixes(){
     cout << "IMPRIMIENDO LA MATRIZ 3 = MATRIZ 1 x MATRIZ 2" << endl;
     cout << mat3 << endl;
 
-    mat1[0][0] = 5.5;
+    mat3[0][0] = 5.5;
     cout << "SE MODIFICA  MATRIZ 3[0][0] = 5.5 " << endl;
     cout << mat3 << endl;
 
