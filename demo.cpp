@@ -6,6 +6,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "recorrer.h"
+#include <string>
 using namespace std;
 
 template <typename T, int N>
@@ -124,9 +125,26 @@ void DemoDynamicMatrixes(){
     recorrer(mat1, ClassX<TX>(8) );
     recorrer(mat1, ::print<TX>); cout << endl << endl;
 
+
+    CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
     // // TODO #3: prepare Matrix to be used as a matrix from outside
     // // overload operator[](size_t row)
-    // mat1[2][3] = 8.2;
+    cout << "IMPRIMIENDO LA MATRIZ 1" << endl;
+    cout << mat1 << endl;
+
+    cout << "IMPRIMIENDO LA MATRIZ 2" << endl;
+    cout << mat2 << endl;
+
+    cout << "IMPRIMIENDO LA MATRIZ 3 = MATRIZ 1 x MATRIZ 2" << endl;
+    cout << mat3 << endl;
+
+    mat1[0][0] = 5.5;
+    cout << "SE MODIFICA  MATRIZ 3[0][0] = 5.5 " << endl;
+    cout << mat3 << endl;
+
+    cout << "SE MODIFICA EL MATRIZ3[0][0] = MATRIZ2(0,0)" << endl;
+    mat1[0][0] = mat2(2,3);
+    cout << mat1;
     // mat1(2, 2) = 7.5; // Operator () is returning a value_type &
     // cout << mat1;
 }
