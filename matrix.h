@@ -66,6 +66,10 @@ public:
     bool operator>(const NodeMatrix<T>& other) const { 
         return m_key > other.m_key;
     }
+
+    constexpr operator value_type() const noexcept {
+        return m_key;
+    }
     
 };
 
