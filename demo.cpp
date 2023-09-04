@@ -185,51 +185,51 @@ void DemoArray(){
 }
 
 void DemoIterators(){
-    CArray< TraitArrayIntInt > v1("Jorge");
+    // CArray< TraitArrayIntInt > v1("Jorge");
     
-    v1.insert(30, 40);
-    v1.insert(18, 45);
-    v1.insert(20, 35);
-    v1.insert(7 , 64);
-    v1.insert(12, 25);
-    v1.insert(8 , 17);
+    // v1.insert(30, 40);
+    // v1.insert(18, 45);
+    // v1.insert(20, 35);
+    // v1.insert(7 , 64);
+    // v1.insert(12, 25);
+    // v1.insert(8 , 17);
 
-    cout << v1 << endl;
+    // cout << v1 << endl;
     // array_forward_iterator<CArray< TraitArrayIntInt >> iter = v1.begin();
     //CArray< TraitArrayIntInt >::iterator iter = v1.begin();
-    auto iter = v1.begin();
-    recorrer(iter, v1.end(), ::increment<TX, 7>);
-    cout << v1 << endl;
-    recorrer(v1, ::increment<TX, 4>);
-    cout << v1 << endl;
+    // auto iter = v1.begin();
+    // recorrer(iter, v1.end(), ::increment<TX, 7>);
+    // cout << v1 << endl;
+    // recorrer(v1, ::increment<TX, 4>);
+    // cout << v1 << endl;
 
-    recorrer(v1, ::print<TX>);
-    cout << endl;
+    // recorrer(v1, ::print<TX>);
+    // cout << endl;
     // Lambda function
-    int x = 3;
-    recorrer(v1, [x](TX &n){ n *= 2*x; });
-    recorrer(v1, ::print<TX>); cout << endl;
-    ClassX<TX> ope(5);
-    recorrer(v1, ope);
-    recorrer(v1, ::print<TX>); cout << endl;
-    recorrer(v1, ClassX<TX>(8) );
-    recorrer(v1, ::print<TX>); cout << endl;
-}
+    // int x = 3;
+    // recorrer(v1, [x](TX &n){ n *= 2*x; });
+    // recorrer(v1, ::print<TX>); cout << endl;
+    // ClassX<TX> ope(5);
+    // recorrer(v1, ope);
+    // recorrer(v1, ::print<TX>); cout << endl;
+    // recorrer(v1, ClassX<TX>(8) );
+    // recorrer(v1, ::print<TX>); cout << endl;
 
-void DemoReverseIterators(){
-    cout << "DEMO REVERSE ITERATORS FOR ARRAY AS A CONTEINER : " << endl;
-    CArray< TraitArrayIntInt > v1("Edson Cáceres");
-    v1.insert(30, 40);
-    v1.insert(18, 45);
-    v1.insert(20, 35);
-    v1.insert(7 , 64);
-    v1.insert(12, 25);
-    v1.insert(8 , 17);
 
-    cout << "Printing asc : " << endl;
+    cout << "Reverse Iterator: " << endl;
+    CArray< TraitArrayIntInt > v1("Antonio");
+    v1.insert(15, 45);
+    v1.insert(11, 35);
+    v1.insert(12, 55);
+    v1.insert(4 , 84);
+    v1.insert(8, 15);
+    v1.insert(1 , 16);
+
+    cout << "Printing default order : " << endl;
     cout << v1 << endl;
-    cout << "Printing desc : " << endl;
-    recorrer(v1.rbegin(), v1.rend(), ::print<TX>);
+    cout << "Printing reverse : " << endl;
+    recorrer_inverso(v1, ::print<TX>);
+
 }
 
 void DemoBinaryTree()

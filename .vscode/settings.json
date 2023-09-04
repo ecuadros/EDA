@@ -27,6 +27,7 @@
         "charconv": "cpp",
         "array": "cpp",
         "functional": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "xstddef": "cpp"
     }
 }

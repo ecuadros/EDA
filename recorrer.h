@@ -28,10 +28,11 @@ void recorrer(Container &container, F ope)
 
 // TODO implementar el recorrer inverso
 // # 2
-// template <typename Container, typename F>
-// void recorrer_inverso(Container &container, F ope)
-// { recorrer(container.rbegin(), container.rend(), ope);
-// }
+template <typename Container, typename F>
+void recorrer_inverso(Container &container, F ope)
+{ 
+    recorrer(container.reversebegin(), container.reverseend(), ope);
+}
 
 template <typename Container>
 void recorrer(Container &container)

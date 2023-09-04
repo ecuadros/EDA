@@ -44,23 +44,22 @@ class array_forward_iterator
 
 template <typename Container>
 class array_backward_iterator 
-     : public general_iterator<Container,  class array_backward_iterator<Container> > // 
-{public: 
-    // TODO: subir al padre  
-    typedef class general_iterator<Container, array_backward_iterator<Container> > Parent; 
-    typedef typename Container::Node           Node; // 
-    typedef array_backward_iterator<Container>  myself;
+     : public general_iterator<Container,  class array_backward_iterator<Container> >
+{
+    public:     
+        typedef class general_iterator<Container, array_backward_iterator<Container> > Parent; 
+        typedef typename Container::Node            Node;
+        typedef array_backward_iterator<Container>  myself;
+    
+        array_backward_iterator(Container *pContainer, Node *pNode) : Parent (pContainer, pNode) {}
+        array_backward_iterator(myself &other)                      : Parent(other) {}
+        array_backward_iterator(myself &&other)                     : Parent(other) {}
 
-  public:
-    array_backward_iterator(Container *pContainer, Node *pNode) 
-            : Parent (pContainer,pNode) {}
-    array_backward_iterator(myself &other)  : Parent (other) {}
-    array_backward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
-
-public:
-    array_backward_iterator operator++() { Parent::m_pNode--;
-                                          return *this;
-                                        }
+        array_backward_iterator operator++() 
+        { 
+            Parent::m_pNode--;
+            return *this;
+        }
 };
 
 
@@ -140,7 +139,7 @@ public:
     using CompareFn = typename Traits::CompareFn;
     using myself    = CArray<Traits>;
     using iterator  = array_forward_iterator<myself>;
-    using riterator  = array_backward_iterator<myself>; //riterator means reverse_iterator
+    using reverseiterator  = array_backward_iterator<myself>;
 private:
     Node     *m_pVect = nullptr;
     size_t    m_vcount = 0, m_vmax = 0;
@@ -195,8 +194,8 @@ public:
 
     iterator begin() { iterator iter(this, m_pVect);    return iter;    }
     iterator end()   { iterator iter(this, m_pVect+m_vcount);    return iter;    }
-    riterator rbegin() { riterator iter(this, m_pVect+m_vcount-1);     return iter;    }
-    riterator rend()   { riterator iter(this, m_pVect-1);   return iter;    }
+    reverseiterator reversebegin() { reverseiterator iter(this, m_pVect+m_vcount-1);     return iter;    }
+    reverseiterator reverseend()   { reverseiterator iter(this, m_pVect-1);   return iter;    }
 };
 
 template <typename Traits>
