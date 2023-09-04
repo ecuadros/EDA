@@ -28,6 +28,45 @@ public:
                                         }
 };
 
+template <typename Container>
+class array_bidirectional_iterator 
+    : public general_iterator<Container, array_bidirectional_iterator<Container>>
+{
+public:
+    typedef class general_iterator<Container, array_bidirectional_iterator<Container>> Parent;
+    typedef typename Container::Node Node;
+    typedef array_bidirectional_iterator<Container> myself;
+
+public:
+    array_bidirectional_iterator(Container* pContainer, Node* pNode)
+        : Parent(pContainer, pNode) {}
+
+    array_bidirectional_iterator(myself& other) : Parent(other) {}
+    array_bidirectional_iterator(myself&& other) : Parent(other) {}
+
+    array_bidirectional_iterator& operator++() {
+        Parent::m_pNode++;
+        return *this;
+    }
+
+    array_bidirectional_iterator& operator--() {
+        Parent::m_pNode--;
+        return *this;
+    }
+
+    array_bidirectional_iterator operator++(int) {
+        array_bidirectional_iterator temp = *this;
+        Parent::m_pNode++;
+        return temp;
+    }
+
+    array_bidirectional_iterator operator--(int) {
+        array_bidirectional_iterator temp = *this;
+        Parent::m_pNode--;
+        return temp;
+    }
+};
+
 
 template <typename T, typename V>
 class NodeArray
@@ -104,7 +143,7 @@ public:
     using Node            = typename Traits::Node;
     using CompareFn       = typename Traits::CompareFn;
     using myself          = CArray<Traits>;
-    using iterator        = array_forward_iterator<myself>;
+    using iterator        = array_bidirectional_iterator<myself>;
 private:
     Node     *m_pVect = nullptr;
     size_t    m_vcount = 0, m_vmax = 0;
@@ -150,6 +189,9 @@ public:
 
     iterator begin() { iterator iter(this, m_pVect);    return iter;    }
     iterator end()   { iterator iter(this, m_pVect+m_vcount);    return iter;    }
+
+    iterator rbegin() { return iterator(this, m_pVect + m_vcount - 1); }
+    iterator rend() { return iterator(this, m_pVect - 1); }
 };
 
 template <typename Traits>

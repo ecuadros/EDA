@@ -18,6 +18,7 @@ int main()
 
     // DemoPreandPostIncrement();
     // DemoSmartPointers();
-    DemoDynamicMatrixes();
+    //DemoDynamicMatrixes();
+    task_02_03();
     return 0;
 }

@@ -1,5 +1,6 @@
 #include <iostream> // cout
 #include <fstream>  // ofstream, ifstream
+#include <memory>
 #include <cmath>
 #include "demo.h"
 #include "array.h"
@@ -171,6 +172,26 @@ void DemoArray(){
     vx.insert("Edson"  , "Caceres");
     vx.insert("Franz"  , "Maguiña");
     vx.print(cout);
+}
+
+void task_02_03(){
+    CArray< TraitFloatLong > task("Task 2-3");
+    for(auto i = 100 ; i < 104 ; i++){   
+        task.insert(sqrt(i), i);
+    }
+
+    cout << "Forward" << endl;
+    // Iterate forward through the array
+    for (auto it = task.begin(); it != task.end(); it++) {
+        cout << *it << endl;
+    }
+
+    cout << "Backward" << endl;
+    // Iterate backward through the array
+    for (auto it = task.rbegin(); it != task.rend(); it--) {
+        cout << *it << endl;
+    }
+
 }
 
 template <typename T, int N>

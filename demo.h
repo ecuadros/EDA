@@ -10,6 +10,7 @@ void DemoArray();
 void DemoIterators();
 void DemoBinaryTree();
 void DemoHash();
+void task_02_03();
 
 
 
