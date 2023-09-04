@@ -100,9 +100,6 @@ void DemoDynamicMatrixes(){
     mat2.fill(2.5);
     cout << mat2;
 
-    // TODO #1: overload operator*(CMatrix<Traits> &other)
-    // CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
-
     cout <<endl;
     cout << "----------------Iterator matrix--------------------" << endl;
     // TODO #2: Create Iterator for CMatrix
@@ -129,6 +126,19 @@ void DemoDynamicMatrixes(){
     mat1[2][3] = 8.2;
     mat1(2, 2) = 7.5; // Operator () is returning a value_type &
     cout << mat1;
+
+    // TODO #1: overload operator*(CMatrix<Traits> &other)
+    cout << "---- MULTIPLICACION DE MATRICES ----"<< endl;
+    mat1.fill(1);
+    cout << "---- MATRIZ: mat1 ----"<< endl;
+    cout << mat1;
+    mat2.fill(2);
+    cout << "---- MATRIZ: mat2 ----"<< endl;
+    cout << mat2;
+    CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
+    cout << "---- MATRIZ: mat3 = mat1 * mat2 ----"<< endl;
+    cout << mat3;
+    
 }
 
 void DemoPreandPostIncrement(){

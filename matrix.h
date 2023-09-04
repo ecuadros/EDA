@@ -168,6 +168,18 @@ public:
         return m_ppMatrix[rows];
     }
 
+    myself operator*(myself &matriz2){
+        myself matrizResultante (m_rows, matriz2.m_cols);
+        matrizResultante.fill(0);
+
+        for(auto x=0; x<m_rows; x++)
+            for(auto y=0; y<matriz2.m_cols; y++)
+                for(auto z=0; z< m_cols; z++)
+                    matrizResultante[x][y]=matrizResultante[x][y]+m_ppMatrix[x][z]*matriz2.m_ppMatrix[z][y];
+        
+        return matrizResultante;
+    }
+
 };
 
 template <typename Traits>
