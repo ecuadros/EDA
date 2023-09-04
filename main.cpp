@@ -9,7 +9,8 @@ using namespace std;
 int main()
 {
     // DemoParameters();
-    DemoArray();
+    //DemoArray();
+    task_01();
     // DemoBinaryTree();
     // DemoHash();
 

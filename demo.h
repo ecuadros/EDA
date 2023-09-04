@@ -4,6 +4,7 @@
 void DemoArray();
 void DemoBinaryTree();
 void DemoHash();
+void task_01();
 
 void DemoSmartPointers();
 

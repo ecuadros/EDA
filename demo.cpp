@@ -1,5 +1,6 @@
 #include <iostream> // cout
 #include <fstream>  // ofstream, ifstream
+#include <memory>
 #include <cmath>
 #include "demo.h"
 #include "array.h"
@@ -53,6 +54,20 @@ void DemoArray(){
         cout << "v2[" << i << "] = " << v2[i] << endl;
     ofstream of("test.txt", ios::out);
     of << v2 << endl; 
+}
+
+void task_01(){
+    CArray<float> task_arr("Task"); 
+    ifstream fi("in.txt");
+    if (!fi.is_open())
+    {
+        cout << "Error al abrir ejemplo.dat\n";
+        exit(EXIT_FAILURE);
+    }
+    fi >> task_arr;
+    ofstream of("out.txt", ios::out);
+    of << task_arr << endl; 
+    cout << task_arr.size() << endl;
 }
 
 void DemoBinaryTree()

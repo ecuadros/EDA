@@ -17,8 +17,10 @@ public:
     CArray(string name) : m_name(name) {}
     ~CArray(){
         cout << "Destroying " << m_name << "..." << endl;
-        delete [] m_pVect;
-        m_pVect = nullptr;
+        if (m_pVect != nullptr) {
+            delete[] m_pVect;
+            m_pVect = nullptr;
+        }
         m_vcount = 0;
         m_vmax = 0;
     }
@@ -60,7 +62,10 @@ void CArray<T>::resize(){
 
 template <typename T>
 ostream &operator<<(ostream &os, CArray<T> &obj){
-    obj.print(os);
+    for (size_t i = 0; i < obj.size(); ++i) {
+        os << obj[i] << endl;
+    }
+    os << endl;
     return os;
 }
 
@@ -68,6 +73,10 @@ ostream &operator<<(ostream &os, CArray<T> &obj){
 template <typename T>
 istream & operator>>(istream &is, CArray<T> &obj){
     // TODO
+    T val;
+    while (!is.eof() && is >> val) {
+        obj.insert(val);
+    }
     return is;
 }
 
