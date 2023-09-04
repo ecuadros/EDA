@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm> // swap algorithm
 #include <cassert>
+#include <cmath>
 #include "types.h"
 #include "keynode.h"
 #include "xtrait.h"
@@ -27,16 +28,6 @@ public:
 private:
     CArray<Traits>    m_heap;
     string    m_name = "Empty";
-    CompareFn compareFn;
-
-    void heapifyAsc(size_t i){
-        size_t parent = (i - 1) / 2;
-        // TODO: Use CompareFn
-        if (compareFn(m_heap[parent], m_heap[i])){
-            swap(m_heap[parent], m_heap[i]);
-            heapifyAsc(parent);
-        }
-    }
 
     void heapifyDesc(size_t i){
         size_t left = 2 * i + 1;
@@ -78,9 +69,20 @@ public:
         // cout << "Key=" << key << " Value=" << value << "\tinserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
 
+    CompareFn comparador;
+
     // TODO: complete heapifyAsc function (useful for insertion)
     void heapifyAsc(){
-        heapifyAsc(m_heap.size() - 1);
+        size_t n_ultimo = m_heap.size()-1;
+        heapifyAsc(n_ultimo);
+    }
+
+    void heapifyAsc(size_t n_ultimo){
+        size_t n_padre = static_cast<int>(floor(n_ultimo/2));
+        if (comparador(m_heap[n_padre], m_heap[n_ultimo])){
+            swap(m_heap[n_padre], m_heap[n_ultimo]);
+            heapifyAsc(n_padre);
+        }
     }
 
     // TODO: complete heapifyDesc function (useful when we remove an element)

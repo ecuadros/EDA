@@ -246,19 +246,18 @@ void DemoReverseIterators(){
 
 void DemoHeap()
 {
-    CHeap<XTraitIntIntAsc> heap("Heap IntIntAsc");
-    heap.insert(30, 40);
-    heap.insert(18, 45);
-    heap.insert(20, 35);
-    heap.insert(7 , 64);
-    heap.insert(12, 25);
-    heap.insert(8 , 17);
+    cout << "Hello from DemoHeap()" <<endl;
+    CHeap<XTraitIntIntAsc> arrayHeap ("Francisco Gamarra");
+    arrayHeap.insert(1, 40);
+    arrayHeap.insert(2, 45);
+    arrayHeap.insert(3, 35);
+    arrayHeap.insert(4, 50);
+    arrayHeap.insert(5, 25);
+    arrayHeap.insert(6, 17);
+    arrayHeap.insert(7, 30);
 
-    cout << "Before Pop()" << endl;
-    heap.print(cout);
-    cout << "After Pop()" << endl;
-    heap.pop();
-    heap.print(cout);
+    cout << "arrayHeap ordenado con heapifyAsc" <<endl;
+    arrayHeap.print(cout);
 }
 
 void DemoBinaryTree()
