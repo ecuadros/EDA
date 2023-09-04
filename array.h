@@ -85,16 +85,27 @@ public:
         m_pVect[m_vcount++] = Node(key, value);
         // cout << "Key=" << key << " Value=" << value << "\tinserted, m_vcount=" << m_vcount << " m_vmax=" << m_vmax << endl;
     }
+
     // TODO: remove the last element and returns it
-    Node back(){
-        Node lastNode = m_pVect[m_vcount-1];
+    // Se guarda el ultimo elemento en un node temporal
+    // y se realiza el pop_back (eliminacion) y se regresa
+    // el valor salvado en temporal (lastNode).
+    Node back()
+    {
+        assert(m_vcount > 0);
+        Node lastElement = m_pVect[m_vcount-1];
         pop_back();
-        return lastNode;
+        return lastElement;
     }
     // TODO: remove the last element only
-    void pop_back(){
+    // Siempre que haya elementos ingresados para quitarlos
+    // del array solo se elimina uno del conteo y se limpia el Nodo.
+    void pop_back()
+    {
         assert(m_vcount > 0);
-        m_vcount--;
+        m_pVect[m_vcount-1] = Node(0,0);
+        m_vcount = m_vcount-1;
+        
     }
     void resize       ();
     void destroy(){

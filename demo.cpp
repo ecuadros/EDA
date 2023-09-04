@@ -7,6 +7,7 @@
 #include "matrix.h"
 #include "foreach.h"
 #include "heap.h"
+#include <string>
 using namespace std;
 
 template <typename T, int N>
@@ -247,6 +248,7 @@ void DemoReverseIterators(){
 void DemoHeap()
 {
     CHeap<XTraitIntIntAsc> heap("Heap IntIntAsc");
+    cout << endl;
     heap.insert(30, 40);
     heap.insert(18, 45);
     heap.insert(20, 35);
@@ -254,11 +256,12 @@ void DemoHeap()
     heap.insert(12, 25);
     heap.insert(8 , 17);
 
-    cout << "Before Pop()" << endl;
+    cout << "Antes de Pop()" << endl;
     heap.print(cout);
-    cout << "After Pop()" << endl;
+    cout << endl << "Despues de Pop()" << endl;
     heap.pop();
     heap.print(cout);
+    cout << "Se comprueba que el primer elemento fue eliminado" << endl << endl;
 }
 
 void DemoBinaryTree()
