@@ -102,7 +102,7 @@ class CBTreePage //: public SimpleIndex <keyType>
        bt_ErrorCode    Insert (const keyType &key, const ObjIDType ObjID);
        bt_ErrorCode    Remove (const keyType &key, const ObjIDType ObjID);
        bool            Search (const keyType &key, ObjIDType &ObjID);
-//        void            Print  (ostream &os);
+       void            Print  (ostream &os);
 //        void            Print2  (ostream &os);
        template <typename F,typename... Extras>
        void            Function_G(F function,Extras... extras);
@@ -807,14 +807,14 @@ CBTreePage<Trait>::GetFirstObjectInfo()
         return m_Keys[0];
 }
 
-// template <typename keyType, typename ObjIDType>
-// void f_Print(tagObjectInfo<keyType, ObjIDType> &info, size_t level, void *pExtra)
-// {
-//        ostream &os = *(ostream *)pExtra;
-//        for(size_t i = 0; i < level ; i++)
-//                os << "\t";
-//        os << info.key << "-:>" << info.ObjID << "\n";
-// }
+template <typename keyType, typename ObjIDType>
+void f_Print(tagObjectInfo<keyType, ObjIDType> &info, size_t level, void *pExtra)
+{
+       ostream &os = *(ostream *)pExtra;
+       for(size_t i = 0; i < level ; i++)
+               os << "\t";
+       os << info.key << "-:>" << info.ObjID << "\n";
+}
 
 // template <typename Trait>
 // void CBTreePage<Trait>::Print(ostream & os)
@@ -823,11 +823,11 @@ CBTreePage<Trait>::GetFirstObjectInfo()
 //        lpfnForEach2 lpfn = &::f_Print;
 //        ForEach(lpfn, 0, &os);
 // }
-// template <typename Trait>
-// void CBTreePage<Trait>::Print2(ostream &os){
-//        lpfnForEach<void*> lpfn = &f_Print<keyType, ObjIDType>;
-//        ForEachG<void*>(lpfn,0,&os);
-// }
+template <typename Trait>
+void CBTreePage<Trait>::Print(ostream &os){
+       lpfnForEach<void*> lpfn = &f_Print<keyType, ObjIDType>;
+       ForEachG<void*>(lpfn,0,&os);
+}
 template <typename Trait>
 template <typename F, typename...Extras>
 void CBTreePage<Trait>::Function_G(F function,Extras... extras){
@@ -887,8 +887,5 @@ void CBTreePage<Trait>::MovePage(BTPage *pChildPage, vector<ObjectInfo> &tmpKeys
        pChildPage->clear();
 }
 
-// TODO Add opertor<<
-
-// TODO Add opertor>>
 
 #endif

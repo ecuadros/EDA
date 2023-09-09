@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include "btreepage.h"
+#include <sstream> 
+#include <string>
 #define DEFAULT_BTREE_ORDER 3
 
 const size_t MaxHeight = 5; 
@@ -56,9 +58,10 @@ public:
        size_t            size()  { return m_NumKeys; }
        size_t            height() { return m_Height;      }
        size_t            GetOrder() { return m_Order;     }
+       BTNode          GetRoot(){ return m_Root;}
 
-       // void            Print (ostream &os)
-       // {               m_Root.Print(os);                              }
+       void            Print (ostream &os)
+       {               m_Root.Print(os);                              }
        // void            Print2 (ostream &os)
        // {               m_Root.Print2(os);                              }
        template <typename Func, typename...Extras>
@@ -113,8 +116,48 @@ bool BTree<Trait>::Remove (const keyType key, const long ObjID)
        return true;
 }
 
-// TODO Add operator<<
+// operator<<
+template <typename T>
+ostream &operator<<(ostream &os, BTree<T> &obj){
+    obj.Print(os);
+    return os;
+}
 
-// TODO Add operator>>
+//  operator>>
+template <typename T>
+T convertFromString(const std::string &str) {
+    std::istringstream iss(str);
+    T value;
+    iss >> value;
+    return value;
+}
+
+template <typename T>
+istream & operator>>(istream &is, BTree<T> &obj){
+    string tmp_flow,num;
+    size_t count;
+    using vt      = typename T::keyType;
+    using lvt     = typename T::ObjIDType ;
+    vt  value;
+    lvt kvalue;
+    while (getline(is,tmp_flow)) { 
+        istringstream iss(tmp_flow);
+        count = 0;
+        while (iss >> num && count < 2) {
+            if(count==0){
+                vt num_f = convertFromString<vt>(num);
+                value=num_f;
+            } 
+            else{
+                lvt num_f = convertFromString<lvt>(num);
+                kvalue=num_f; 
+            }      
+            count++;
+        }
+        obj.Insert(value,kvalue);
+    }
+    return is;    
+}
+
 
 #endif

@@ -412,7 +412,7 @@ void DemoTree()
         //bt.Function_G(&G_Print<int,int>, &cout);
     }
     cout<<"\nPrint"<<endl;
-    //bt.Print2(cout);
+    bt.Print(cout);
     bt.Function_G(&G_Print<int,int>, &cout);// Appiled function Print
     bt.Function_G(&G_Change_Value_1<int,int>,10);// Applied function G_Change_Value
     cout<<"\nPrint with changes 1 parameter"<<endl;
@@ -428,6 +428,13 @@ void DemoTree()
     bt.Function_G_Reverse(&G_Change_Value_3<int,int>,10,3,3);// Applied function G_Change_Value
     cout<<"\nPrint with changes 3 parameters"<<endl;
     bt.Function_G_Reverse(&G_Print<int,int>, &cout);// Appiled function Print again
+     cout<<"\nTest overload <<"<<endl;
+     cout<<bt;
+     cout<<"\nReading External File"<<endl;
+     ifstream of("file.txt",ios::in);
+     of>>bt;
+     cout<<"Print Value of Btree Update"<<endl;
+     cout<<bt;
 
     exit(0);
 
