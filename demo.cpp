@@ -6,6 +6,9 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include <random>
+#include <set>
+#include "btree.h"
 using namespace std;
 
 template <typename T, int N>
@@ -185,14 +188,14 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
-    CArray< TraitStringString > vx("Ernesto Cuadros");
-    vx.insert("Ernesto", "Cuadros");
-    vx.insert("Luis"   , "Tejada");
-    vx.insert("Jorge"  , "Lozano");
-    vx.insert("Edson"  , "Caceres");
-    vx.insert("Franz"  , "Maguiña");
-    vx.print(cout);
+    //using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+//     CArray< TraitStringString > vx("Ernesto Cuadros");
+//     vx.insert("Ernesto", "Cuadros");
+//     vx.insert("Luis"   , "Tejada");
+//     vx.insert("Jorge"  , "Lozano");
+//     vx.insert("Edson"  , "Caceres");
+//     vx.insert("Franz"  , "Maguiña");
+//     vx.print(cout);
 }
 
 void DemoIterators(){
@@ -356,21 +359,77 @@ void DemoHash()
 //     BinaryTree< BinaryTreeDescTraits<TX> > myDescBinaryTree;
 //     DemoBinaryTree(myDescBinaryTree);
 // }
+//This function is used to print
+template <typename keyType, typename ObjIDType>
+void G_Print(tagObjectInfo<keyType, ObjIDType> &info, size_t level, ostream* pExtra){
+       ostream &os = *pExtra;
+       for(size_t i = 0; i < level ; i++)
+               os << "\t";
+       os << info.key << "-:>" << info.ObjID << "\n";
+}
+template <typename keyType, typename ObjIDType>
+void G_Change_Value_1(tagObjectInfo<keyType, ObjIDType> &info, size_t level,keyType add_value){
+      info.key+= add_value;       
+}
+template <typename keyType, typename ObjIDType>
+void G_Change_Value_2(tagObjectInfo<keyType, ObjIDType> &info, size_t level,keyType value_1,keyType value_2){
+      info.key+= value_1+pow(value_2,3);       
+}
+template <typename keyType, typename ObjIDType>
+void G_Change_Value_3(tagObjectInfo<keyType, ObjIDType> &info, size_t level,keyType value_1,keyType value_2,keyType value_3){
+      info.key+= value_1+pow(value_2,value_3)+value_3;       
+}
 
-// #include "btree.h"
-// void DemoTree()
-// {
-//     BTree < BtreeTrait<char,long> > bt;
-//     const char * keys = "DYZakHIUwxVJ203ejOP9Qc8AdtuEop1XvTRghSNbW567BfiCqrs4FGMyzKLlmn";
-//     for(size_t i = 0; keys[i]; i++)
-//         {
-//             //cout<<"Inserting "<<keys[i]<<endl;
-//             //result = bt.Insert(keys4[i], i*i);
-//             bt.Insert(keys[i], i*i);
-//             //bt.Print(cout);
-//         }
-//     bt.Print(cout);
-//     exit(0);
+void DemoTree()
+{
+    //BTree <BTreeTrait<char,long>> bt(3);
+    //const char * keys = "DYZakHIUwxVJ203ejOP9Qc8AdtuEop1XvTRghSNbW567BfiCqrs4FGMyzKLlmn";
+    //const char * keys = "796512348";
+    // for(size_t i = 0; keys[i]; i++)
+    //     {
+    //         //cout<<"Inserting "<<keys[i]<<endl;
+    //         //result = bt.Insert(keys4[i], i*i);
+    //         bt.Insert(keys[i], i);
+    //         bt.Print(cout);
+    //         cout<<endl;
+    //     }
+    //bt.Print(cout);
+    random_device rd;
+    mt19937 gen(rd());
+    uniform_int_distribution<int> dist(1,100);
+    BTree <BTreeTrait<int,int>> bt(3);
+    std::set<int> generatedNumbers;
+    for(int i=0;i<=16;i++){
+        int tmp;
+        do {
+            tmp = dist(gen);
+        } while (generatedNumbers.find(tmp) != generatedNumbers.end());
+        generatedNumbers.insert(tmp);
+        //cout<<i<<",";
+        //cout<<"\nIter: "<<i<< " value: "<<tmp<<endl;
+        bt.Insert(tmp,i);
+        //bt.Print(cout);
+        //bt.Function_G(&G_Print<int,int>, &cout);
+    }
+    cout<<"\nPrint"<<endl;
+    //bt.Print2(cout);
+    bt.Function_G(&G_Print<int,int>, &cout);// Appiled function Print
+    bt.Function_G(&G_Change_Value_1<int,int>,10);// Applied function G_Change_Value
+    cout<<"\nPrint with changes 1 parameter"<<endl;
+    bt.Function_G(&G_Print<int,int>, &cout);// Appiled function Print again
+    bt.Function_G(&G_Change_Value_2<int,int>,10,3);// Applied function G_Change_Value
+    cout<<"\nPrint with changes 2 parameters"<<endl;
+    bt.Function_G(&G_Print<int,int>, &cout);// Appiled function Print again
+    bt.Function_G(&G_Change_Value_3<int,int>,10,3,2);// Applied function G_Change_Value
+    cout<<"\nPrint with changes 3 parameters"<<endl;
+    bt.Function_G(&G_Print<int,int>, &cout);// Appiled function Print again
+    cout<<"\nPrint Reverse"<<endl;
+    bt.Function_G_Reverse(&G_Print<int,int>, &cout);// Appiled function Print Reverse 
+    bt.Function_G_Reverse(&G_Change_Value_3<int,int>,10,3,3);// Applied function G_Change_Value
+    cout<<"\nPrint with changes 3 parameters"<<endl;
+    bt.Function_G_Reverse(&G_Print<int,int>, &cout);// Appiled function Print again
 
-// }
+    exit(0);
+
+}
 

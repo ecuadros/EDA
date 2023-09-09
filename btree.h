@@ -25,8 +25,8 @@ class BTree // this is the full version of the BTree
 public:
        //typedef ObjectInfo iterator;
        // TODO replace thius functions by foreach
-       typedef typename BTNode::lpfnForEach2    lpfnForEach2;
-       typedef typename BTNode::lpfnForEach3    lpfnForEach3;
+       // typedef typename BTNode::lpfnForEach2    lpfnForEach2;
+       // typedef typename BTNode::lpfnForEach3    lpfnForEach3;
        typedef typename BTNode::lpfnFirstThat2  lpfnFirstThat2;
        typedef typename BTNode::lpfnFirstThat3  lpfnFirstThat3;
 
@@ -57,12 +57,20 @@ public:
        size_t            height() { return m_Height;      }
        size_t            GetOrder() { return m_Order;     }
 
-       void            Print (ostream &os)
-       {               m_Root.Print(os);                              }
-       void            ForEach( lpfnForEach2 lpfn, void *pExtra1 )
-       {               m_Root.ForEach(lpfn, 0, pExtra1);              }
-       void            ForEach( lpfnForEach3 lpfn, void *pExtra1, void *pExtra2)
-       {               m_Root.ForEach(lpfn, 0, pExtra1, pExtra2);     }
+       // void            Print (ostream &os)
+       // {               m_Root.Print(os);                              }
+       // void            Print2 (ostream &os)
+       // {               m_Root.Print2(os);                              }
+       template <typename Func, typename...Extras>
+       void            Function_G (Func f,Extras... extras)
+       {               m_Root.Function_G(f,extras...)   ;                           }
+       template <typename Func, typename...Extras>
+       void            Function_G_Reverse (Func f,Extras... extras)
+       {               m_Root.Function_G_Reverse(f,extras...)   ;                           }
+       // void            ForEach( lpfnForEach2 lpfn, void *pExtra1 )
+       // {               m_Root.ForEach(lpfn, 0, pExtra1);              }
+       // void            ForEach( lpfnForEach3 lpfn, void *pExtra1, void *pExtra2)
+       // {               m_Root.ForEach(lpfn, 0, pExtra1, pExtra2);     }
        ObjectInfo*     FirstThat( lpfnFirstThat2 lpfn, void *pExtra1 )
        {               return m_Root.FirstThat(lpfn, 0, pExtra1);     }
        ObjectInfo*     FirstThat( lpfnFirstThat3 lpfn, void *pExtra1, void *pExtra2)
