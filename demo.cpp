@@ -9,6 +9,7 @@
 #include <random>
 #include <set>
 #include "btree.h"
+#include "keynode.h"
 using namespace std;
 
 template <typename T, int N>
@@ -360,24 +361,24 @@ void DemoHash()
 //     DemoBinaryTree(myDescBinaryTree);
 // }
 //This function is used to print
-template <typename keyType, typename ObjIDType>
-void G_Print(tagObjectInfo<keyType, ObjIDType> &info, size_t level, ostream* pExtra){
+template <typename value_type, typename LinkedValueType>
+void G_Print(KeyNode<value_type, LinkedValueType> &info, size_t level, ostream* pExtra){
        ostream &os = *pExtra;
        for(size_t i = 0; i < level ; i++)
                os << "\t";
-       os << info.key << "-:>" << info.ObjID << "\n";
+       os << info.getDataRef() << "-:>" << info.getValueRef()<< "\n";
 }
-template <typename keyType, typename ObjIDType>
-void G_Change_Value_1(tagObjectInfo<keyType, ObjIDType> &info, size_t level,keyType add_value){
-      info.key+= add_value;       
+template <typename value_type, typename LinkedValueType>
+void G_Change_Value_1(KeyNode<value_type, LinkedValueType> &info, size_t level,value_type add_value){
+      info.getDataRef()+= add_value;       
 }
-template <typename keyType, typename ObjIDType>
-void G_Change_Value_2(tagObjectInfo<keyType, ObjIDType> &info, size_t level,keyType value_1,keyType value_2){
-      info.key+= value_1+pow(value_2,3);       
+template <typename value_type, typename LinkedValueType>
+void G_Change_Value_2(KeyNode<value_type, LinkedValueType> &info, size_t level,value_type value_1,value_type value_2){
+      info.getDataRef()+= value_1+pow(value_2,3);       
 }
-template <typename keyType, typename ObjIDType>
-void G_Change_Value_3(tagObjectInfo<keyType, ObjIDType> &info, size_t level,keyType value_1,keyType value_2,keyType value_3){
-      info.key+= value_1+pow(value_2,value_3)+value_3;       
+template <typename value_type, typename LinkedValueType>
+void G_Change_Value_3(KeyNode<value_type, LinkedValueType> &info, size_t level,value_type value_1,value_type value_2,value_type value_3){
+      info.getDataRef()+= value_1+pow(value_2,value_3)+value_3;       
 }
 
 void DemoTree()
@@ -397,7 +398,8 @@ void DemoTree()
     random_device rd;
     mt19937 gen(rd());
     uniform_int_distribution<int> dist(1,100);
-    BTree <BTreeTrait<int,int>> bt(3);
+    //BTree <BTreeTrait<int,int>> bt(3);
+    BTree <Traits_BTree> bt(3);
     std::set<int> generatedNumbers;
     for(int i=0;i<=16;i++){
         int tmp;
@@ -434,6 +436,11 @@ void DemoTree()
      ifstream of("file.txt",ios::in);
      of>>bt;
      cout<<"Print Value of Btree Update"<<endl;
+     cout<<bt;
+     cout<<"Search element 100"<<endl;
+     cout<<"Linked_Value Type is: "<<bt.Search(100);
+     cout<<"\nDelete element 100"<<endl;
+     bt.Remove(100,111);
      cout<<bt;
 
     exit(0);

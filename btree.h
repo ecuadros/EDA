@@ -5,22 +5,34 @@
 #include "btreepage.h"
 #include <sstream> 
 #include <string>
+#include "xtrait.h"
 #define DEFAULT_BTREE_ORDER 3
 
 const size_t MaxHeight = 5; 
 
-template <typename _keyType, typename _ObjIDType>
+template <typename _value_type, typename _LinkedValueType>
 struct BTreeTrait
 {
-       using keyType = _keyType;
-       using ObjIDType = _ObjIDType;
+       using value_type = _value_type;
+       using LinkedValueType = _LinkedValueType;
 };
+
+template <typename Traits>
+struct BTreeTrait_Node
+{
+    using  value_type = typename Traits::value_type;
+    using  LinkedValueType= typename Traits::LinkedValueType;
+    using  Node= typename Traits::Node;
+    using  CompareFn = greater<value_type>;
+};
+using BTIntInt= XTrait<int,int>;
+using Traits_BTree= BTreeTrait_Node<BTIntInt>;
 
 template <typename Trait>
 class BTree // this is the full version of the BTree
 {
-       typedef typename Trait::keyType    keyType;
-       typedef typename Trait::ObjIDType    ObjIDType;
+       typedef typename Trait::value_type    value_type;
+       typedef typename Trait::LinkedValueType    LinkedValueType;
        
        typedef CBTreePage <Trait> BTNode;// useful shorthand
 
@@ -32,7 +44,9 @@ public:
        typedef typename BTNode::lpfnFirstThat2  lpfnFirstThat2;
        typedef typename BTNode::lpfnFirstThat3  lpfnFirstThat3;
 
-       typedef typename BTNode::ObjectInfo      ObjectInfo;
+       
+       //typedef typename BTNode::ObjectInfo      ObjectInfo;
+       typedef typename BTNode::Node      Node;
 
 public:
        BTree(size_t order = DEFAULT_BTREE_ORDER, bool unique = true)
@@ -48,10 +62,10 @@ public:
        //int           Open (char * name, int mode);
        //int           Create (char * name, int mode);
        //int           Close ();
-       bool            Insert (const keyType key, const long ObjID);
-       bool            Remove (const keyType key, const long ObjID);
-       ObjIDType       Search (const keyType key)
-       {      ObjIDType ObjID = -1;
+       bool            Insert (const value_type key, const LinkedValueType ObjID);
+       bool            Remove (const value_type key, const LinkedValueType ObjID);
+       LinkedValueType       Search (const value_type key)
+       {      LinkedValueType ObjID = -1;
               m_Root.Search(key, ObjID);
               return ObjID;
        }
@@ -74,9 +88,9 @@ public:
        // {               m_Root.ForEach(lpfn, 0, pExtra1);              }
        // void            ForEach( lpfnForEach3 lpfn, void *pExtra1, void *pExtra2)
        // {               m_Root.ForEach(lpfn, 0, pExtra1, pExtra2);     }
-       ObjectInfo*     FirstThat( lpfnFirstThat2 lpfn, void *pExtra1 )
+       Node*     FirstThat( lpfnFirstThat2 lpfn, void *pExtra1 )
        {               return m_Root.FirstThat(lpfn, 0, pExtra1);     }
-       ObjectInfo*     FirstThat( lpfnFirstThat3 lpfn, void *pExtra1, void *pExtra2)
+       Node*     FirstThat( lpfnFirstThat3 lpfn, void *pExtra1, void *pExtra2)
        {               return m_Root.FirstThat(lpfn, 0, pExtra1, pExtra2);   }
        //typedef               ObjectInfo iterator;
 
@@ -90,7 +104,7 @@ protected:
 
 // TODO change ObjID by LinkedValueType value
 template <typename Trait>
-bool BTree<Trait>::Insert(const keyType key, const long ObjID){
+bool BTree<Trait>::Insert(const value_type key,const  LinkedValueType ObjID){
        bt_ErrorCode error = m_Root.Insert(key, ObjID);
        if( error == bt_duplicate )
                return false;
@@ -104,7 +118,7 @@ bool BTree<Trait>::Insert(const keyType key, const long ObjID){
 }
 
 template <typename Trait>
-bool BTree<Trait>::Remove (const keyType key, const long ObjID)
+bool BTree<Trait>::Remove (const value_type key, const LinkedValueType  ObjID)
 {
        bt_ErrorCode error = m_Root.Remove(key, ObjID);
        if( error == bt_duplicate || error == bt_nofound )
@@ -136,8 +150,8 @@ template <typename T>
 istream & operator>>(istream &is, BTree<T> &obj){
     string tmp_flow,num;
     size_t count;
-    using vt      = typename T::keyType;
-    using lvt     = typename T::ObjIDType ;
+    using vt      = typename T::value_type;
+    using lvt     = typename T::LinkedValueType ;
     vt  value;
     lvt kvalue;
     while (getline(is,tmp_flow)) { 
