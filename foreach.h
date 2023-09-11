@@ -1,6 +1,7 @@
 #ifndef __RECORRRER_H__  
 #define __RECORRRER_H__ 
 //#include "object_function.h"
+#include <functional>
 using namespace std;
 
 template <typename T>

@@ -4,12 +4,12 @@
 //usleep(microseconds);
 
 template <typename Container>
-class binary_tree_inorder_iterator{
+class inorder_iterator{
     
   public: 
     typedef typename Container::Node           Node; //
     //typedef typename Node::Type         Type;
-    typedef binary_tree_inorder_iterator<Container>  myself;
+    typedef inorder_iterator<Container>  myself;
 
   private:
 
@@ -19,12 +19,12 @@ class binary_tree_inorder_iterator{
 
   public:
 
-    binary_tree_inorder_iterator(Container *pContainer, Node *pNode, bool printed)
+    inorder_iterator(Container *pContainer, Node *pNode, bool printed)
         : m_pContainer(pContainer), m_pNode(pNode), m_printed(printed) {}
-    binary_tree_inorder_iterator(myself &other) 
+    inorder_iterator(myself &other) 
           //: m_pContainer(other.m_pContainer), m_pNode(other.m_pNode){}
           : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode), m_printed(other.m_printed){}//ˈʌð.ɚ.waɪz aɪ n't g ˈvæl.juː
-    binary_tree_inorder_iterator(myself &&other) // Move constructor
+    inorder_iterator(myself &&other) // Move constructor
           {   m_pContainer = move(other.m_pContainer);
               m_pNode      = move(other.m_pNode);
           }
@@ -52,29 +52,29 @@ class binary_tree_inorder_iterator{
     myself operator++() {
         bool r = 0;
         Node* pNode = m_pNode;
-        pNode->setPrinted(m_printed?0:1);
+        pNode->setVisited(m_printed?0:1);
         while(r == 0){
             pNode = inorder(pNode,r);
         }
         m_pNode = pNode;
-        return *this; //ɪˈnɪʃ.əl.aɪz ; ˈʌð.ɚ.waɪz 
+        return *this;
     }
 
     Node* inorder(Node* pNode, bool& r){
-        if(pNode->getChild(0) != nullptr && pNode->getChild(0)->getPrinted() == m_printed){return inorder(pNode->getChild(0),r);}
-        if(pNode->getPrinted() == m_printed){r = 1;pNode->setPrinted(m_printed?0:1);return pNode;}
-        if(pNode->getChild(1) != nullptr && pNode->getChild(1)->getPrinted() == m_printed){return inorder(pNode->getChild(1),r);}
+        if(pNode->getChild(0) != nullptr && pNode->getChild(0)->getVisited() == m_printed){return inorder(pNode->getChild(0),r);}
+        if(pNode->getVisited() == m_printed){r = 1;pNode->setVisited(m_printed?0:1);return pNode;}
+        if(pNode->getChild(1) != nullptr && pNode->getChild(1)->getVisited() == m_printed){return inorder(pNode->getChild(1),r);}
         return pNode->getParent();
     }
 
 };
 
 template <typename Container>
-class binary_tree_postorden_iterator{
+class postorden_iterator{
     
   public: 
     typedef typename Container::Node           Node;
-    typedef binary_tree_postorden_iterator<Container>  myself;
+    typedef postorden_iterator<Container>  myself;
 
   private:
 
@@ -84,11 +84,11 @@ class binary_tree_postorden_iterator{
 
   public:
 
-    binary_tree_postorden_iterator(Container *pContainer, Node *pNode, bool printed)
+    postorden_iterator(Container *pContainer, Node *pNode, bool printed)
         : m_pContainer(pContainer), m_pNode(pNode), m_printed(printed) {}
-    binary_tree_postorden_iterator(myself &other) 
+    postorden_iterator(myself &other) 
           : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode), m_printed(other.m_printed){}
-    binary_tree_postorden_iterator(myself &&other) // Move constructor
+    postorden_iterator(myself &&other) // Move constructor
           {   m_pContainer = move(other.m_pContainer);
               m_pNode      = move(other.m_pNode);
           }
@@ -110,7 +110,7 @@ class binary_tree_postorden_iterator{
     myself operator++() {
         bool r = 0;
         Node* pNode = m_pNode;
-        pNode->setPrinted(m_printed?0:1);
+        pNode->setVisited(m_printed?0:1);
         while(r == 0){
             pNode = postorden(pNode,r);
         }
@@ -119,20 +119,20 @@ class binary_tree_postorden_iterator{
     }
 
     Node* postorden(Node* pNode, bool& r){
-        if(pNode->getChild(0) != nullptr && pNode->getChild(0)->getPrinted() == m_printed){return postorden(pNode->getChild(0),r);}
-        if(pNode->getChild(1) != nullptr && pNode->getChild(1)->getPrinted() == m_printed){return postorden(pNode->getChild(1),r);}
-        if(pNode->getPrinted() == m_printed){r = 1;pNode->setPrinted(m_printed?0:1);return pNode;}
+        if(pNode->getChild(0) != nullptr && pNode->getChild(0)->getVisited() == m_printed){return postorden(pNode->getChild(0),r);}
+        if(pNode->getChild(1) != nullptr && pNode->getChild(1)->getVisited() == m_printed){return postorden(pNode->getChild(1),r);}
+        if(pNode->getVisited() == m_printed){r = 1;pNode->setVisited(m_printed?0:1);return pNode;}
         return pNode->getParent();
     }
 
 };
 
 template <typename Container>
-class binary_tree_preorden_iterator{
+class preorden_iterator{
     
   public: 
     typedef typename Container::Node           Node;
-    typedef binary_tree_preorden_iterator<Container>  myself;
+    typedef preorden_iterator<Container>  myself;
 
   private:
 
@@ -142,11 +142,11 @@ class binary_tree_preorden_iterator{
 
   public:
 
-    binary_tree_preorden_iterator(Container *pContainer, Node *pNode, bool printed)
+    preorden_iterator(Container *pContainer, Node *pNode, bool printed)
         : m_pContainer(pContainer), m_pNode(pNode), m_printed(printed) {}
-    binary_tree_preorden_iterator(myself &other) 
+    preorden_iterator(myself &other) 
           : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode), m_printed(other.m_printed){}
-    binary_tree_preorden_iterator(myself &&other) // Move constructor
+    preorden_iterator(myself &&other) // Move constructor
           {   m_pContainer = move(other.m_pContainer);
               m_pNode      = move(other.m_pNode);
           }
@@ -168,7 +168,7 @@ class binary_tree_preorden_iterator{
     myself operator++() {
         bool r = 0;
         Node* pNode = m_pNode;
-        pNode->setPrinted(m_printed?0:1);
+        pNode->setVisited(m_printed?0:1);
         while(r == 0){
             pNode = preorden(pNode,r);
         }
@@ -177,20 +177,20 @@ class binary_tree_preorden_iterator{
     }
 
     Node* preorden(Node* pNode, bool& r){
-        if(pNode->getPrinted() == m_printed){r = 1;pNode->setPrinted(m_printed?0:1);return pNode;}
-        if(pNode->getChild(0) != nullptr && pNode->getChild(0)->getPrinted() == m_printed){return preorden(pNode->getChild(0),r);}
-        if(pNode->getChild(1) != nullptr && pNode->getChild(1)->getPrinted() == m_printed){return preorden(pNode->getChild(1),r);}
+        if(pNode->getVisited() == m_printed){r = 1;pNode->setVisited(m_printed?0:1);return pNode;}
+        if(pNode->getChild(0) != nullptr && pNode->getChild(0)->getVisited() == m_printed){return preorden(pNode->getChild(0),r);}
+        if(pNode->getChild(1) != nullptr && pNode->getChild(1)->getVisited() == m_printed){return preorden(pNode->getChild(1),r);}
         return pNode->getParent();
     }
 
 };
 
 template <typename Container>
-class binary_tree_print_iterator{
+class print_iterator{
     
   public: 
     typedef typename Container::Node           Node;
-    typedef binary_tree_print_iterator<Container>  myself;
+    typedef print_iterator<Container>  myself;
 
   private:
 
@@ -200,11 +200,11 @@ class binary_tree_print_iterator{
 
   public:
 
-    binary_tree_print_iterator(Container *pContainer, Node *pNode, bool printed)
+    print_iterator(Container *pContainer, Node *pNode, bool printed)
         : m_pContainer(pContainer), m_pNode(pNode), m_printed(printed) {}
-    binary_tree_print_iterator(myself &other) 
+    print_iterator(myself &other) 
           : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode), m_printed(other.m_printed){}
-    binary_tree_print_iterator(myself &&other) // Move constructor
+    print_iterator(myself &&other) // Move constructor
           {   m_pContainer = move(other.m_pContainer);
               m_pNode      = move(other.m_pNode);
           }
@@ -226,7 +226,7 @@ class binary_tree_print_iterator{
     myself operator++() {
         bool r = 0;
         Node* pNode = m_pNode;
-        pNode->setPrinted(m_printed?0:1);
+        pNode->setVisited(m_printed?0:1);
         while(r == 0){
             pNode = printAsTree(pNode,r);
         }
@@ -235,9 +235,9 @@ class binary_tree_print_iterator{
     }
 
     Node* printAsTree(Node* pNode, bool& r){
-        if(pNode->getChild(1) != nullptr && pNode->getChild(1)->getPrinted() == m_printed){return printAsTree(pNode->getChild(1),r);}
-        if(pNode->getPrinted() == m_printed){r = 1;pNode->setPrinted(m_printed?0:1);return pNode;}
-        if(pNode->getChild(0) != nullptr && pNode->getChild(0)->getPrinted() == m_printed){return printAsTree(pNode->getChild(0),r);}
+        if(pNode->getChild(1) != nullptr && pNode->getChild(1)->getVisited() == m_printed){return printAsTree(pNode->getChild(1),r);}
+        if(pNode->getVisited() == m_printed){r = 1;pNode->setVisited(m_printed?0:1);return pNode;}
+        if(pNode->getChild(0) != nullptr && pNode->getChild(0)->getVisited() == m_printed){return printAsTree(pNode->getChild(0),r);}
         return pNode->getParent();
     }
 
