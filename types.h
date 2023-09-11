@@ -2,5 +2,6 @@
 #define __TYPES_H__
 
 using TX = float;
+using IX=int;
 
 #endif
