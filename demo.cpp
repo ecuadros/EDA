@@ -265,12 +265,16 @@ void DemoBinaryTree(Container &container){
     using value_type = typename Container::value_type;
     using LinkedValueType = typename Container::LinkedValueType;
     using Node = typename Container::Node;
-    vector<value_type> keys = {50, 30, 20, 80, 60, 70, 40, 90};
-    vector<LinkedValueType> values = {1, 2, 3, 4, 5, 6, 7, 8};
-    size_t n = keys.size();
-    for(size_t i = 0;i<n;i++){
-        container.insert(keys[i],values[i]);
-    }
+    
+    MyVector<value_type> keys;
+    keys({60, 40, 40, 90, 70, 80, 50, 100});
+
+    MyVector<value_type> values;
+    values({1, 2, 3, 4, 5, 6, 7, 8});
+    
+    for(size_t i = 0; i < keys.getSize(); i++) 
+        container.insert(keys[i], values[i]);
+    
     
     cout << "\nTREE (p: parent, v: linked value): " << endl;
     container.print(cout,printAsTree<Node>);
@@ -295,19 +299,17 @@ void DemoBinaryTree(Container &container){
 
 void DemoBinaryTree()
 {   
+    using nodeBinaryTree = NodeBinaryTree< INT, INT >;
+    using traitAsc = BinaryTreeTrait< INT, INT, std::less< nodeBinaryTree > >;
+    using traitDesc = BinaryTreeTrait< INT, INT, std::greater< nodeBinaryTree > >;
 
-    cout <<endl<< "-----------------------------------DemoBinaryTree------------------------------------" << endl;
-
-    using traitAsc = BinaryTreeTrait< INT,INT, std::less< NodeBinaryTree< INT,INT > > >;
-    using traitDesc = BinaryTreeTrait< INT,INT, std::greater< NodeBinaryTree< INT,INT > > >;
-
-    cout << "---------------------Ascending Binary Tree------------------" << endl;
-    BinaryTree< traitAsc > myAscBinaryTree;
-    DemoBinaryTree(myAscBinaryTree);
+    cout << "Ascending Binary Tree:" << endl;
+    BinaryTree< traitAsc > ascBinaryTree;    
+    DemoBinaryTree(ascBinaryTree);
     
-    cout <<endl<< "---------------------Descending Binary Tree------------------" << endl;
-    BinaryTree< traitDesc > myDescBinaryTree;
-    DemoBinaryTree(myDescBinaryTree);
+    cout <<endl<< "Descending Binary Tree:" << endl;
+    BinaryTree< traitDesc > descBinaryTree;
+    DemoBinaryTree(descBinaryTree);
     cout<<endl;
 }
 

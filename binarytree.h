@@ -3,6 +3,7 @@
 #include <cassert>
 #include "types.h"
 #include "tree_iterators.h"
+#include "myVector.h"
 using namespace std;
 
 string operator*(string text, size_t n)
@@ -25,8 +26,8 @@ private:
   private : bool m_printed = 0;
   public:
     //T       m_data;
-    Node *  m_pParent = nullptr;
-    vector<Node *> m_pChild = {nullptr, nullptr}; // 2 hijos inicializados en nullptr
+    Node *  m_pParent = nullptr;    
+    MyVector <Node *> m_pChild;
     size_t m_level;
   public:
 
@@ -35,8 +36,9 @@ private:
                    Node *p0 = nullptr,
                    Node *p1 = nullptr) 
         : m_pParent(pParent){
+        m_pChild({nullptr, nullptr});
         Parent::m_key = key;
-        m_pChild[0] = p0;   m_pChild[1] = p1;
+        m_pChild[0] = p0;   m_pChild[1] = p1;        
     }
 
     NodeBinaryTree(Node *pParent,
@@ -46,6 +48,7 @@ private:
                    Node *p0 = nullptr,
                    Node *p1 = nullptr) 
         : m_pParent(pParent), Parent(key,value){
+            m_pChild({nullptr, nullptr});
         m_level = level;
         m_pChild[0] = p0;
         m_pChild[1] = p1;
@@ -75,17 +78,17 @@ struct BinaryTreeTrait{
 template <typename Traits>
 class BinaryTree
 {
-  public:
-    typedef typename Traits::value_type      value_type;
-    typedef typename Traits::LinkedValueType LinkedValueType;
-    typedef typename Traits::Node       Node;
+  public:    
+    using value_type = Traits::value_type;
+    using LinkedValueType = Traits::LinkedValueType;
+    using Node = Traits::Node;
     
-    typedef typename Traits::CompareFn      CompareFn;
-    typedef BinaryTree<Traits>              myself;
-    typedef binary_tree_inorder_iterator<myself>    in_iterator; //inorder iterator
-    typedef binary_tree_postorden_iterator<myself>    post_iterator; //postorden iterator
-    typedef binary_tree_preorden_iterator<myself>    pre_iterator; //preorden iterator
-    typedef binary_tree_print_iterator<myself>    print_iterator; //print as tree iterator
+    using CompareFn = Traits::CompareFn;
+    using myself = BinaryTree<Traits>;
+    using in_iterator = binary_tree_inorder_iterator<myself>; //inorder iterator
+    using post_iterator = binary_tree_postorden_iterator<myself>; //postorden iterator
+    using pre_iterator = binary_tree_preorden_iterator<myself>; //preorden iterator
+    using print_iterator = binary_tree_print_iterator<myself>; //print as tree iterator
 
 protected:
     Node    *m_pRoot = nullptr;
