@@ -3,6 +3,8 @@
 #include <cassert>
 #include "types.h"
 #include "tree_iterators.h"
+#include <vector>
+#include <string>
 using namespace std;
 
 string operator*(string text, size_t n)
@@ -95,12 +97,17 @@ public:
     size_t  size()  const       { return m_size;       }
     bool    empty() const       { return size() == 0;  }
     // TODO: insert must receive two paramaters: elem and LinkedValueType value
-    void    insert(value_type &key, LinkedValueType value) { internal_insert(key, value, nullptr, m_pRoot,0);  }
+    void    insert(value_type &key, LinkedValueType value) 
+    { 
+        internal_insert(key, value, nullptr, m_pRoot,0);
+    }
 
     in_iterator inbegin(bool printed = 0) { in_iterator iter(this, leftMost(m_pRoot),printed); return iter;    }
     in_iterator inend(bool printed = 0)   { in_iterator iter(this, rightMost(m_pRoot),printed);return iter;    }
+
     post_iterator postbegin(bool printed = 0) { post_iterator iter(this, leftMost(m_pRoot),printed);    return iter;    }
     post_iterator postend(bool printed = 0)   { post_iterator iter(this, m_pRoot,printed);    return iter;    }
+    
     pre_iterator prebegin(bool printed = 0) { pre_iterator iter(this, m_pRoot,printed);    return iter;    }
     pre_iterator preend(bool printed = 0)   { pre_iterator iter(this, rightMost(m_pRoot),printed);    return iter;    }
     print_iterator printbegin(bool printed = 0) { print_iterator iter(this, rightMost(m_pRoot),printed);    return iter;    }
@@ -110,12 +117,22 @@ protected:
     Node *CreateNode(Node *pParent, value_type &key, LinkedValueType value, size_t level){ return new Node(pParent, key, value, level); }
     Node *internal_insert(value_type &key, LinkedValueType value, Node *pParent, Node *&rpOrigin, size_t level)
     {
-        if( !rpOrigin ) //  llegué al fondo de una rama
+        // Se crea un condicional que pregunta si el nodo es nulo, es decir
+        // verifica si estamos en el ultimo nodo de la rama. De ser así se
+        // inserta el nuevo nodo y se agrega uno más a la cantidad de elemen-
+        // tos en el árbol.
+        if( !rpOrigin ) 
         {   ++m_size;
             return (rpOrigin = CreateNode(pParent, key, value,level));
         }
-        size_t branch = Compfn(key, rpOrigin->getDataRef() );
-        return internal_insert(key, value, rpOrigin, rpOrigin->getChildRef(branch), level+1);
+
+        // Por el contrario, si aún no llegamos a la parte inferior del arbol
+        // se llama recursivamente a la funcion y dependiendo de que recorrido
+        // hagamos sobre el arbol,ascendente o descendente, la funcion Compfn
+        // será greater o lesser, respectivamente y calculará para que rama irá (izq o der).
+        size_t siblingBranch = Compfn(key, rpOrigin->getDataRef() );
+        Node* nextNode = internal_insert(key, value, rpOrigin, rpOrigin->getChildRef(siblingBranch), level+1);
+        return nextNode;
     }
 
     Node* leftMost(Node *pNode){

@@ -265,7 +265,7 @@ void DemoBinaryTree(Container &container){
     using value_type = typename Container::value_type;
     using LinkedValueType = typename Container::LinkedValueType;
     using Node = typename Container::Node;
-    vector<value_type> keys = {50, 30, 20, 80, 60, 70, 40, 90};
+    vector<value_type> keys = {80, 90, 10, 40, 60, 70, 15, 100};
     vector<LinkedValueType> values = {1, 2, 3, 4, 5, 6, 7, 8};
     size_t n = keys.size();
     for(size_t i = 0;i<n;i++){
@@ -281,13 +281,7 @@ void DemoBinaryTree(Container &container){
     container.postorder(cout,printAsLine<Node>);
     cout << "\nRecorrido preorden: " << endl;
     container.preorder(cout,printAsLine<Node>);
-    cout << "\n\nVisitando la funcion en forma inorder y sumandole (1) a value: " << endl;
-    LinkedValueType value = 1;
-    container.inorder([](Node& node, LinkedValueType& value){
-        node.getValueRef() = node.getValue() + value;
-    },value);
-    cout << "Recorrido preorden: " << endl;
-    container.preorder(cout,printAsLine<Node>);
+
 
     cout<<endl;
 

@@ -15,23 +15,35 @@ public:
     LinkedValueType      m_value;
 
 public:
-    KeyNode(value_type key, LinkedValueType value) 
-        : m_key(key), m_value(value) {}
+    KeyNode(value_type key, LinkedValueType value)
+    {
+        m_key = key;
+        m_value = value;
 
-    KeyNode(const KeyNode<T, V>& other) : 
-        KeyNode(other.m_key, other.m_value) {}
+    }
 
-    KeyNode(KeyNode<T, V>&& other) // Move constructor
-        : m_key  (std::move(other.m_key)), 
-          m_value(std::move(other.m_value)) {}
+    KeyNode(const KeyNode<T, V>& other)
+    { 
+        KeyNode(other.m_key, other.m_value);
+    }
+    
     KeyNode() {}
 
-    KeyNode& operator=(const KeyNode& other) {
-        if (this != &other) {
-            m_key = other.m_key;
-            m_value = other.m_value;
-        }
+    KeyNode& operator=(const KeyNode& other) 
+    {
+        m_key = other.m_key;
+        m_value = other.m_value;
         return *this;
+    }
+
+    bool operator<(const KeyNode<T, V>& other) const 
+    { 
+        return m_key < other.m_key;
+    }
+    // Error was here. Next line was missing
+    bool operator>(const KeyNode<T, V>& other) const 
+    { 
+        return m_key > other.m_key;
     }
 
     value_type    getData() const   { return m_key; }
@@ -39,13 +51,7 @@ public:
     LinkedValueType  getValue() const { return m_value; }
     LinkedValueType& getValueRef()    { return m_value; }
 
-    bool operator<(const KeyNode<T, V>& other) const { 
-        return m_key < other.m_key;
-    }
-    // Error was here. Next line was missing
-    bool operator>(const KeyNode<T, V>& other) const { 
-        return m_key > other.m_key;
-    }
+
 };
 
 #endif
