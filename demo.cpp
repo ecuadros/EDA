@@ -6,6 +6,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "binarytree.h"
 using namespace std;
 
 template <typename T, int N>
@@ -141,59 +142,59 @@ void DemoPreandPostIncrement(){
     cout << "z=" << z << " x=" << x << endl;
 }
 
-void DemoArray(){   
-    cout << "Hello from DemoArray()" <<endl;
-    cout << "Vector #1()" <<endl;
+// void DemoArray(){   
+//     cout << "Hello from DemoArray()" <<endl;
+//     cout << "Vector #1()" <<endl;
     
-    CArray< TraitArrayIntInt > v1("Antonio"); 
-    for(auto i = 0 ; i < 15 ; i++)
-        v1.insert(i, i+5);   //  insert(&v1);
+//     CArray< TraitArrayIntInt > v1("Antonio"); 
+//     for(auto i = 0 ; i < 15 ; i++)
+//         v1.insert(i, i+5);   //  insert(&v1);
 
-    cout << "Vector #2()" <<endl;
-    CArray< TraitFloatLong > v2("Cristian Vera"), 
-           *pV3 = new CArray< TraitFloatLong >("Guiomar ABC");
-    auto &rA = *pV3;
-    for(auto i = 100 ; i < 112 ; i++)
-    {   v2.insert(sqrt(i), i);
-        pV3->insert(i, sqrt(i));
-        //  (*pv3).insert(i);
-        //  rA.insert(i);
-    }
-    cout << "Printing V1 (TraitArrayIntInt)" << endl;
-    cout << v1; // v1.print(cout);
+//     cout << "Vector #2()" <<endl;
+//     CArray< TraitFloatLong > v2("Cristian Vera"), 
+//            *pV3 = new CArray< TraitFloatLong >("Guiomar ABC");
+//     auto &rA = *pV3;
+//     for(auto i = 100 ; i < 112 ; i++)
+//     {   v2.insert(sqrt(i), i);
+//         pV3->insert(i, sqrt(i));
+//         //  (*pv3).insert(i);
+//         //  rA.insert(i);
+//     }
+//     cout << "Printing V1 (TraitArrayIntInt)" << endl;
+//     cout << v1; // v1.print(cout);
 
-    cout << "Printing V2 (TraitFloatLong)" << endl;
-    ostream &tmp = cout << v2 << "More text" << endl;
-    tmp << "Hola !!!" << endl;
-    cout << &tmp << "..." << &cout <<endl;
-    // cout << x << f << y << endl;
+//     cout << "Printing V2 (TraitFloatLong)" << endl;
+//     ostream &tmp = cout << v2 << "More text" << endl;
+//     tmp << "Hola !!!" << endl;
+//     cout << &tmp << "..." << &cout <<endl;
+//     // cout << x << f << y << endl;
 
-    cout << "Printing pv3 (TraitFloatLong)" << endl;
-    pV3->print(cout);
-    // (*pV3).print();     *pV3 is already an object
-    // rA.print();          rA is also an object
-    // pV3[0].print();      pV3 is also an array with just 1 element [0]
-    // (*(pV3+0)).print();
-    // (*(0+pV3)).print();
-    // 0[pV3].print();
-    // delete pV3;
+//     cout << "Printing pv3 (TraitFloatLong)" << endl;
+//     pV3->print(cout);
+//     // (*pV3).print();     *pV3 is already an object
+//     // rA.print();          rA is also an object
+//     // pV3[0].print();      pV3 is also an array with just 1 element [0]
+//     // (*(pV3+0)).print();
+//     // (*(0+pV3)).print();
+//     // 0[pV3].print();
+//     // delete pV3;
 
-    // Using an array with []
-    for(auto i = 0 ; i < v2.size() ; i++)
-        cout << "v2[" << i << "] = " << v2[i] << endl;
-    ofstream of("test.txt", ios::out);
-    of << v2 << endl; 
-    cout << "DemoArray finished !" << endl;
+//     // Using an array with []
+//     for(auto i = 0 ; i < v2.size() ; i++)
+//         cout << "v2[" << i << "] = " << v2[i] << endl;
+//     ofstream of("test.txt", ios::out);
+//     of << v2 << endl; 
+//     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
-    CArray< TraitStringString > vx("Ernesto Cuadros");
-    vx.insert("Ernesto", "Cuadros");
-    vx.insert("Luis"   , "Tejada");
-    vx.insert("Jorge"  , "Lozano");
-    vx.insert("Edson"  , "Caceres");
-    vx.insert("Franz"  , "Maguiña");
-    vx.print(cout);
-}
+//     using TraitStringString = XTrait<string, string  , std::less<NodeArray<string, string> &>>;
+//     CArray< TraitStringString > vx("Ernesto Cuadros");
+//     vx.insert("Ernesto", "Cuadros");
+//     vx.insert("Luis"   , "Tejada");
+//     vx.insert("Jorge"  , "Lozano");
+//     vx.insert("Edson"  , "Caceres");
+//     vx.insert("Franz"  , "Maguiña");
+//     vx.print(cout);
+// }
 
 void DemoIterators(){
     CArray< TraitArrayIntInt > v1("Jorge");
@@ -248,9 +249,56 @@ void DemoHeap()
     cout << "Hello from DemoHeap()" <<endl;
 }
 
+string operator*(string txt, size_t lvl)
+{
+    for (auto i = 0; i < lvl; i++)
+        txt += txt;
+    return txt;
+}
+
+template <typename Node>
+void printAsLine(Node &pNode, ostream &os){
+    os << " -> (" << pNode.getData() << " , " << (pNode.getParent() ? to_string(pNode.getParent()->getData()) : "Root") << ")";
+}
+
+template<typename Node>
+void printAsTree(Node &pNode, ostream &os)
+{
+    os << string(" | ") * pNode.getLevel() << pNode.getDataRef() << "(" << (pNode.getParent() ? to_string(pNode.getParent()->getData()) : "Root") << ")" << endl;
+}
+
+template<typename Container>
+void demoBTree(Container &myBTree)
+{
+    typedef typename Container::value_type          value_type;
+    typedef typename Container::Node          Node;
+    auto nElem = 8;
+    value_type key_vector[nElem] = {50,30,20,80,60,70,40,90};
+    for (auto i = 0; i < nElem; i++)
+    {
+        myBTree.insert(key_vector[i],i);
+    }
+    myBTree.print(printAsTree<Node>, cout);
+    cout << endl << "Inorder" << endl;
+    myBTree.inorder(printAsLine<Node>, cout);
+    cout << endl << "PostOrder" << endl;
+    myBTree.postorder(printAsLine<Node>, cout);
+    cout << endl << "PreOrder" << endl;
+    myBTree.postorder(printAsLine<Node>, cout);
+}
+
 void DemoBinaryTree()
 {
-    cout << "Hello from DemoBinaryTree()" <<endl;
+    cout << "Hello from DemoBinaryTree Asc" <<endl;
+    BinaryTree < BinaryTreeAscTraits<TX, TX> > myBTreeAsc;
+    demoBTree(myBTreeAsc);
+
+    cout << endl << "================================================" <<endl;
+
+    cout << endl << "Hello from DemoBinaryTree Desc" <<endl;
+
+    BinaryTree < BinaryTreeDescTraits<TX, TX> > myBTreeDesc;
+    demoBTree(myBTreeDesc);
 }
 
 void DemoHash()

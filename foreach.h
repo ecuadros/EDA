@@ -11,12 +11,21 @@ template <typename T>
 void f1(T &x)
 {  x+= 5; }
 
-template <typename Iterator, typename F>
-void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
-{
-  auto iter = ItBegin;
-  for(; iter != ItEnd ; ++iter)
-      ope(*iter);
+// template <typename Iterator, typename F>
+// void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
+// {
+//   auto iter = ItBegin;
+//   for(; iter != ItEnd ; ++iter)
+//       ope(*iter);
+// }
+
+// https://github.com/edson2495/2023-I-MCC639B-EDA/blob/d84bb94d5fa9bd3e95b4c64efef2bb346d40e2a4/foreach.h
+template <typename Iterator, typename F, typename... Args>
+void foreach(Iterator ItBegin, Iterator ItEnd, F ope, Args&&... args){
+    auto iter = ItBegin;
+    for(; iter != ItEnd ; ++iter)
+        invoke(ope, *iter, forward<Args>(args)...);
+    invoke(ope, *iter, forward<Args>(args)...);
 }
 
 // template <typename Iterator, typename Callable, typename... Args>
