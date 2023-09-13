@@ -39,7 +39,6 @@ public:
 public: \
     typedef class general_iterator<_Container, _iter<Container> > Parent;     \
     typedef typename _Container::Node                             Node;       \
-    typedef _iter<_Container>                                     myself;
-
+    typedef _iter<_Container>                                     myself;     \
+    typedef typename Node::Type                                   Type; 
 #endif
- 

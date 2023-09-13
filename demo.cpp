@@ -272,10 +272,17 @@ void BinaryTreeHelper()
     cout << "Postorder: ";
     container.postorder([](T &n){ cout << n << " "; });
     cout<< endl;
-    cout << "The order printed: ";
-    container.forward([](T &n){ cout << n << " "; });
+    cout << "The order printed (with iterator):\n";
+    // Uso del iterator en la funcion print, la funcion print solo es un
+    // utility o wrapper, pero se generalizo con el iterator
+    container.print(cout);
 
-    cout<<"\nInsert a new element: ";
+    cout<< "Showing the use of forward iterator (used in print, now generalized): \n";
+    foreach(container.forwardbegin(), container.forwardend(), [](auto &nodeInfo){ 
+        cout<< "The node " << nodeInfo->first->getData() << " is in the level " << nodeInfo->second << endl;
+    });
+
+    cout<<"\nInsert a new element:\n";
     cin>>container;
     cout<< "Tree with the new element: " << endl;
     cout<<container;
