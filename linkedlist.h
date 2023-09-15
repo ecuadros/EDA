@@ -5,168 +5,227 @@
 #include <cassert>
 #include "iterator.h"
 #include "types.h"
+#include "IteratorList.h"
+#include "xtrait.h"
+#include <iostream>
+#include <ostream>
+#include<fstream>
+#include "foreach.h"
+#include <sstream>
 using namespace std;
 
+// Iterador en otro .h
+
 template <typename Node, typename MemberType>
-void CreateBridge(Node *&rParent, Node *pNew, MemberType _pMember)
-{
+void CreateBridge(Node *&rParent, Node *pNew, MemberType _pMember){
     Node *Node::*pMember = (Node *Node::*)_pMember;
     pNew->*pMember = rParent;
     rParent = pNew; 
 }
+//========== Nodo de Lista simple (KeyNode adicionado) ===========
+template <typename xTraits>
 
-template <typename T>
-class NodeLinkedList
-{
-public:
-  typedef T         Type;
-private:
-  typedef NodeLinkedList<T> Node;
-  public:
-  // TODO change T y KeyNode
-    T       m_data;
-    Node   *m_pNext;//
-  public:
-    NodeLinkedList(T data, Node *pNext = nullptr) 
-        : m_data(data), m_pNext(pNext)
-    {};
-    // TODO Move to KeyNode
-    T         getData()                {   return m_data;    }
-    T        &getDataRef()             {   return m_data;    }
+class NodeLinkedList{
 
-    void      setpNext(NodeLinkedList *pNext)  {   m_pNext = pNext;  }
+  public:
+    using value_type		    = typename xTraits::value_type;
+    using LinkedValueType	    = typename xTraits::LinkedValueType;
+    using Data	 		        = typename xTraits::Node;
+  
+  private:
+    using Node = NodeLinkedList<xTraits>;
+
+  public:
+ 
+    Data	   m_data;
+    Node   	*m_pNext;
+
+  public:
+
+    NodeLinkedList(value_type key,LinkedValueType value, Node *pNext = nullptr) : m_data(key,value), m_pNext(pNext){};
+    
+    value_type       getData() 	    { return m_data.getData();}
+    value_type       &getDataRef()	{return m_data.getDataRef();}
+    LinkedValueType  getValue()     { return m_data.getValue(); }
+
+    void      setpNext(Node *pNext)  	 {   m_pNext = pNext;  }
     Node     *getpNext()               {   return getpNextRef();   }
     Node    *&getpNextRef()            {   return m_pNext;   }
 };
 
-// TODO remove general_iterator
-template <typename Container>
-class forward_iterator : public general_iterator<Container,  class forward_iterator<Container> > // 
-{public: 
-    // TODO: subir al padre  
-    typedef class general_iterator<Container, forward_iterator<Container> > Parent; 
-    typedef typename Container::Node                                  Node; // 
-    typedef forward_iterator<Container>                                     myself;
+//========= Traits para LinkedList ===================
+template <typename xTraits>
 
-  public:
-    forward_iterator(Container *pContainer, Node *pNode) : Parent (pContainer,pNode) {}
-    forward_iterator(myself &other)  : Parent (other) {}
-    forward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
-
-public:
-    forward_iterator operator++() { Parent::m_pNode = (Node *)Parent::m_pNode->getpNext();  
-                                    return *this;
-                                  }
-};
-
-template <typename _T>
 struct LLTraitAsc
 {
-    using  T         = _T;
-    using  Node      = NodeLinkedList<T>;
-    using  CompareFn = less<T>;
+    using  value_type 		  	= typename xTraits::value_type;
+    using  LinkedValueType	    = typename xTraits::LinkedValueType;
+    using  Node      		    = NodeLinkedList<xTraits>;
+    using  CompareFn 		    = less<value_type>;
 };
 
-template <typename _T>
+template <typename xTraits>
+
 struct LLTraitDesc
 {
-    using  T         = _T;
-    using  Node      = NodeLinkedList<T>;
-    using  CompareFn = greater<T>;
+     using  value_type 		  	= typename xTraits::value_type;
+    using  LinkedValueType		= typename xTraits::LinkedValueType;
+    using  Node      		    = NodeLinkedList<xTraits>;
+    using  CompareFn 		    = greater<value_type>;
 };
 
-template <typename Traits>
+using LLAsc  = LLTraitAsc<XTrait<IX, IX>>;
+using LLDesc = LLTraitDesc<XTrait<IX,IX>>;
+
+//========= Conteiner LinkedList ===================
+template <typename LinkedListTrait>
+
 class LinkedList
 {
-  public:
-    typedef typename Traits::T          value_type;
-    typedef typename Traits::Node       Node;
-    
-    typedef typename Traits::CompareFn  CompareFn;
-    typedef LinkedList<Traits>          myself;
-    typedef forward_iterator<myself>    iterator;
-    
-  protected:
-    Node    *m_pHead = nullptr, 
-            *m_pTail = nullptr;
-    size_t   m_size  = 0;
-    CompareFn Compfn;
-  public: 
-    size_t  size()  const       { return m_size;       }
-    bool    empty() const       { return size() == 0;  }
+    public:
 
-  public:
-    LinkedList() {}
-    // TODO add LinkedValueType value
-    void    insert(value_type &elem) { insert_forward(elem);  }
-    value_type &operator[](size_t pos)
-    {
-      assert(pos <= size());
-      Node *pTmp = m_pHead;
-      for(auto i= 0 ; i < pos ; i++)
-        pTmp = pTmp->getpNext();
-      return pTmp->getDataRef();
-    }
-    iterator begin() { iterator iter(this, m_pHead);    return iter;    }
-    iterator end()   { iterator iter(this, nullptr);    return iter;    }
+      using value_type          = typename LinkedListTrait::value_type;
+      using LinkedValueType     = typename LinkedListTrait::LinkedValueType;
+      using Node                = typename LinkedListTrait::Node;
+      using CompareFn           = typename LinkedListTrait::CompareFn;
+      using myself              = LinkedList<LinkedListTrait>;
+      using iteratorList        = LinkedList_iterator<myself>;
 
-    void    push_front(value_type elem)
-    {
-        Node *pNew = CreateNode(elem);
-        pNew->setpNext(m_pHead);
-        m_pHead = pNew;
-        m_size++;
-        if(m_size == 1)
-          m_pTail = pNew;
-    } 
-    void    push_back(value_type elem)
-    {   Node *pNew = CreateNode(elem, nullptr);
-        if(m_pTail)
-          m_pTail->setpNext(pNew);
-        m_pTail = pNew;
-        if(!m_pHead)
+    protected:
+      Node    *m_pHead = nullptr, *m_pTail = nullptr;
+      size_t   m_size  = 0;
+      CompareFn Compfn;
+
+    public: 
+      size_t  size()  const       { return m_size;       }
+      bool    empty() const       { return size() == 0;  }
+
+    public:
+      LinkedList() {}
+
+      void insert(value_type &key,LinkedValueType &value){ 
+          insert_forward(key,value);
+          m_size++;
+      }
+
+      value_type &operator[](size_t pos){
+          assert(pos <= size());
+          Node *pTmp = m_pHead;
+          for(auto i= 0 ; i < pos ; i++)
+            pTmp = pTmp->getpNext();
+          return pTmp->getDataRef();
+      }
+
+      void push_front(value_type elem,LinkedValueType elem2){
+          Node *pNew = CreateNode(elem,elem2);
+          pNew->setpNext(m_pHead);
           m_pHead = pNew;
-        m_size++;
-    }
+          m_size++;
+          if(m_size == 1)
+            m_pTail = pNew;
+      } 
 
-  protected:
-    Node **findPrev(value_type &elem) {   return findPrev(m_pHead, elem);   }
-    Node **findPrev(Node *&rpPrev, value_type &elem)
-    {   
-      if(!rpPrev || Compfn(elem, rpPrev->getData()) )
-        return &rpPrev; // Retorna la direccion del puntero que me apunta
-      return findPrev((Node *&)rpPrev->getpNextRef(), elem);
-    }
-    Node *CreateNode(value_type &data, Node *pNext=nullptr){ return new Node(data, pNext); }
-    Node **insert_forward(value_type &elem)
-    {
-        Node **pParent = findPrev(elem);
-        Node *pNew = CreateNode(elem);
+      void push_back(value_type elem,LinkedValueType elem2){   
+          Node *pNew = CreateNode(elem,elem2,nullptr);
+          if(m_pTail)
+            m_pTail->setpNext(pNew);
+          m_pTail = pNew;
+          if(!m_pHead)
+            m_pHead = pNew;
+          m_size++;
+      }
+
+      value_type PopHead(){
+          if(m_pHead){
+              Node *pNode = m_pHead;
+              value_type data = pNode->getData();
+              m_pHead = m_pHead->getpNext();
+              delete pNode;
+              m_size--;
+              if(!m_size) m_pTail = nullptr;
+              return data;
+          }
+          throw "hola excepcion"; 
+      }
+
+    protected:
+    
+      Node **findPrev(value_type &key) { return findPrev(m_pHead, key); }
+
+      Node **findPrev(Node *&rpPrev, value_type &key){   
+
+        if(!rpPrev || Compfn(key, rpPrev->getData()) )
+          return &rpPrev; // Retorna la direccion del puntero que me apunta
+        return findPrev((Node *&)rpPrev->getpNextRef(), key);
+      }
+
+      Node *CreateNode(value_type &key, LinkedValueType &value ,Node *pNext=nullptr){ return new Node(key,value ,pNext); }
+
+      Node **insert_forward(value_type &key,LinkedValueType &value){
+
+        Node **pParent = findPrev(key);
+        Node *pNew = CreateNode(key,value);
         ::CreateBridge(*pParent, pNew, &Node::m_pNext);
-        if( !pNew->getpNext() )
+        if(!pNew->getpNext() )
           m_pTail = pNew;
         return pParent;
-    }
-  public:
-    value_type PopHead()
-    {
-        if(m_pHead)
-        {
-            Node *pNode = m_pHead;
-            value_type data = pNode->getData();
-            m_pHead = m_pHead->getpNext();
-            delete pNode;
-            m_size--;
-            if(!m_size) m_pTail = nullptr;
-            return data;
-        }
-        throw "hola excepcion"; // Create custom exception pending
-    }
-    // TODO add print
-};
+      }
 
-// TODO add operator<<
+    public:
+    
+	// ============ iteradores de la lista simle ===================
+		
+		iteratorList begin() { iteratorList iter(this, m_pHead); 	return iter;    }
+	    iteratorList end()   { iteratorList iter(this, nullptr);    return iter;    }
+    
+    //============= se adicionó la función print ==================
+    
+	    void print (ostream &os){
+	    	
+	          Node *pNode = m_pHead;
+	            for(size_t i = 0; i < m_size ; ++i )
+	                {os << "<"<< pNode->getData() << ":" << pNode->getValue() << ">"<<"  ";
+	                pNode=pNode->getpNext();}
+	            cout<<endl;
+	    }
+	    
+	//============= se adicionó la función read para leer un txt ==================
+	
+		void read (istream &is){
+	 		assert(is);
+			value_type key;
+			LinkedValueType value;
+			string line;
+			
+			while(getline(is, line)){
+				istringstream iss(line);
+				char colon;
+				iss >> key;
+				iss >> colon;
+				iss >> value;
+				insert(key,value);
 
-// TODO add operator>>
+			}     
+	    }
+ 
+}; // Fin de la clase
+
+//=============  operador << ========================
+template <typename T>
+ostream &operator<<(ostream &os, LinkedList<T> &obj){
+    obj.print(os);
+    return os;
+}
+
+//============  operador >> ========================
+
+template <typename T>
+istream & operator>>(istream &is, LinkedList<T> &obj){
+	    obj.read(is);
+	    return is;
+	}
+
+
+
 
 #endif
