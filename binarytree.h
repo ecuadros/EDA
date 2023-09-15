@@ -377,7 +377,7 @@ protected:
             //os << string(" | ") * level << pNode->getDataRef() << "(" << (pParent?(pNode->getBranch()?"R-":"L-") + to_string(pParent->getData()):"Root") << ")" <<endl;
             for(int i = 0; i < level; i++)
                 os << " | ";
-            os << pNode->getDataRef() << "(" << (pParent?to_string(pParent->getData()):"Root") << ")" << "[" << pNode->m_height << "]" <<endl;
+            os << pNode->getDataRef() << "(" << (pParent?to_string(pParent->getData()):"Root") << ")" <<endl;
             print(pNode->getChild(0), os, level+1);
         }
     }

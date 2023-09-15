@@ -75,6 +75,9 @@ public:
         Node *b = a->getChildRef(0);
         a->getChildRef(0) = tree;
         tree->getChildRef(1) = b;
+        a->m_pParent = tree->m_pParent;
+        tree->m_pParent = a;
+        if(b) b->m_pParent = tree;
 
         tree->m_height = max(depth(tree->getChildRef(0)), depth(tree->getChildRef(1))) + 1;
         a->m_height = max(depth(a->getChildRef(0)), depth(a->getChildRef(1))) + 1;
@@ -88,6 +91,9 @@ public:
         Node *b = a->getChildRef(1);
         a->getChildRef(1) = tree;
         tree->getChildRef(0) = b;
+        a->m_pParent = tree->m_pParent;
+        tree->m_pParent = a;
+        if(b) b->m_pParent = tree;
 
         tree->m_height = max(depth(tree->getChildRef(0)), depth(tree->getChildRef(1))) + 1;
         a->m_height = max(depth(a->getChildRef(0)), depth(a->getChildRef(1))) + 1;
@@ -113,6 +119,7 @@ public:
             else
             {
                 tree->getChildRef(0) = rotateLeft(tree->getChildRef(0));
+                tree->getChildRef(0)->m_pParent = tree;
                 return rotateRight(tree);
             }
         }
@@ -168,7 +175,9 @@ ostream& operator<<(ostream& os, CAVL<T>& obj)
 template<typename T>
 istream& operator>>(istream& is, CAVL<T>& obj)
 {
-    obj.read(is);
+    while(!is.eof()) {
+        obj.read(is);
+    }
     return is;
 }
 

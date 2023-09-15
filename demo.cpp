@@ -199,12 +199,15 @@ void DemoArray(){
 
 void DemoAVL() {
     CAVL<XTraitIntIntAscCompareVal> avl;
-    vector<pair<int, int>> vect = { { 90, 80 }, { 80, 70 }, { 70, 70 }, { 60, 10 }, { 50, 30 }, { 40, 20 }, { 30, 79 }, { 20, 30 }, { 10, 24 } };
-    for(pair<int, int> el: vect) {
-        cout<< endl << "Inserting: " << el.first << endl;
-        avl.insert(el.first, el.second);
-        cout<<avl;
-    }
+    
+    // Test.txt se puso con valores que normalmente 
+    // Deformarian un arbol binario (claves ordenadas descendente)
+    // , pero el AVL se
+    // Balancea automaticamente
+    ifstream is("test.txt", ios::in);
+    is >> avl;
+
+    cout << "Tree read from file:\n" << avl << endl;
 
     // Mismos metodos que binary tree
     cout << "Inorder: ";
@@ -216,8 +219,7 @@ void DemoAVL() {
     cout << "Postorder: ";
     avl.postorder([](int &n){ cout << n << " "; });
 
-    cout<<"\nInsert a new element: ";
-    cin>>avl;
+    cout<<endl;
     cout<< "Tree with the new element: " << endl;
     cout<<avl;
 }
