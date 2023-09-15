@@ -218,10 +218,6 @@ void DemoAVL() {
     cout<< endl;
     cout << "Postorder: ";
     avl.postorder([](int &n){ cout << n << " "; });
-
-    cout<<endl;
-    cout<< "Tree with the new element: " << endl;
-    cout<<avl;
 }
 
 void DemoIterators(){
