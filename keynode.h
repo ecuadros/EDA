@@ -1,6 +1,7 @@
 #ifndef __KEYNODE_H__
 #define __KEYNODE_H__
 
+class BTPage;
 template <typename T, typename V>
 class KeyNode
 {
@@ -14,6 +15,8 @@ public:
     value_type       m_key;
     LinkedValueType      m_value;
     size_t m_UseCounter;
+    KeyNode* m_pNext = nullptr;
+    KeyNode* m_pPrev = nullptr;
 
 public:
     KeyNode(value_type key, LinkedValueType value,size_t UseCounter=0) 
@@ -49,6 +52,7 @@ public:
     bool operator>(const KeyNode<T, V>& other) const { 
         return m_key > other.m_key;
     }
+    
 };
 
 #endif

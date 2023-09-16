@@ -29,7 +29,12 @@ class ClassX
 };
 
 void Fx1(int n ) {    n++;    }
-void Fx2(int &n) {    n++;    }
+template <typename T>
+void Fx2(T &n) {    n++;    }
+template <typename T>
+void Fx2_M(T &n,T x) {    n=n+x*x;    }
+template <typename T>
+void Fx3_M(T &n,T x,T y) { n=n+x*x+x*y;    }
 void Fx3(int *pi){    ++*pi;  pi = nullptr; }
 void Fx4(int *&rp){   ++*rp;  rp = nullptr; }
 
@@ -397,11 +402,11 @@ void DemoTree()
     //bt.Print(cout);
     random_device rd;
     mt19937 gen(rd());
-    uniform_int_distribution<int> dist(1,100);
+    uniform_int_distribution<int> dist(1,50);
     //BTree <BTreeTrait<int,int>> bt(3);
     BTree <Traits_BTree> bt(3);
     std::set<int> generatedNumbers;
-    for(int i=0;i<=16;i++){
+    for(int i=0;i<=20;i++){
         int tmp;
         do {
             tmp = dist(gen);
@@ -437,12 +442,25 @@ void DemoTree()
      of>>bt;
      cout<<"Print Value of Btree Update"<<endl;
      cout<<bt;
-     cout<<"Search element 100"<<endl;
-     cout<<"Linked_Value Type is: "<<bt.Search(100);
-     cout<<"\nDelete element 100"<<endl;
-     bt.Remove(100,111);
-     cout<<bt;
-
+     cout<<"Search element 10"<<endl;
+     auto linked_vt=bt.Search(10);
+     cout<<"Linked_Value Type is: "<<linked_vt<<endl;
+     if(linked_vt>=0){
+        cout<<"\nDelete element"<<endl;
+        bt.Remove(10,linked_vt);
+     }
+    cout<<bt;
+    cout<<"\nTesting of Iterators in Order with varidaty functions"<<endl;
+    using T = typename Traits_BTree::value_type;
+    foreach(bt, Fx2<T>);  cout << endl;
+    foreach(bt, print<T>);  cout << endl;
+    foreach(bt, [&](T& value) { Fx2_M(value, 5); });  cout << endl;
+    foreach(bt, print<T>);  cout << endl;
+    cout<<"\nTesting of Iterators in Reverse Order with varidaty functions"<<endl;
+    foreach_reverse(bt, [&](T& value) { Fx2_M(value, 3); });  cout << endl;
+    foreach_reverse(bt, print<T>);  cout << endl;
+    foreach_reverse(bt, [&](T& value) { Fx3_M(value, 3,2); });  cout << endl;
+    foreach_reverse(bt, print<T>);  cout << endl;
     exit(0);
 
 }

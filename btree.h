@@ -33,19 +33,12 @@ class BTree // this is the full version of the BTree
 {
        typedef typename Trait::value_type    value_type;
        typedef typename Trait::LinkedValueType    LinkedValueType;
-       
        typedef CBTreePage <Trait> BTNode;// useful shorthand
 
 public:
        //typedef ObjectInfo iterator;
-       // TODO replace thius functions by foreach
-       // typedef typename BTNode::lpfnForEach2    lpfnForEach2;
-       // typedef typename BTNode::lpfnForEach3    lpfnForEach3;
        typedef typename BTNode::lpfnFirstThat2  lpfnFirstThat2;
        typedef typename BTNode::lpfnFirstThat3  lpfnFirstThat3;
-
-       
-       //typedef typename BTNode::ObjectInfo      ObjectInfo;
        typedef typename BTNode::Node      Node;
 
 public:
@@ -76,8 +69,8 @@ public:
 
        void            Print (ostream &os)
        {               m_Root.Print(os);                              }
-       // void            Print2 (ostream &os)
-       // {               m_Root.Print2(os);                              }
+       void            Print_Route ()
+       {               m_Root.Print_Route();                              }
        template <typename Func, typename...Extras>
        void            Function_G (Func f,Extras... extras)
        {               m_Root.Function_G(f,extras...)   ;                           }
@@ -92,7 +85,10 @@ public:
        {               return m_Root.FirstThat(lpfn, 0, pExtra1);     }
        Node*     FirstThat( lpfnFirstThat3 lpfn, void *pExtra1, void *pExtra2)
        {               return m_Root.FirstThat(lpfn, 0, pExtra1, pExtra2);   }
-       //typedef               ObjectInfo iterator;
+       auto begin(){return m_Root.begin();}
+       auto end(){return m_Root.end();}
+       auto rbegin(){return m_Root.rbegin();}
+       auto rend(){return m_Root.rend();}
 
 protected:
        BTNode          m_Root;
@@ -114,6 +110,11 @@ bool BTree<Trait>::Insert(const value_type key,const  LinkedValueType ObjID){
                m_Root.SplitRoot();
                m_Height++;
        }
+       // cout<<"\nFinal Print route"<<endl;
+       // Print_Route();
+       // cout<<"\nPointers"<<endl;
+       // cout<<"m_Heap :"<<m_Root.m_Heap->getData()<<endl;
+       // cout<<"m_Tail :"<<m_Root.m_Tail->getData()<<endl;
        return true;
 }
 
