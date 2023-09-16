@@ -7,7 +7,9 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
-#include "linkedlist.h"
+#include "doublelinkedlist.h"
+//#include "linkedlist.h"
+
 using namespace std;
 
 template <typename T, int N>
@@ -264,13 +266,13 @@ void DemoHash()
 template <typename Node>
 
 void printing(Node *pNode){
-     cout << pNode->getData() << "-> ";
+     cout << pNode->getData() << " ";
     }
-
+  /*
 template <typename Container>
 
 void DemoLinkedListFill(Container &mylist)
- {  /*
+ {  
     const  IX nElem=6;
     using value_type        = typename Container::value_type;
     using LinkedValueType   = typename Container::LinkedValueType;
@@ -287,8 +289,8 @@ void DemoLinkedListFill(Container &mylist)
     foreach(mylist, [](Node& node) {printing(&node);});  
 	cout << endl;
 	//-------------------------------------------
-
-	  */
+		  
+	
 	cout << "Reading File"<<endl;
 
    ifstream Read_file("test.txt");
@@ -299,7 +301,7 @@ void DemoLinkedListFill(Container &mylist)
    
    cout<<mylist<<endl;
  }
-
+ 
  void DemoLinkedList()
  {
 
@@ -312,5 +314,83 @@ void DemoLinkedListFill(Container &mylist)
     DemoLinkedListFill(myAscList);
     
  }
+*/
+template <typename Container>
+void DemoDoubleLinkedListFill(Container &myDoublelist){
+	const  IX nElem=6;
+    using value_type        = typename Container::value_type;
+    using LinkedValueType   = typename Container::LinkedValueType;
+    using Node              = typename Container::Node;
+
+    value_type 			key[nElem]		={10,5,22,-100,50,-60};
+    LinkedValueType 	value[nElem]	={1,2,3,4,5,6};
+       
+    for(auto x=0; x<nElem; x++) { myDoublelist.insert(key[x],value[x]); }
+    
+ 
+    myDoublelist.print(cout);
+ 	cout<<endl;
+ 	
+ 
+	cout<<"-------Foreach-------"<<endl;
+	cout<<endl;
+    foreach(myDoublelist, [](Node& node) {printing(&node);});  
+	cout << endl;
+	
+	cout<<"-------Foreach reverse-------"<<endl;
+	cout<<endl;
+    foreach_reverse(myDoublelist, [](Node& node) {printing(&node);});  
+	cout << endl;
+
+    
+	
+}
+
+template <typename Container>
+void DemoReadingFile(Container &myDoublelist){
+	
+
+	cout << "Reading File"<<endl;
+
+   ifstream Read_file("test.txt");
+   
+   Read_file>>myDoublelist;
+   
+   cout<<"Printing using << : "<<endl;
+   
+   cout<<myDoublelist<<endl;
+	
+}
+
+void DemoDoubleLinkedList()
+ {
+
+    cout << "=============Descending Double List==============" << endl;
+    
+    DoubleLinkedList<DLDesc> myDescDList;
+	DemoReadingFile( myDescDList);
+    DemoDoubleLinkedListFill(myDescDList);
+  
+   cout << endl;
+   cout << "===============Ascending Double List===============" << endl;
+
+  DoubleLinkedList<DLAsc> myAscDList;
+  DemoDoubleLinkedListFill(myAscDList);
+    
+ }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

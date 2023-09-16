@@ -1,100 +1,232 @@
 #ifndef __DOUBLE_LINKEDLIST_H__  
 #define __DOUBLE_LINKEDLIST_H__ 
 
-#include "linkedlist.h"
+#include <utility>
+#include <algorithm>
+#include <cassert>
+#include "types.h"
+#include "IteratorDoubleList.h"
+#include "IteratorList.h"
+#include "xtrait.h"
+#include <iostream>
+#include <ostream>
+#include<fstream>
+#include "foreach.h"
+#include <sstream>
+using namespace std;
 
-template <typename Container>
-class backward_iterator : public general_iterator<Container,  class backward_iterator<Container> > // 
-{ public: 
-    // TODO: subir al padre  
-    typedef typename Container::Node                                         Node;
-    typedef class general_iterator<Container, backward_iterator<Container> > Parent;  // 
-    typedef backward_iterator<Container>                                     myself;
 
-  public:
-    backward_iterator(Container *pContainer, Node *pNode) : Parent (pContainer,pNode) {}
-    backward_iterator(myself &other)  : Parent (other) {}
-    backward_iterator(myself &&other) : Parent(other) {}
+template <typename Node, typename MemberType>
 
-  public:
-    backward_iterator operator++() { Parent::m_pNode = ((Node *)Parent::m_pNode)->getpPrev();  
-                                     return *this;
-                                   }
-};
+void CreateBridge(Node *&rParent, Node *pNew, MemberType _pMember){
+    Node *Node::*pMember = (Node *Node::*)_pMember;
+    pNew->*pMember = rParent;
+    rParent = pNew; 
+}
 
-// TODO Remove inheritance
-template <typename T>
-class NodeDLL : public NodeLinkedList<T>
-{
+//===================  Nodo de Lista Doble (sin herencia)  ===================
+template <typename xTraits>
+
+class NodeDoubleLL {
+	
 public:
-  //typedef T               Type;
-  typedef class NodeLinkedList<T> Parent;
+
+	using value_type		    = typename xTraits::value_type;
+    using LinkedValueType	    = typename xTraits::LinkedValueType;
+    using Data	 		        = typename xTraits::Node;
+    
 private:
-  typedef NodeDLL<T> Node;
+	
+   using Node = NodeDoubleLL<xTraits>;
+  
+  
   public: 
-    Node   *m_pPrev;//
-  public:
-    NodeDLL(T data, Node *pNext = nullptr, Node *pPrev = nullptr) 
-        : Parent(data, pNext), m_pPrev(pPrev)
-    {}
+  
+  	Data	   	 m_data;
+    Node   		*m_pNext;
+    Node   		*m_pPrev;
+    
+public:
+    NodeDoubleLL(value_type key,LinkedValueType value, Node *pNext = nullptr, Node *pPrev = nullptr) 
+        		: m_data(key,value),m_pNext(pNext), m_pPrev(pPrev){}
+    
+    
+    value_type       getData() 	    { return m_data.getData();}
+    value_type       &getDataRef()	{return m_data.getDataRef();}
+    LinkedValueType  getValue()     { return m_data.getValue(); }
+
    
-    void      setpPrev(Node *pPrev)  {   m_pPrev = pPrev;  }
-    Node     *getpPrev()             {   return getpPrevRef();   }
-    Node    *&getpPrevRef()          {   return m_pPrev;   }
+    void      setpPrev(Node *pPrev)  	{   m_pPrev = pPrev;  }
+    Node      *getpPrev()             	{   return getpPrevRef();}
+    Node      *&getpPrevRef()          	{   return m_pPrev;   }
+    
+    void      setpNext(Node *pNext)  	 {   m_pNext = pNext;  }
+    Node     *getpNext()               	 {   return getpNextRef(); }
+    Node     *&getpNextRef()            	 {   return m_pNext;   }
 };
 
-template <typename _T>
-struct DLLAscTraits
-{
-    typedef   _T          T;
-    typedef  NodeDLL<T>  Node;
-    typedef  less<T>     CompareFn;
-};
+//===================  Traits para Lista Doble ===================
 
-template <typename _T>
+template <typename xTraits>
+
 struct DLLDescTraits
 {
-    typedef   _T         T;
-    typedef  NodeDLL<T>  Node;
-    typedef  greater<T>  CompareFn;
+    using  value_type 		  	= typename xTraits::value_type;
+    using  LinkedValueType	    = typename xTraits::LinkedValueType;
+    using  Node      		    = NodeDoubleLL<xTraits>;
+    using  CompareFn 		    = less<value_type>;
 };
 
-// TODO remove inheritance
-template <typename Traits>
-class DoubleLinkedList : public LinkedList<Traits>
+template <typename xTraits>
+struct DLLAscTraits
 {
+    using  value_type 		  	= typename xTraits::value_type;
+    using  LinkedValueType	    = typename xTraits::LinkedValueType;
+    using  Node      		    = NodeDoubleLL<xTraits>;
+    using  CompareFn 		    = greater<value_type>;
+};
+
+//===================  Container Lista Doble (sin herencia) ===================
+
+using DLAsc  	= DLLAscTraits<XTrait<IX, IX>>;
+using DLDesc	= DLLDescTraits<XTrait<IX,IX>>;
+
+template <typename DoubleLLTrait>
+
+class DoubleLinkedList {
+	
  public:
-    typedef typename Traits::T          value_type;
-    typedef typename Traits::Node       Node;
-    typedef typename Traits::CompareFn  CompareFn;
-    typedef DoubleLinkedList<Traits>    myself;
-    typedef LinkedList<Traits>          Parent;
-    typedef forward_iterator<myself>    iterator;
-    typedef backward_iterator<myself>   riterator;
+ 	
+ 	using value_type          = typename DoubleLLTrait::value_type;
+    using LinkedValueType     = typename DoubleLLTrait::LinkedValueType;
+    using Node                = typename DoubleLLTrait::Node;
+    using CompareFn           = typename DoubleLLTrait::CompareFn;
+    using myself              = DoubleLinkedList<DoubleLLTrait>;
+    using iterator        	  = LinkedList_iterator<myself>;
+    using riterator           = Double_backward_LinkedList_iterator<myself>;
+    
+protected:
+	
+    Node    	*m_pHead = nullptr, *m_pTail = nullptr;
+    size_t   	m_size  = 0;
+    CompareFn 	Compfn;
+
+public: 
+
+    size_t  size()  const       { return m_size;       }
+    bool    empty() const       { return size() == 0;  } 
+	DoubleLinkedList() {}   
+     
 public:
-    DoubleLinkedList() {}
-    void    insert(value_type elem)
-    {   
-        Node *pPrevTail = Parent::m_pTail;
-        Node *pNew = *Parent::insert_forward(elem);
-        if( pNew != Parent::m_pTail )
+	
+    void insert(value_type &key,LinkedValueType &value){
+    	
+    	Node *pPrevTail = m_pTail;
+        Node *pNew =*insert_forward(key,value);
+        
+        if( pNew != m_pTail )
             ::CreateBridge( ((Node *)pNew->getpNext())->getpPrevRef(), pNew, &Node::m_pPrev);
         else
             pNew->setpPrev(pPrevTail);
-    }
-    riterator rbegin() { riterator iter(this, Parent::m_pTail);     return iter;    }
-    riterator rend()   { riterator iter(this, nullptr);             return iter;    }
-    void    push_front(value_type elem)
-    {
-        Parent::push_front(elem);
-        if(Parent::size() > 1)
-            ((Node *)Parent::m_pHead->m_pNext)->m_pPrev = Parent::m_pHead;
-    }
-    void    push_back(value_type elem)
-    {   Node *pPrevTail = Parent::m_pTail;
-        Parent::push_back(elem);
-        Parent::m_pTail->setpPrev(pPrevTail);
-    }
+            
+        m_size++;	
+	}
+	
+	 value_type &operator[](size_t pos){
+	 	
+          assert(pos <= size());
+          Node *pTmp = m_pHead;
+          for(auto i= 0 ; i < pos ; i++)
+            pTmp = pTmp->getpNext();
+          return pTmp->getDataRef();
+      }
+    
+protected:
+	
+	Node **findPrev(value_type &key) { return findPrev(m_pHead, key); }
+
+    Node **findPrev(Node *&rpPrev, value_type &key){   
+
+        if(!rpPrev || Compfn(key, rpPrev->getData()) )
+          return &rpPrev; 
+        return findPrev((Node *&)rpPrev->getpNextRef(), key);
+      }
+
+    Node *CreateNode(value_type &key, LinkedValueType &value ,Node *pNext=nullptr,Node *pPrev=nullptr){ return new Node(key,value,pNext,pPrev); }
+    
+	Node **insert_forward(value_type &key,LinkedValueType &value){ 
+	
+	  	  Node **pParent = findPrev(key);
+          Node *pNew = CreateNode(key,value);
+          ::CreateBridge(*pParent, pNew, &Node::m_pNext);
+          if( !pNew->getpNext() )
+            m_pTail = pNew;
+          return pParent;
+          
+        }
+     //============= Función print ==================
+    public:
+	    void print (ostream &os){
+	    	 
+	    	  cout<< "°°°°°°°°Forward printing°°°°°°°°"<<endl;
+	    
+	          Node *pNode = m_pHead;
+	          for(size_t i = 0; i < m_size ; ++i )
+	                {os <<" -> "<<"<"<< pNode->getData() << ":" << pNode->getValue() << ">";
+	                pNode=pNode->getpNext();}
+	         cout << endl;
+	          cout<< "°°°°°°°°Backward printing°°°°°°°°"<<endl;
+	         
+	          pNode = m_pTail;
+	          for(size_t i = 0; i < m_size ; ++i )
+	                {os <<" -> "<< "<"<< pNode->getData() << ":" << pNode->getValue() << ">";
+	                pNode=pNode->getpPrev();}
+	          cout<<endl;
+	    }
+	    
+	    	//============= Función Read ==================
+	
+		void read (istream &is){
+	 		assert(is);
+			value_type key;
+			LinkedValueType value;
+			string line;
+			
+			while(getline(is, line)){
+				istringstream iss(line);
+				char colon;
+				iss >> key;
+				iss >> colon;
+				iss >> value;
+				insert(key,value);
+
+			}     
+	    }
+	   
+    //============== Iteradores ===================================
+    
+	    iterator begin() 		{ iterator iter(this, m_pHead);    return iter;    }
+	    iterator end()   		{ iterator iter(this, nullptr);    return iter;    }
+	    riterator rbegin() 		{ riterator iter(this, m_pTail);   return iter;    }
+	    riterator rend()   		{ riterator iter(this, nullptr);   return iter;    }
+        
+    
 };
+
+//=============  operador << ========================
+template <typename T>
+ostream &operator<<(ostream &os, DoubleLinkedList<T> &obj){
+    obj.print(os);
+    return os;
+}
+
+//============  operador >> ========================
+
+template <typename T>
+istream & operator>>(istream &is, DoubleLinkedList<T> &obj){
+	    obj.read(is);
+	    return is;
+	}
+
 
 #endif

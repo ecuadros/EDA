@@ -1,5 +1,6 @@
 #ifndef __RECORRRER_H__  
 #define __RECORRRER_H__ 
+#include<iostream>
 //#include "object_function.h"
 using namespace std;
 
@@ -9,7 +10,7 @@ void f2(T &x)
 
 template <typename T>
 void f1(T &x)
-{  x+= 5; }
+{  x+= 10; }
 
 template <typename Iterator, typename F>
 void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
@@ -17,6 +18,16 @@ void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
   auto iter = ItBegin;
   for(; iter != ItEnd ; ++iter)
       ope(*iter);
+}
+
+template <typename Container, typename F>
+void foreach(Container &container, F ope){
+    foreach(container. begin(), container.end() , ope);
+}
+
+template <typename Container, typename F>
+void foreach_reverse(Container &container, F ope){
+    foreach(container. rbegin(), container.rend() , ope);
 }
 
 // template <typename Iterator, typename Callable, typename... Args>
@@ -40,15 +51,7 @@ void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
 // }
 
 // #1
-template <typename Container, typename F>
-void foreach(Container &container, F ope){
-    foreach(container. begin(), container.end() , ope);
-}
 
-template <typename Container, typename F>
-void foreach_reverse(Container &container, F ope){
-    foreach(container. rbegin(), container.rend() , ope);
-}
 
 // template <typename Iterator, typename Callable, typename... Args>
 // void foreach(Iterator ItBegin, Iterator ItEnd, Callable op, Args&&... args)
