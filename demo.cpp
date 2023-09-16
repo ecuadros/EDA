@@ -263,13 +263,14 @@ void DemoHash()
 
 void DemoLinkedList()
 {
-    LinkedList<XTraitIntIntAscCompareVal> list;
+    LinkedList<XTraitIntIntAsc> list;
     // Insercion con orden
     vector<pair<int, int>> vect = { { 60, 10 }, { 80, 70 }, { 50, 30 }, { 40, 20 }, { 90, 80 } };
     for(pair<int, int> el: vect) list.insert(el.first, el.second);
 
     // Operador << (Utiliza la funcion print)
-    cout<< "Lista en orden (Key): " << list;
+    cout<< "Imprimiendo lista en orden (Key) con operator>> (Usa print por dentro)" << endl;
+    cout << "Lista impresa: " << list;
 
     // Indexar un elemento (Obtiene la key)
     cout<< "Elemento en pos 3: " << list[3] << endl;
@@ -281,9 +282,11 @@ void DemoLinkedList()
     cout<<endl;
 
     // Operador >> para leer un elemento y agregarlo a la lista
-    cout << "Inserte un elemento (Clave y Valor): ";
-    cin >> list;
-    cout << "Lista con el elemento agregado: " << list;
+    cout<<"Leyendo lista de test.txt con operator<< (Usa read por dentro)" << endl;
+    ifstream file("test.txt");
+    file >> list;
+    cout << "Lista leida: " << list;
+    file.close();
 }
 
 // void demoLinkedListSorted()
@@ -301,13 +304,20 @@ void DemoLinkedList()
 
 void DemoDoubleLinkedList()
 {
-    DoubleLinkedList<XTraitIntIntAscCompareVal> list;
+    DoubleLinkedList<XTraitIntIntAsc> list;
     vector<pair<int, int>> vect = { { 60, 10 }, { 80, 70 }, { 50, 30 }, { 40, 20 }, { 90, 80 } };
     for(pair<int, int> el: vect) list.insert(el.first, el.second);
-    cout<<"Lista con operator<<: " <<list;
-    cout<<"Lista al reves con iterator y foreach: ";
+    cout<<"Imprimiendo lista con operator<< (Usa print por dentro)" << endl;
+    cout << "Lista impresa: " << list;
+    cout<<"Imprimiendo claves al reves con iterator y foreach: " ;
     foreach(list.rbegin(), list.rend(), [](auto &n){ cout<< n << " "; });
     cout << endl;
+
+    cout<<"Leyendo lista de test.txt con operator>> (Usa read por dentro): " << endl;
+    ifstream file("test.txt");
+    file >> list;
+    cout<<"Imprimiendo lista leida: " << list;
+    file.close();
 }
 
 // void demoDoubleLinkedListSorted()

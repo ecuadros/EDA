@@ -17,7 +17,13 @@ int main()
     // DemoDynamicMatrixes();
 
     // DemoHeap();
-    // DemoLinkedList();
+    cout<<"-------------------------------------------------------" << endl;
+    cout<<"                    Linked List                        " << endl;
+    cout<<"-------------------------------------------------------" << endl;
+    DemoLinkedList();
+    cout<<"-------------------------------------------------------" << endl;
+    cout<<"                 Double Linked List                    " << endl;
+    cout<<"-------------------------------------------------------" << endl;
     DemoDoubleLinkedList();
     // DemoBinaryTree();
     // DemoHash();

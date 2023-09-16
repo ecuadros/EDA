@@ -5,24 +5,39 @@
 #include "iterator.h"
 
 template <typename Container>
-class backward_iterator : public general_iterator<Container,  class backward_iterator<Container> > // 
-{ public: 
-    // typedef typename Container::Node                                         Node;
-    // typedef class general_iterator<Container, backward_iterator<Container> > Parent;  // 
-    // typedef backward_iterator<Container>                                     myself;
+class backward_iterator
+{ 
+private:
+    typedef typename Container::Node    Node;
+    typedef typename Node::Type         Type;
+    typedef typename Node::Type         value_type;
+    typedef backward_iterator<Container> myself;
+protected:
+    Container *m_pContainer;
+    Node      *m_pNode;
+public: 
+    backward_iterator(Container *pContainer, Node *pNode) : m_pContainer(pContainer), m_pNode(pNode) {}
+    backward_iterator(myself &other) : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode){}
+    backward_iterator(myself &&other) // Move constructor
+    {   m_pContainer = move(other.m_pContainer);
+        m_pNode      = move(other.m_pNode);
+    }
 
-    // DONE: subir al padre, ya no aplican, se usa macro
-    _ITER_TYPEDEFS(Container, backward_iterator)
+    myself operator=(myself &iter)
+    {   m_pContainer = move(iter.m_pContainer);
+        m_pNode      = move(iter.m_pNode);
+        return *(myself *)this; // Pending static_cast?
+    }
+    bool operator==(myself iter)   { return m_pNode == iter.m_pNode; }
+    bool operator!=(myself iter)   { return !(*this == iter);        }
+    Type &operator*()                    { return m_pNode->getDataRef();   }
 
-  public:
-    backward_iterator(Container *pContainer, Node *pNode) : Parent (pContainer,pNode) {}
-    backward_iterator(myself &other)  : Parent (other) {}
-    backward_iterator(myself &&other) : Parent(other) {}
 
-  public:
-    backward_iterator operator++() { Parent::m_pNode = ((Node *)Parent::m_pNode)->getpPrev();  
-                                     return *this;
-                                   }
+public:
+    backward_iterator operator++() { 
+        m_pNode = ((Node *)m_pNode)->getpPrev();  
+        return *this;
+    }
 };
 
 // DONE Remove inheritance
@@ -59,6 +74,8 @@ class NodeDLL
 
     T getData() { return m_data.getData(); }
     T &getDataRef() { return m_data.getDataRef(); }
+
+    KeyNode &getDataNode() { return m_data; }
 };
 
 template <typename _T>
@@ -83,7 +100,9 @@ class DoubleLinkedList
 {
  public:
     typedef typename Traits::value_type    value_type;
+    typedef typename Traits::value_type       KeyType;
     typedef typename Traits::CompareFn  CompareFn;
+    typedef typename Traits::Node    KeyNode;
     using LinkedValueType = typename Traits::LinkedValueType;
     typedef NodeDLL<Traits>    DLLNode;
     typedef NodeDLL<Traits>       Node;
@@ -95,13 +114,23 @@ protected:
     DLLNode *m_pHead = nullptr, *m_pTail = nullptr;
     size_t m_size = 0;
     CompareFn Compfn;
+
+    void destroy() {
+        while(m_pHead) {
+            DLLNode *pTmp = m_pHead;
+            m_pHead = (DLLNode *)m_pHead->getpNext();
+            delete pTmp;
+        }
+        m_pHead = m_pTail = nullptr;
+        m_size = 0;
+    }
 public:
     DoubleLinkedList() {}
 
     DLLNode **findPrev(const value_type &elem) { return findPrev(m_pHead, elem); }
     DLLNode **findPrev(DLLNode *&rpPrev, const value_type &elem)
     {
-        if (!rpPrev || !Compfn(elem, rpPrev->getData()))
+        if (!rpPrev || !Compfn(KeyNode(elem, LinkedValueType()), rpPrev->getDataNode()))
             return &rpPrev; // Retorna la direccion del puntero que me apunta
         return findPrev((DLLNode *&)rpPrev->getpNextRef(), elem);
     }
@@ -172,6 +201,17 @@ public:
         os << "*" << endl;
     }
 
+    void read(istream &is) {
+        destroy();
+        while(!is.eof()) {
+            KeyType key;
+            LinkedValueType val;
+            string colon;
+            is >> key >> colon >> val;
+            insert(key, val);
+        }
+    }
+
     template <typename T>
     friend ostream &operator<<(ostream &os, DoubleLinkedList<T> &obj);
 
@@ -192,13 +232,7 @@ ostream &operator<<(ostream &os, DoubleLinkedList<T> &obj)
 template <typename T>
 istream &operator>>(istream &is, DoubleLinkedList<T> &obj)
 {
-    // DONE: Read from stream
-    using KeyType = typename DoubleLinkedList<T>::KeyType;
-    using LinkedValueType = typename DoubleLinkedList<T>::LinkedValueType;
-    KeyType key;
-    LinkedValueType val;
-    is >> key >> val;
-    obj.insert(key, val);
+    obj.read(is);
     return is;
 }
 

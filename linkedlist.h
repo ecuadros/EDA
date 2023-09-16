@@ -44,30 +44,44 @@ public:
     void setpNext(NodeLinkedList *pNext) { m_pNext = pNext; }
     Node *getpNext() { return getpNextRef(); }
     Node *&getpNextRef() { return m_pNext; }
+
+    KeyNode &getDataNode() { return m_data; }
 };
 
-// DONE remove general_iterator : Ya no aplica, el macro que se agrega
-// como parte de otro caso, usa informacion de general_iterator
+// DONE remove general_iterator
 template <typename Container>
-class forward_iterator : public general_iterator<Container, class forward_iterator<Container>> //
+class forward_iterator
 {
+private:
+    typedef typename Container::Node    Node;
+    typedef typename Node::Type         Type;
+    typedef typename Node::Type         value_type;
+    typedef forward_iterator<Container> myself;
+protected:
+    Container *m_pContainer;
+    Node      *m_pNode;
 public:
-    // typedef class general_iterator<Container, forward_iterator<Container>> Parent;
-    // typedef typename Container::Node Node; //
-    // typedef forward_iterator<Container> myself;
 
-    // DONE: subir al padre, ya no aplica, se usa macro
-    _ITER_TYPEDEFS(Container, forward_iterator)
+    forward_iterator(Container *pContainer, Node *pNode) : m_pContainer(pContainer), m_pNode(pNode) {}
+    forward_iterator(myself &other) : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode){}
+    forward_iterator(myself &&other) // Move constructor
+    {   m_pContainer = move(other.m_pContainer);
+        m_pNode      = move(other.m_pNode);
+    }
 
-public:
-    forward_iterator(Container *pContainer, Node *pNode) : Parent(pContainer, pNode) {}
-    forward_iterator(myself &other) : Parent(other) {}
-    forward_iterator(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
+    myself operator=(myself &iter)
+    {   m_pContainer = move(iter.m_pContainer);
+        m_pNode      = move(iter.m_pNode);
+        return *(myself *)this; // Pending static_cast?
+    }
+    bool operator==(myself iter)   { return m_pNode == iter.m_pNode; }
+    bool operator!=(myself iter)   { return !(*this == iter);        }
+    Type &operator*()                    { return m_pNode->getDataRef();   }
 
 public:
     forward_iterator operator++()
     {
-        Parent::m_pNode = (Node *)Parent::m_pNode->getpNext();
+        m_pNode = (Node *)m_pNode->getpNext();
         return *this;
     }
 };
@@ -142,7 +156,7 @@ protected:
     Node **findPrev(const value_type &elem) { return findPrev(m_pHead, elem); }
     Node **findPrev(Node *&rpPrev, const value_type &elem)
     {
-        if (!rpPrev || !Compfn(elem, rpPrev->getData()))
+        if (!rpPrev || !Compfn(KeyNode(elem, LinkedValueType()), rpPrev->getDataNode()))
             return &rpPrev; // Retorna la direccion del puntero que me apunta
         return findPrev((Node *&)rpPrev->getpNextRef(), elem);
     }
@@ -156,6 +170,13 @@ protected:
             m_pTail = pNew;
         m_size++;
         return pParent;
+    }
+    void destroy()
+    {
+        while (m_pHead)
+        {
+            PopHead();
+        }
     }
 
 public:
@@ -190,6 +211,17 @@ public:
         os << "*" << endl;
     }
 
+    void read(istream &is) {
+        destroy();
+        while(!is.eof()) {
+            KeyType key;
+            LinkedValueType val;
+            string colon;
+            is >> key >> colon >> val;
+            insert(key, val);
+        }
+    }
+
     template <typename T>
     friend ostream &operator<<(ostream &os, LinkedList<T> &obj);
 
@@ -209,13 +241,7 @@ ostream &operator<<(ostream &os, LinkedList<T> &obj)
 template <typename T>
 istream &operator>>(istream &is, LinkedList<T> &obj)
 {
-    // DONE: Read from stream
-    using KeyType = typename LinkedList<T>::KeyType;
-    using LinkedValueType = typename LinkedList<T>::LinkedValueType;
-    KeyType key;
-    LinkedValueType val;
-    is >> key >> val;
-    obj.insert(key, val);
+    obj.read(is);
     return is;
 }
 
