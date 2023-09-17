@@ -38,7 +38,7 @@ class backward_iterator
 
     bool operator==(backward_iterator iter)   { return m_pNode == iter.m_pNode; }
     bool operator!=(backward_iterator iter)   { return !(*this == iter);        }
-    Type &operator*() { return m_pNode->getKeyRef();}
+    Node &operator*() { return m_pNode;}
 };
 
 template <typename T, typename V>
@@ -164,28 +164,34 @@ public:
     Node *pActual = m_pHead;
     while (pActual)
     {
-      os << pActual->getKey() << ":[" << pActual->getValue() << "] ";
+      os << pActual->getKey() << "->[" << pActual->getValue() << "] ";
       pActual = pActual->getpNext();
     }
   }
 
-  LinkedValueType read(value_type key)
+  void read(istream &is)
   {
-    Node *pActual = m_pHead;
-    while (pActual->getKey()!=key)
-    {
-      pActual = pActual->getpNext();
-    }
-    return pActual->getValue();
+    int filas;
+      is >> filas;
+      value_type key;
+      LinkedValueType value;
+      string puntuacion;
+      while (filas--)
+      {
+        is >> key;
+        is >> puntuacion;
+        is >> value;
+        this->insert(key, value);
+      }
   }
 
-  ostream &print_reverse(ostream &os)
+  ostream &reverse_print(ostream &os)
   {
     Node *pActual;
     for (size_t i = size(); i > 0; --i)
     {
       pActual = getPos(i-1);
-      os << pActual->getKey() << ":[" << pActual->getValue() << "] ";
+      os << pActual->getKey() << "->[" << pActual->getValue() << "] ";
     }
     os << endl;
     return os;
@@ -204,7 +210,7 @@ ostream &operator<<(ostream &os, DoubleLinkedList<T> &lista)
 template <typename T>
 istream &operator>>(istream &is, DoubleLinkedList<T> &lista)
 {
-  lista.insert(lista.value_type, lista.LinkedValueType);
+  lista.read(is);
   return is;
 }
 

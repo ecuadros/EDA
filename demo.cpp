@@ -265,18 +265,9 @@ void DemoHash()
 template <typename Container>
 void DemoLinkedList(Container &lista)
 {
-    cout << "Insertando en lista:"<<"\t";
-    for(int x=0; x<10; x++)
-    {   
-        int value = 1 + (rand() % 100);//generando enteros aleatorios entre 1 y 100
-        cout << x << ":[" << value << "] "; 
-        //insertando un par llave, valor
-        lista.insert(x, value);
-    }
-    cout << endl;
-    cout << "Leyendo en lista:"<<"\t";
-    cout <<"8:[" << lista.read(8) << "]"<< endl;
-    cout << "Lista ordenada:"<<"\t\t"<<lista<< endl;
+    ifstream input("test.txt");
+    input >> lista;
+    cout << "Lista ordenada (key ->[value]):"<<"\t\t"<<lista<< endl;
 }
 
 void DemoLinkedListSorted()
@@ -294,20 +285,11 @@ void DemoLinkedListSorted()
 template <typename Container>
 void DemoDoubleLinkedList(Container &lista)
 {
-    cout << "Insertando en lista:"<<"\t";
-    for(int x=0; x<10; x++)
-    {   
-        int value = 1 + (rand() % 100);//generando enteros aleatorios entre 1 y 100
-        cout << x << ":[" << value << "] "; 
-        //insertando un par llave, valor
-        lista.insert(x, value);
-    }
-    cout << endl;
-    cout << "Leyendo en lista:"<<"\t";
-    cout <<"8:[" << lista.read(8) << "]"<< endl;
-    cout << "Lista ordenada:"<<"\t\t"<<lista<< endl;
-    cout << "Recorrido inverso:"<<"\t";
-    lista.print_reverse(cout);
+    ifstream input("test.txt");
+    input >> lista;
+    cout << "Lista ordenada (key ->[value]):"<<"\t\t"<<lista<< endl;
+    cout << "Recorrido inverso (key ->[value]):"<<"\t";
+    lista.reverse_print(cout);
 }
 
 void DemoDoubleLinkedListSorted()

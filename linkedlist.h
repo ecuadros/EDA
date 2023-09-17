@@ -78,7 +78,7 @@ class forward_iterator
 
     bool operator==(forward_iterator iter)   { return m_pNode == iter.m_pNode; }
     bool operator!=(forward_iterator iter)   { return !(*this == iter);        }
-    Type &operator*() { return m_pNode->getKeyRef();}
+    Node &operator*() { return m_pNode;}
 };
 
 template <typename _T, typename _V>
@@ -129,10 +129,10 @@ class LinkedList
     value_type &operator[](size_t pos)
     {
       assert(pos <= size());
-      Node *pTmp = m_pHead;
+      Node *pActual = m_pHead;
       for(auto i= 0 ; i < pos ; i++)
-        pTmp = pTmp->getpNext();
-      return pTmp->getKeyRef();
+        pActual = pActual->getpNext();
+      return pActual->getKeyRef();
     }
     iterator begin() { iterator iter(this, m_pHead);    return iter;    }
     iterator end()   { iterator iter(this, nullptr);    return iter;    }
@@ -175,23 +175,31 @@ class LinkedList
     }
 
     //TODO: Tarea 23: CLinkedList: print, read
+
     void print (ostream &os)
     {
       Node *pActual = m_pHead;    
       while (pActual) 
       {
-        os << pActual->getKey() << ":[" << pActual->getValue() << "] ";
+        os << pActual->getKey() << "->[" << pActual->getValue() << "] ";
         pActual = pActual->getpNext();
       }
     }
 
-    LinkedValueType read (value_type key){
-      Node *pActual = m_pHead;    
-      while (pActual->getKey()!=key) 
+    void read(istream &is)
+    {
+      int filas;
+      is >> filas;
+      value_type key;
+      LinkedValueType value;
+      string puntuacion;
+      while (filas--)
       {
-        pActual = pActual->getpNext();
+        is >> key;
+        is >> puntuacion;
+        is >> value;
+        this->insert(key, value);
       }
-      return pActual->getValue();
     }
 };
 
@@ -207,7 +215,7 @@ ostream &operator<<(ostream &os, LinkedList<T> &lista)
 template <typename T>
 istream &operator>>(istream &is, LinkedList<T> &lista)
 {
-    lista.insert(lista.value_type, lista.LinkedValueType);
+    lista.read(is);
     return is;
 }
 
