@@ -119,7 +119,7 @@ public:
      
 public:
 	
-    void insert(value_type &key,LinkedValueType &value){
+    void insert(const value_type &key,const LinkedValueType &value){
     	
     	Node *pPrevTail = m_pTail;
         Node *pNew =*insert_forward(key,value);
@@ -143,18 +143,18 @@ public:
     
 protected:
 	
-	Node **findPrev(value_type &key) { return findPrev(m_pHead, key); }
+	Node **findPrev(const value_type &key) { return findPrev(m_pHead, key); }
 
-    Node **findPrev(Node *&rpPrev, value_type &key){   
+    Node **findPrev(Node *&rpPrev, const value_type &key){   
 
         if(!rpPrev || Compfn(key, rpPrev->getData()) )
           return &rpPrev; 
         return findPrev((Node *&)rpPrev->getpNextRef(), key);
       }
 
-    Node *CreateNode(value_type &key, LinkedValueType &value ,Node *pNext=nullptr,Node *pPrev=nullptr){ return new Node(key,value,pNext,pPrev); }
+    Node *CreateNode(const value_type &key, const LinkedValueType &value ,Node *pNext=nullptr,Node *pPrev=nullptr){ return new Node(key,value,pNext,pPrev); }
     
-	Node **insert_forward(value_type &key,LinkedValueType &value){ 
+	Node **insert_forward(const value_type &key,const LinkedValueType &value){ 
 	
 	  	  Node **pParent = findPrev(key);
           Node *pNew = CreateNode(key,value);
@@ -164,7 +164,7 @@ protected:
           return pParent;
           
         }
-     //============= Función print ==================
+     //============= se adicionó la función print hacia adelante ==================
     public:
 	    void print (ostream &os){
 	    	 
@@ -184,7 +184,7 @@ protected:
 	          cout<<endl;
 	    }
 	    
-	    	//============= Función Read ==================
+	    	//============= se adicionó la función read para leer un txt ==================
 	
 		void read (istream &is){
 	 		assert(is);

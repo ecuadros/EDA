@@ -8,7 +8,7 @@
 #include "matrix.h"
 #include "foreach.h"
 #include "doublelinkedlist.h"
-//#include "linkedlist.h"
+#include "linkedlist.h"
 
 using namespace std;
 
@@ -268,7 +268,57 @@ template <typename Node>
 void printing(Node *pNode){
      cout << pNode->getData() << " ";
     }
-  /*
+
+template <typename T,typename Cout>
+
+Cout &Print(T Node, Cout &OS){
+     OS << Node.getData()<<" <= ";
+     return OS;
+    }
+
+
+ 
+template <typename Container>
+void DemoReadingFile(Container &mylist){
+
+	cout << "Reading File"<<endl;
+
+   ifstream Read_file("test.txt");
+   
+   Read_file>>mylist;
+   
+   cout<<"Printing using << : "<<endl;
+   
+   cout<<mylist<<endl;
+	
+}
+template <typename Container>
+void DemoForeachVariadic(Container &mylist){
+    using Node = typename Container::Node;
+	mylist.insert(34,9);
+    mylist.insert(7,10);
+    mylist.insert(11,40);
+    mylist.insert(53,13);
+    mylist.insert(20,18);
+    mylist.insert(5,12);
+
+    cout<<"-------Foreach One with Variadic Function-------"<<endl;
+	cout<<endl;
+    ForeachOne(mylist.begin(), mylist.end(), &Print<Node, ostream>, cout);
+    cout<<endl;
+
+    cout<<"-------Foreach One reverse with Variadic Function-------"<<endl;
+	cout<<endl;
+    ForeachOne(mylist.rbegin(), mylist.rend(), &Print<Node, ostream>, cout);
+	cout << endl;
+
+     cout<<"-------Foreach Two with Variadic Function-------"<<endl;
+	cout<<endl;
+    ForeachTwo(mylist,&Print<Node, ostream>, cout); 
+    cout<<endl;
+}
+
+   
 template <typename Container>
 
 void DemoLinkedListFill(Container &mylist)
@@ -303,18 +353,20 @@ void DemoLinkedListFill(Container &mylist)
  }
  
  void DemoLinkedList()
- {
-
-    cout << "Descending list" << endl;
+ {  cout<<"==== Linked List ====="<<endl;
     LinkedList<LLDesc> myDescList;
-    DemoLinkedListFill(myDescList);
-
-    cout << "Ascending list" << endl;
     LinkedList<LLAsc> myAscList;
-    DemoLinkedListFill(myAscList);
-    
+
+    //cout << "Descending list" << endl;
+    //DemoLinkedListFill(myDescList);
+
+    //cout << "Ascending list" << endl;
+    //DemoLinkedListFill(myAscList);
+    cout<<"==== Foreach whit variadic function ====="<<endl;
+    DemoForeachVariadic( myAscList);
  }
-*/
+
+
 template <typename Container>
 void DemoDoubleLinkedListFill(Container &myDoublelist){
 	const  IX nElem=6;
@@ -340,44 +392,48 @@ void DemoDoubleLinkedListFill(Container &myDoublelist){
 	cout<<"-------Foreach reverse-------"<<endl;
 	cout<<endl;
     foreach_reverse(myDoublelist, [](Node& node) {printing(&node);});  
-	cout << endl;
-
-    
-	
+	cout << endl;	
 }
 
-template <typename Container>
-void DemoReadingFile(Container &myDoublelist){
-	
-
-	cout << "Reading File"<<endl;
-
-   ifstream Read_file("test.txt");
-   
-   Read_file>>myDoublelist;
-   
-   cout<<"Printing using << : "<<endl;
-   
-   cout<<myDoublelist<<endl;
-	
-}
 
 void DemoDoubleLinkedList()
  {
-
-    cout << "=============Descending Double List==============" << endl;
-    
     DoubleLinkedList<DLDesc> myDescDList;
-	DemoReadingFile( myDescDList);
-    DemoDoubleLinkedListFill(myDescDList);
-  
-   cout << endl;
-   cout << "===============Ascending Double List===============" << endl;
+     DoubleLinkedList<DLAsc> myAscDList;
+    cout << "======  Double Linked LIst ======"<<endl;
+   // cout << "=============Descending Double List==============" << endl;
+  //DemoDoubleLinkedListFill(myDescDList);
 
-  DoubleLinkedList<DLAsc> myAscDList;
-  DemoDoubleLinkedListFill(myAscDList);
+
+  //cout << "===============Ascending Double List===============" << endl;
+  //DemoDoubleLinkedListFill(myAscDList);
+
+
+  //cout<< "========= Reading File ==============="<<endl;
+    //DemoReadingFile( myDescDList);
+
+   cout<< "========= Variadic Function  ==============="<<endl;
+    DemoForeachVariadic( myDescDList);
+    //DemoForeachVariadic( myAscDList);
+ 
     
  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

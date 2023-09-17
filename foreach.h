@@ -1,8 +1,9 @@
 #ifndef __RECORRRER_H__  
 #define __RECORRRER_H__ 
-#include<iostream>
 //#include "object_function.h"
-using namespace std;
+#include <functional>
+
+//using namespace std;
 
 template <typename T>
 void f2(T &x)
@@ -10,7 +11,7 @@ void f2(T &x)
 
 template <typename T>
 void f1(T &x)
-{  x+= 10; }
+{  x+= 5; }
 
 template <typename Iterator, typename F>
 void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
@@ -30,57 +31,24 @@ void foreach_reverse(Container &container, F ope){
     foreach(container. rbegin(), container.rend() , ope);
 }
 
-// template <typename Iterator, typename Callable, typename... Args>
-// void foreach(Iterator ItBegin, Iterator ItEnd, Callable op, Args&&... args)
-// {
-//     for (auto iter = ItBegin; iter != ItEnd; ++iter)
-//     {
-//         if constexpr (is_void_v<invoke_result_t<Callable, typename Iterator::value_type, Args...>>)
-//         {
-//             cout << "Function is returning: void!" << endl;
-//             invoke(op, *iter, forward<Args>(args)...);
-//             //...  // do something before we return
-//         }
-//         else // return type is not void:
-//         {
-//             auto ret = invoke(op, *iter, forward<Args>(args)...);
-//             cout << "Function is returning: " << type_name<decltype(ret)>() << endl;
-//             //...  // do something (with ret) before we return
-//         }
-//     }
-// }
+// =============== Variadic Function==============
 
-// #1
+// # 1
+template <typename Iterator, typename F, typename... Args>
+void ForeachOne(Iterator ItBegin, Iterator ItEnd, F ope, Args&&... args)
+{
+    auto iter = ItBegin;
+    for(; iter != ItEnd ; ++iter)
+       invoke(ope, *iter, forward<Args>(args)...);
+}
 
-
-// template <typename Iterator, typename Callable, typename... Args>
-// void foreach(Iterator ItBegin, Iterator ItEnd, Callable op, Args&&... args)
-// {   foreach(container.begin(), container.end(), ope);
-// }
-
-// TODO implementar el foreach inverso
 // # 2
-// template <typename Container, typename F>
-// void foreach_inverso(Container &container, F ope)
-// { foreach(container.rbegin(), container.rend(), ope);
-// }
+template <typename Container, typename F, typename... Args>
 
-// template <typename Container>
-// void foreach(Container &container)
-// {
-//     using T = typename Container::value_type;
-    // using T = typename Container::value_type;
-    // foreach(container, print<T>);  cout << endl; // recorre imprimiendo
-    // foreach(container, inc<T>);  // recorre incrementando
-    // foreach(container, print<T>);  cout << endl; // recorre imprimiendo
-
-//     // funciones lambda
-//     foreach(container, [](T &n){ n-= 5;}); cout << endl; // -5 a todos
-//     foreach(container, print<T>);  cout << endl; // recorre imprimiendo
-    
-//     OperacionEspecial<T> ope; 
-//     foreach(container, ope);  
-//     foreach(container, print<T>);  cout << endl;
-// }
+void ForeachTwo( Container container,  F ope, Args&&... args)
+	{   
+        ForeachOne(container.begin(), container.end(),  ope, args...);
+ 	}
 
 #endif
+
