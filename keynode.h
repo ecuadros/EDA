@@ -40,11 +40,11 @@ public:
     LinkedValueType& getValueRef()    { return m_value; }
 
     bool operator<(const KeyNode<T, V>& other) const { 
-        return m_key < other.m_key;
+        return m_value < other.m_value;//comparacion a partir del value
     }
     // Error was here. Next line was missing
     bool operator>(const KeyNode<T, V>& other) const { 
-        return m_key > other.m_key;
+        return m_value > other.m_value;//comparacion a partir del value
     }
 };
 

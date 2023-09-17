@@ -14,7 +14,7 @@ void DemoHeap();
 void DemoBinaryTree();
 void DemoHash();
 
-
-
+void DemoLinkedListSorted();
+void DemoDoubleLinkedListSorted();
 
 #endif // __DEMO_H__

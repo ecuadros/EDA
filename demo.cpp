@@ -2,10 +2,14 @@
 #include <fstream>  // ofstream, ifstream
 #include <cmath>
 #include <memory>
+#include <map>
 #include "demo.h"
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "linkedlist.h"
+#include "doublelinkedlist.h"
+
 using namespace std;
 
 template <typename T, int N>
@@ -185,7 +189,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string  , std::less<KeyNode<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -258,65 +262,64 @@ void DemoHash()
     cout << "Hello from DemoHash()" <<endl;
 }
 
-// template <typename Container>
-// void demoLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden: ";
-//     //for(size_t pos = 0; pos < mylist.size(); pos++)
-//     //    cout << mylist[pos] << endl;
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
-// }
+template <typename Container>
+void DemoLinkedList(Container &lista)
+{
+    cout << "Insertando en lista:"<<"\t";
+    for(int x=0; x<10; x++)
+    {   
+        int value = 1 + (rand() % 100);//generando enteros aleatorios entre 1 y 100
+        cout << x << ":[" << value << "] "; 
+        //insertando un par llave, valor
+        lista.insert(x, value);
+    }
+    cout << endl;
+    cout << "Leyendo en lista:"<<"\t";
+    cout <<"8:[" << lista.read(8) << "]"<< endl;
+    cout << "Lista ordenada:"<<"\t\t"<<lista<< endl;
+}
 
-// void demoLinkedListSorted()
-// {
-//     cout << "Ascending list" << endl;
-//     LinkedList< LLTraitAsc<TX> > myAscList;
-//     demoLinkedList(myAscList);
-//     foreach(myAscList);
+void DemoLinkedListSorted()
+{
+    cout << "LISTA ASCENDENTE" << endl;
+    LinkedList< LLTraitAsc<TX, TX> > myAscList;
+    DemoLinkedList(myAscList);
 
-//     cout << "Descending list" << endl;
-//     LinkedList< LLTraitDesc<TX> > myDescList;
-//     demoLinkedList(myDescList);
-//     foreach(myDescList);
-// }
+    cout << "LISTA DESCENDENTE" << endl;
+    LinkedList< LLTraitDesc<TX, TX> > myDescList;
+    DemoLinkedList(myDescList);
 
-// template <typename Container>
-// void demoDoubleLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//       //mylist.push_back(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden : ";
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
-    
-//     cout << "Lista invertida: ";
-//     foreach_inverso(mylist, fx<T>);  cout << endl;
-// }
+}
 
-// void demoDoubleLinkedListSorted()
-// {
-//     cout << "Ascending double list" << endl;
-//     DoubleLinkedList< DLLAscTraits<TX> > myAscList;
-//     demoDoubleLinkedList(myAscList);
+template <typename Container>
+void DemoDoubleLinkedList(Container &lista)
+{
+    cout << "Insertando en lista:"<<"\t";
+    for(int x=0; x<10; x++)
+    {   
+        int value = 1 + (rand() % 100);//generando enteros aleatorios entre 1 y 100
+        cout << x << ":[" << value << "] "; 
+        //insertando un par llave, valor
+        lista.insert(x, value);
+    }
+    cout << endl;
+    cout << "Leyendo en lista:"<<"\t";
+    cout <<"8:[" << lista.read(8) << "]"<< endl;
+    cout << "Lista ordenada:"<<"\t\t"<<lista<< endl;
+    cout << "Recorrido inverso:"<<"\t";
+    lista.print_reverse(cout);
+}
 
-//     cout << "Descending double list" << endl;
-//     DoubleLinkedList< DLLDescTraits<TX> > myDescList;
-//     demoDoubleLinkedList(myDescList); 
-// }
+void DemoDoubleLinkedListSorted()
+{
+    cout << "LISTA DOBLE ASCENDENTE" << endl;
+    DoubleLinkedList<DLLAscTraits<TX, TX>> myAscList;
+    DemoDoubleLinkedList(myAscList);
+
+    cout << "LISTA DOBLE DESCENDENTE" << endl;
+    DoubleLinkedList<DLLDescTraits<TX, TX>> myDescList;
+    DemoDoubleLinkedList(myDescList); 
+}
 
 // template <typename Container>
 // void DemoBinaryTree(Container &container)
