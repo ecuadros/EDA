@@ -189,6 +189,38 @@ class DoubleLinkedList{
         pTmp = pTmp->getpNext();
       return pTmp->getDataRef();
     }
+    void Write(){
+      print(m_pHead,cout);
+    }
+    void r_Write(){
+      r_print(m_pTail,cout);
+    }
+
+    void Read(const std::string& filename){
+      std::ifstream is(filename); 
+      if (!is.is_open()) { 
+          std::cerr << "Error opening file: " << filename << std::endl;
+          return;
+      }
+      string tmp_flow,num;
+      size_t count;
+      value_type  value;
+      LinkedValueType kvalue;
+      while (getline(is,tmp_flow)) { 
+          std::istringstream iss(tmp_flow);
+          count = 0;
+          while (iss >> num && count < 2) {
+              if(count==0)
+                  value = convertFromString<value_type>(num);
+              else
+                  kvalue = convertFromString<LinkedValueType>(num);  
+              count++;
+          }
+          insert(value,kvalue);
+      } 
+
+      is.close();
+    }
     void push_front(value_type elem,LinkedValueType elem2){
         Node *pNew = CreateNode(elem,elem2);
         pNew->setpNext(m_pHead);

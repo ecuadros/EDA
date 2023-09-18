@@ -363,7 +363,14 @@ void demoDoubleLinkedList(Container &mylist){
     cout<<"Overload operator []"<<endl;
     for(size_t pos = 0; pos < mylist.size(); pos++)
        cout << mylist[pos] << "-->";
-    cout<<endl;  
+    cout<<endl;
+    cout<<"\nTest Read Function"<<endl;
+    mylist.Read("file.txt");
+    mylist.print(cout);
+    cout<<"\nTest Write Function"<<endl;
+    mylist.Write();
+    cout<<"\nTest Write Function in other orden"<<endl;
+    mylist.r_Write();
 }
 
 
