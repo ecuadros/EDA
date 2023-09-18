@@ -5,24 +5,73 @@
 #include "keynode.h"
 #include "linkedlist.h"
 
-template <typename Container>
-class backward_iterator : public general_iterator<Container, class backward_iterator<Container>> //
+template <typename Container> //
+class doubleLinkedList_iterator
 {
 public:
-  // TODO: subir al padre
   typedef typename Container::Node Node;
-  typedef class general_iterator<Container, backward_iterator<Container>> Parent; //
-  typedef backward_iterator<Container> myself;
+  typedef typename Node::Type Type;
+  // typedef class general_iterator<Container> Parent;
+  typedef doubleLinkedList_iterator<Container> myself; //
+
+protected:
+  Container *m_pContainer;
+  Node *m_pNode;
 
 public:
-  backward_iterator(Container *pContainer, Node *pNode) : Parent(pContainer, pNode) {}
-  backward_iterator(myself &other) : Parent(other) {}
-  backward_iterator(myself &&other) : Parent(other) {}
-
-public:
-  backward_iterator operator--()
+  doubleLinkedList_iterator(Container *pContainer, Node *pNode)
+      : m_pContainer(pContainer), m_pNode(pNode) {}
+  doubleLinkedList_iterator(myself &other)
+      : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode) {}
+  doubleLinkedList_iterator(myself &&other) // Move constructor
   {
-    Parent::m_pNode = ((Node *)Parent::m_pNode)->getpPrev();
+    m_pContainer = move(other.m_pContainer);
+    m_pNode = move(other.m_pNode);
+  }
+
+  bool operator==(myself iter) { return m_pNode == iter.m_pNode; }
+  bool operator!=(myself iter) { return !(*this == iter); }
+  Node *operator*() { return m_pNode; }
+
+  myself operator++()
+  {
+    m_pNode = m_pNode->getpNext();
+    return *this;
+  }
+};
+
+
+template <typename Container> //
+class doubleLinkedList_riterator
+{
+public:
+  typedef typename Container::Node Node;
+  typedef typename Node::Type Type;
+  // typedef class general_iterator<Container> Parent;
+  typedef doubleLinkedList_riterator<Container> myself; //
+
+protected:
+  Container *m_pContainer;
+  Node *m_pNode;
+
+public:
+  doubleLinkedList_riterator(Container *pContainer, Node *pNode)
+      : m_pContainer(pContainer), m_pNode(pNode) {}
+  doubleLinkedList_riterator(myself &other)
+      : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode) {}
+  doubleLinkedList_riterator(myself &&other) // Move constructor
+  {
+    m_pContainer = move(other.m_pContainer);
+    m_pNode = move(other.m_pNode);
+  }
+
+  bool operator==(myself iter) { return m_pNode == iter.m_pNode; }
+  bool operator!=(myself iter) { return !(*this == iter); }
+  Node *operator*() { return m_pNode; }
+
+  myself operator++()
+  {
+    m_pNode = m_pNode->getpPrev();
     return *this;
   }
 };
@@ -101,8 +150,8 @@ public:
   typedef typename Traits::LinkedValueType LinkedValueType;
   typedef typename Traits::CompareFn CompareFn;
   typedef DoubleLinkedList<Traits> myself;
-  typedef backward_iterator<myself> iterator;
-  typedef backward_iterator<myself> riterator;
+  typedef doubleLinkedList_iterator<myself> iterator;
+  typedef doubleLinkedList_riterator<myself> riterator;
 
   using nodeDLL = NodeDLL<value_type, LinkedValueType>;
 
@@ -120,23 +169,41 @@ public:
   DoubleLinkedList() {}
   void insert(value_type elem, LinkedValueType value)
   {
+    Node *pPrevTail = m_pTail;
     Node **pParent = findPrev(elem);
     Node *pNew = CreateNode(elem, value);
     ::CreateBridge(*pParent, pNew, &Node::m_pNext);
-    if (!pNew->getpNext())
+    if (!pNew->getpNext()) {
       m_pTail = pNew;
-    m_size++;
+    }
+
+    if( pNew != m_pTail )
+        ::CreateBridge( (pNew->getpNext())->getpPrevRef(), pNew, &Node::m_pPrev);
+    else
+        pNew->setpPrev(pPrevTail);
+
+    m_size++;  
   }
 
   Node **findPrev(value_type &elem) { return findPrev(m_pHead, elem); }
   Node **findPrev(Node *&rpPrev, value_type &elem)
   {
-    if (!rpPrev || Compfn(elem, rpPrev->getData()))
+    if (!rpPrev || Compfn(elem, rpPrev->getData()) )
       return &rpPrev; // Retorna la direccion del puntero que me apunta
     return findPrev((Node *&)rpPrev->getpNextRef(), elem);
   }
 
   Node *CreateNode(value_type &data, LinkedValueType &value, Node *pNext = nullptr, Node *pPrev = nullptr) { return new Node(data, value, pNext, pPrev); }
+  iterator begin()
+  {
+    iterator iter(this, m_pHead);
+    return iter;
+  }
+  iterator end()
+  {
+    iterator iter(this, nullptr);
+    return iter;
+  }
   riterator rbegin()
   {
     riterator iter(this, m_pTail);
@@ -181,27 +248,54 @@ public:
     m_size++;
   }
 
+  value_type PopHead()
+  {
+    if (m_pHead)
+    {
+      Node *pNode = m_pHead;
+      value_type data = pNode->getData();
+      m_pHead = m_pHead->getpNext();
+      delete pNode;
+      m_size--;
+      if (!m_size)
+        m_pTail = nullptr;
+      return data;
+    }
+    throw "hola excepcion"; // Create custom exception pending
+  }
+
   void print(ostream &os)
   {
     nodeDLL *pTmp = m_pHead;
+    // // auto iter = begin();
+    // // for(; iter != end() ; ++iter)
+    // //   os << "{" << *iter << "," << pTmp->getValue() << "}";
+    // //   pTmp = pTmp->getpNext();
 
-    while (pTmp)
-    {
+    while (pTmp) {
       os << "{" << pTmp->getData() << ", " << pTmp->getValue() << "}, ";
       pTmp = pTmp->getpNext();
     }
+
   }
 
-  ostream &print_reverse(ostream &os)
+  void read(istream &is)
   {
-    Node *pDLL;
-    for (size_t i = size(); i > 0; --i)
+
+    while (m_pHead)
     {
-      pDLL = getPos(i-1);
-      os << "{" << pDLL->getData() << ", " << pDLL->getValue() << "}, ";
+      this->PopHead();
     }
-    os << endl;
-    return os;
+    string str;
+    value_type key;
+    LinkedValueType value;
+    getline(is, str); // skip the first line
+    while (getline(is, str))
+    {
+      istringstream iss(str);
+      iss >> key >> value;
+      insert(key, value);
+    }
   }
 };
 
@@ -215,7 +309,7 @@ inline ostream &operator<<(ostream &os, DoubleLinkedList<T> &obj)
 template <typename T>
 inline istream &operator>>(istream &is, DoubleLinkedList<T> &obj)
 {
-  obj.insert(obj.value_type, obj.LinkedValueType);
+  obj.read(is);
   return is;
 }
 

@@ -16,8 +16,9 @@ void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
 {
   auto iter = ItBegin;
   for(; iter != ItEnd ; ++iter)
-      ope(*iter);
+      ope(*iter, cout);
 }
+
 
 // template <typename Iterator, typename Callable, typename... Args>
 // void foreach(Iterator ItBegin, Iterator ItEnd, Callable op, Args&&... args)
@@ -42,7 +43,7 @@ void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
 // #1
 template <typename Container, typename F>
 void foreach(Container &container, F ope){
-    foreach(container. begin(), container.end() , ope);
+    foreach(container.begin(), container.end() , ope);
 }
 
 template <typename Container, typename F>

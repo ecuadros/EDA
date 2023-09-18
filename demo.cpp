@@ -90,50 +90,51 @@ void DemoSmartPointers(){
     cout << *pV3 ;
 }
 
-void DemoDynamicMatrixes(){
+// void DemoDynamicMatrixes(){
 
-    cout << "----------------mat1--------------------" << endl;
-    CMatrix<MatrixTraitFloat> mat1(3, 4);
-    mat1.fill(1);
-    //cout << "k : " << mat1.m_rows<<endl;
-    cout << mat1;
 
-    cout << "----------------mat1--------------------" << endl;
-    CMatrix<MatrixTraitFloat> mat2(4, 5);
-    mat2.fill(2.5);
-    cout << mat2;
+//     cout << "----------------mat1--------------------" << endl;
+//     CMatrix<MatrixTraitFloat> mat1(3, 4);
+//     mat1.fill(1);
+//     //cout << "k : " << mat1.m_rows<<endl;
+//     cout << mat1;
 
-    cout << "----------------mat1*mat2--------------------" << endl;
-    // TODO #1: overload operator*(CMatrix<Traits> &other)
-    CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
-    cout << mat3;
+//     cout << "----------------mat1--------------------" << endl;
+//     CMatrix<MatrixTraitFloat> mat2(4, 5);
+//     mat2.fill(2.5);
+//     cout << mat2;
 
-    cout <<endl;
-    cout << "----------------Iterator matrix--------------------" << endl;
-    // TODO #2: Create Iterator for CMatrix
-    cout <<endl<< "----mat1----" << endl;
-    foreach(mat1, ::print<TX>);
-    cout << endl;
+//     cout << "----------------mat1*mat2--------------------" << endl;
+//     // TODO #1: overload operator*(CMatrix<Traits> &other)
+//     CMatrix<MatrixTraitFloat> mat3 = mat1 * mat2;
+//     cout << mat3;
 
-    cout <<endl<< "----mat1 sumando un contador----" << endl;
-    TX x = 1;
-    // // Lambda function
-    // foreach(mat1, [x](TX &n){ n += x; x++; });
-    // foreach(mat1, ::print<TX>); cout << endl;
-    // ClassX<TX> ope(5);
-    // foreach(mat1, ope);
-    // foreach(mat1, ::print<TX>); cout << endl;
-    // foreach(mat1, ClassX<TX>(8) );
-    // foreach(mat1, ::print<TX>); cout << endl;
+//     cout <<endl;
+//     cout << "----------------Iterator matrix--------------------" << endl;
+//     // TODO #2: Create Iterator for CMatrix
+//     cout <<endl<< "----mat1----" << endl;
+//     foreach(mat1, ::print<TX>);
+//     cout << endl;
 
-     // // TODO #3: prepare Matrix to be used as a matrix from outside
-    // // overload operator[](size_t row)
-    cout << "----------------Operator [] and ()-------------------" << endl;
-    mat1[2][3] = 8.2;
-    mat1(2, 2) = 7.5; // Operator () is returning a value_type &
-    cout << mat1;
-    cout << endl;
-}
+//     cout <<endl<< "----mat1 sumando un contador----" << endl;
+//     TX x = 1;
+//     // // Lambda function
+//     // foreach(mat1, [x](TX &n){ n += x; x++; });
+//     // foreach(mat1, ::print<TX>); cout << endl;
+//     // ClassX<TX> ope(5);
+//     // foreach(mat1, ope);
+//     // foreach(mat1, ::print<TX>); cout << endl;
+//     // foreach(mat1, ClassX<TX>(8) );
+//     // foreach(mat1, ::print<TX>); cout << endl;
+
+//      // // TODO #3: prepare Matrix to be used as a matrix from outside
+//     // // overload operator[](size_t row)
+//     cout << "----------------Operator [] and ()-------------------" << endl;
+//     mat1[2][3] = 8.2;
+//     mat1(2, 2) = 7.5; // Operator () is returning a value_type &
+//     cout << mat1;
+//     cout << endl;
+// }
 
 void DemoPreandPostIncrement(){
     int x = 10, y, z;
@@ -144,107 +145,107 @@ void DemoPreandPostIncrement(){
     cout << "z=" << z << " x=" << x << endl;
 }
 
-void DemoArray(){   
-    cout << "Hello from DemoArray()" <<endl;
-    cout << "Vector #1()" <<endl;
+// void DemoArray(){   
+//     cout << "Hello from DemoArray()" <<endl;
+//     cout << "Vector #1()" <<endl;
     
-    CArray< TraitArrayIntInt > v1("Antonio"); 
-    for(auto i = 0 ; i < 15 ; i++)
-        v1.insert(i, i+5);   //  insert(&v1);
+//     CArray< TraitArrayIntInt > v1("Antonio"); 
+//     for(auto i = 0 ; i < 15 ; i++)
+//         v1.insert(i, i+5);   //  insert(&v1);
 
-    cout << "Vector #2()" <<endl;
-    CArray< TraitFloatLong > v2("Cristian Vera"), 
-           *pV3 = new CArray< TraitFloatLong >("Guiomar ABC");
-    auto &rA = *pV3;
-    for(auto i = 100 ; i < 112 ; i++)
-    {   v2.insert(sqrt(i), i);
-        pV3->insert(i, sqrt(i));
-        //  (*pv3).insert(i);
-        //  rA.insert(i);
-    }
-    cout << "Printing V1 (TraitArrayIntInt)" << endl;
-    cout << v1; // v1.print(cout);
+//     cout << "Vector #2()" <<endl;
+//     CArray< TraitFloatLong > v2("Cristian Vera"), 
+//            *pV3 = new CArray< TraitFloatLong >("Guiomar ABC");
+//     auto &rA = *pV3;
+//     for(auto i = 100 ; i < 112 ; i++)
+//     {   v2.insert(sqrt(i), i);
+//         pV3->insert(i, sqrt(i));
+//         //  (*pv3).insert(i);
+//         //  rA.insert(i);
+//     }
+//     cout << "Printing V1 (TraitArrayIntInt)" << endl;
+//     cout << v1; // v1.print(cout);
 
-    cout << "Printing V2 (TraitFloatLong)" << endl;
-    ostream &tmp = cout << v2 << "More text" << endl;
-    tmp << "Hola !!!" << endl;
-    cout << &tmp << "..." << &cout <<endl;
-    // cout << x << f << y << endl;
+//     cout << "Printing V2 (TraitFloatLong)" << endl;
+//     ostream &tmp = cout << v2 << "More text" << endl;
+//     tmp << "Hola !!!" << endl;
+//     cout << &tmp << "..." << &cout <<endl;
+//     // cout << x << f << y << endl;
 
-    cout << "Printing pv3 (TraitFloatLong)" << endl;
-    pV3->print(cout);
-    // (*pV3).print();     *pV3 is already an object
-    // rA.print();          rA is also an object
-    // pV3[0].print();      pV3 is also an array with just 1 element [0]
-    // (*(pV3+0)).print();
-    // (*(0+pV3)).print();
-    // 0[pV3].print();
-    // delete pV3;
+//     cout << "Printing pv3 (TraitFloatLong)" << endl;
+//     pV3->print(cout);
+//     // (*pV3).print();     *pV3 is already an object
+//     // rA.print();          rA is also an object
+//     // pV3[0].print();      pV3 is also an array with just 1 element [0]
+//     // (*(pV3+0)).print();
+//     // (*(0+pV3)).print();
+//     // 0[pV3].print();
+//     // delete pV3;
 
-    // Using an array with []
-    for(auto i = 0 ; i < v2.size() ; i++)
-        cout << "v2[" << i << "] = " << v2[i] << endl;
-    ofstream of("test.txt", ios::out);
-    of << v2 << endl; 
-    cout << "DemoArray finished !" << endl;
+//     // Using an array with []
+//     for(auto i = 0 ; i < v2.size() ; i++)
+//         cout << "v2[" << i << "] = " << v2[i] << endl;
+//     ofstream of("test.txt", ios::out);
+//     of << v2 << endl; 
+//     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = XTrait<string, string  , std::less<KeyNode<string, string> &>>;
-    CArray< TraitStringString > vx("Ernesto Cuadros");
-    vx.insert("Ernesto", "Cuadros");
-    vx.insert("Luis"   , "Tejada");
-    vx.insert("Jorge"  , "Lozano");
-    vx.insert("Edson"  , "Caceres");
-    vx.insert("Franz"  , "Maguiña");
-    vx.print(cout);
-}
+//     using TraitStringString = XTrait<string, string  , std::less<KeyNode<string, string> &>>;
+//     CArray< TraitStringString > vx("Ernesto Cuadros");
+//     vx.insert("Ernesto", "Cuadros");
+//     vx.insert("Luis"   , "Tejada");
+//     vx.insert("Jorge"  , "Lozano");
+//     vx.insert("Edson"  , "Caceres");
+//     vx.insert("Franz"  , "Maguiña");
+//     vx.print(cout);
+// }
 
-void DemoIterators(){
-    CArray< TraitArrayIntInt > v1("Jorge");
+// void DemoIterators(){
+//     CArray< TraitArrayIntInt > v1("Jorge");
     
-    v1.insert(30, 40);
-    v1.insert(18, 45);
-    v1.insert(20, 35);
-    v1.insert(7 , 64);
-    v1.insert(12, 25);
-    v1.insert(8 , 17);
+//     v1.insert(30, 40);
+//     v1.insert(18, 45);
+//     v1.insert(20, 35);
+//     v1.insert(7 , 64);
+//     v1.insert(12, 25);
+//     v1.insert(8 , 17);
 
-    cout << v1 << endl;
-    // array_forward_iterator<CArray< TraitArrayIntInt >> iter = v1.begin();
-    //CArray< TraitArrayIntInt >::iterator iter = v1.begin();
-    auto iter = v1.begin();
-    foreach(iter, v1.end(), ::increment<TX, 7>);
-    cout << v1 << endl;
-    foreach(v1, ::increment<TX, 4>);
-    cout << v1 << endl;
+//     cout << v1 << endl;
+//     // array_forward_iterator<CArray< TraitArrayIntInt >> iter = v1.begin();
+//     //CArray< TraitArrayIntInt >::iterator iter = v1.begin();
+//     auto iter = v1.begin();
+//     foreach(iter, v1.end(), ::increment<TX, 7>);
+//     cout << v1 << endl;
+//     foreach(v1, ::increment<TX, 4>);
+//     cout << v1 << endl;
 
-    foreach(v1, ::print<TX>);
-    cout << endl;
-    // Lambda function
-    int x = 3;
-    foreach(v1, [x](TX &n){ n *= 2*x; });
-    foreach(v1, ::print<TX>); cout << endl;
-    ClassX<TX> ope(5);
-    foreach(v1, ope);
-    foreach(v1, ::print<TX>); cout << endl;
-    foreach(v1, ClassX<TX>(8) );
-    foreach(v1, ::print<TX>); cout << endl;
-}
+//     foreach(v1, ::print<TX>);
+//     cout << endl;
+//     // Lambda function
+//     int x = 3;
+//     foreach(v1, [x](TX &n){ n *= 2*x; });
+//     foreach(v1, ::print<TX>); cout << endl;
+//     ClassX<TX> ope(5);
+//     foreach(v1, ope);
+//     foreach(v1, ::print<TX>); cout << endl;
+//     foreach(v1, ClassX<TX>(8) );
+//     foreach(v1, ::print<TX>); cout << endl;
+// }
 
-void DemoReverseIterators(){
-    cout << "DemoReverseIterators: " << endl;
-    CArray< TraitArrayIntInt > v1("Edson Cáceres");
-    v1.insert(30, 40);
-    v1.insert(18, 45);
-    v1.insert(20, 35);
-    v1.insert(7 , 64);
-    v1.insert(12, 25);
-    v1.insert(8 , 17);
+// void DemoReverseIterators(){
+//     cout << "DemoReverseIterators: " << endl;
+//     CArray< TraitArrayIntInt > v1("Edson Cáceres");
+//     v1.insert(30, 40);
+//     v1.insert(18, 45);
+//     v1.insert(20, 35);
+//     v1.insert(7 , 64);
+//     v1.insert(12, 25);
+//     v1.insert(8 , 17);
 
-    cout << "Printing asc : " << endl;
-    cout << v1 << endl;
-    cout << "Printing desc : " << endl;
-    foreach(v1.rbegin(), v1.rend(), ::print<TX>);
-}
+//     cout << "Printing asc : " << endl;
+//     cout << v1 << endl;
+//     cout << "Printing desc : " << endl;
+//     foreach(v1.rbegin(), v1.rend(), ::print<TX>);
+// }
 
 void DemoHeap()
 {
@@ -261,9 +262,17 @@ void DemoHash()
     cout << "Hello from DemoHash()" <<endl;
 }
 
+template <typename Node>
+void printList(Node *pList, ostream &os){
+    os << "{" << pList->getDataRef() << ", " << pList->getValueRef() << "}, ";
+}
+
 template <typename Container>
 void demoLinkedList(Container &mylist)
 {
+    typedef typename Container::value_type value_type;
+    typedef typename Container::LinkedValueType LinkedValueType;
+    typedef typename Container::Node Node;
     auto nElem = 8;
     TX vect[nElem] = {4,3,76,1,4,88,45,3};
     cout << "Inserting:       ";
@@ -277,7 +286,13 @@ void demoLinkedList(Container &mylist)
     //for(size_t pos = 0; pos < mylist.size(); pos++)
     //    cout << mylist[pos] << endl;
     // using T = typename Container::value_type;
-    // foreach(mylist, ::print<TX>); 
+    foreach(mylist.begin(), mylist.end(), ::printList<Node>);
+    // mylist.print(printList<Node>);
+    cout << endl;
+
+    cout << "Reading from test.txt" << endl;
+    ifstream testFile("test.txt");
+    testFile >> mylist;
     cout << mylist;
     cout << endl;
 }
@@ -300,23 +315,34 @@ void demoLinkedListSorted()
 template <typename Container>
 void demoDoubleLinkedList(Container &mylist)
 {
+    typedef typename Container::value_type value_type;
+    typedef typename Container::LinkedValueType LinkedValueType;
+    typedef typename Container::Node Node;
     auto nElem = 8;
     TX vect[nElem] = {4,3,76,1,6,88,45,2};
     cout << "Inserting:       ";
     for(auto x=0; x<nElem; x++)
     {   
-      cout << vect[x] << ", "; 
+      cout << "{"<< vect[x] << "," << -vect[x] << "}, "; 
       mylist.insert(vect[x], -vect[x]);
       //mylist.push_back(vect[x]);
     }
     cout << endl;
     cout << "Lista en orden : ";
-    cout << mylist;
+    foreach(mylist.begin(), mylist.end(), ::printList<Node>);
+    // cout << mylist;
     cout << endl;
     
     cout << "Lista invertida: ";
-    mylist.print_reverse(cout);
+    foreach(mylist.rbegin(), mylist.rend(), ::printList<Node>);
+    cout << endl;
+    // mylist.print_reverse(cout);
     // foreach_reverse(mylist, ::print<TX>);  cout << endl;
+    cout << "Reading from test.txt" << endl;
+    ifstream testFile("test.txt");
+    testFile >> mylist;
+    cout << mylist;
+    cout << endl;
 }
 
 void demoDoubleLinkedListSorted()
