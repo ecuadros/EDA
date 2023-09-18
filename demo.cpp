@@ -281,6 +281,17 @@ void DemoLinkedList()
     foreach(list, fx);  
     cout<<endl;
 
+    // Foreach con variadic templates
+    cout << "Claves por 2 (foreach con variadic templates): ";
+    auto fx2 = [](auto &n, int x){ cout<< n * x << " "; };
+    foreach(list.begin(), list.end(), fx2, 2);
+    cout<<endl;
+
+    // Foreach con variadic templates miembro
+    cout << "Claves por 2 (miembro foreach con variadic templates): ";
+    list.foreach(fx2, 2);
+    cout<<endl;
+
     // Operador >> para leer un elemento y agregarlo a la lista
     cout<<"Leyendo lista de test.txt con operator<< (Usa read por dentro)" << endl;
     ifstream file("test.txt");
@@ -309,9 +320,22 @@ void DemoDoubleLinkedList()
     for(pair<int, int> el: vect) list.insert(el.first, el.second);
     cout<<"Imprimiendo lista con operator<< (Usa print por dentro)" << endl;
     cout << "Lista impresa: " << list;
+
+    // Foreach
     cout<<"Imprimiendo claves al reves con iterator y foreach: " ;
     foreach(list.rbegin(), list.rend(), [](auto &n){ cout<< n << " "; });
     cout << endl;
+
+    // Foreach con variadic templates
+    cout << "Claves por 2 reverse (foreach con variadic templates): ";
+    auto fx2 = [](auto &n, int x){ cout<< n * x << " "; };
+    foreach(list.rbegin(), list.rend(), fx2, 2);
+    cout<<endl;
+
+    // Foreach con variadic templates miembro
+    cout << "Claves por 2 reverse (miembro foreach con variadic templates): ";
+    list.foreachReverse(fx2, 2);
+    cout<<endl;
 
     cout<<"Leyendo lista de test.txt con operator>> (Usa read por dentro): " << endl;
     ifstream file("test.txt");

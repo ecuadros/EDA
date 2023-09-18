@@ -159,6 +159,13 @@ public:
     }
     riterator rbegin() { riterator iter(this, m_pTail);     return iter;    }
     riterator rend()   { riterator iter(this, nullptr);             return iter;    }
+
+    template <typename Callable, typename... Args>
+    void foreachReverse (Callable op, Args && ...args)
+    {
+        ::foreach(rbegin(), rend(), op, args...);
+    }
+
     size_t size() const { return m_size; }
     void  push_front(const value_type &elem, const LinkedValueType &val)
     {

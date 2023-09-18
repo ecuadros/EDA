@@ -2,8 +2,11 @@
 #define __LINKEDLIST_H__
 #include <utility>
 #include <algorithm>
+#include <exception>
+#include <iostream>
 #include <cassert>
 #include "iterator.h"
+#include "foreach.h"
 #include "types.h"
 using namespace std;
 
@@ -132,6 +135,12 @@ public:
         return iter;
     }
 
+    template <typename Callable, typename... Args>
+    void foreach (Callable op, Args && ...args)
+    {
+        ::foreach(begin(), end(), op, args...);
+    }
+
     void push_front(const value_type &elem, const LinkedValueType &val)
     {
         Node *pNew = CreateNode(elem, val);
@@ -193,7 +202,7 @@ public:
                 m_pTail = nullptr;
             return data;
         }
-        throw "hola excepcion"; // Create custom exception pending
+        throw "Empty list";
     }
     // DONE add print
     void print(ostream &os)
