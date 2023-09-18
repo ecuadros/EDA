@@ -23,7 +23,7 @@ int main()
     // DemoPreandPostIncrement();
     // DemoSmartPointers();
 
-    //DemoLinkedListSorted();
+    DemoLinkedListSorted();
     DemoDoubleLinkedListSorted();
     
     return 0;

@@ -24,9 +24,9 @@ class backward_iterator
     }
 
   public:
-    backward_iterator operator--()
+    myself operator++()
     {
-      m_pNode = ((Node *)m_pNode)->getpPrev();
+      m_pNode = m_pNode->getpPrev();
       return *this;
     }
 
@@ -38,7 +38,7 @@ class backward_iterator
 
     bool operator==(backward_iterator iter)   { return m_pNode == iter.m_pNode; }
     bool operator!=(backward_iterator iter)   { return !(*this == iter);        }
-    Node &operator*() { return m_pNode;}
+    Node *operator*() { return m_pNode;}
 };
 
 template <typename T, typename V>
@@ -58,6 +58,8 @@ public:
   Node *m_pNext;
   Node *m_pPrev;
 public:
+  NodeDLL(KeyNode<T, V> data, Node *pNext = nullptr)
+      : m_data(data), m_pNext(pNext){};
   NodeDLL(value_type key, LinkedValueType value, Node *pNext = nullptr, Node *pPrev = nullptr)
   {
     m_data = KeyNode(key, value);//TODO: Tarea 31: CDoubleLinkedList: add KeyNode
@@ -109,7 +111,7 @@ public:
   typedef typename Traits::LinkedValueType LinkedValueType;
   typedef typename Traits::CompareFn CompareFn;
   typedef DoubleLinkedList<Traits> myself;
-  typedef backward_iterator<myself> iterator;
+  typedef forward_iterator<myself> iterator;
   typedef backward_iterator<myself> riterator;
 
   using nodeDLL = NodeDLL<value_type, LinkedValueType>;
@@ -127,14 +129,24 @@ public:
 public:
   DoubleLinkedList() {}
   //TODO: Tarea 30: CDoubleLinkedList: add 2 param to insert
-  void insert(value_type elem, LinkedValueType valor)
+    void insert(value_type key, LinkedValueType valor)
   {
-    Node **pParent = findPrev(valor);
-    Node *pNew = CreateNode(elem, valor);
+    Node *pPrevTail = m_pTail;
+    Node *pNew = *insert_forward(key, valor);
+    if (pNew != m_pTail)
+      ::CreateBridge(pNew->getpNext()->getpPrevRef(), pNew, &Node::m_pPrev);
+    else
+      pNew->setpPrev(pPrevTail);
+  }
+
+  Node **insert_forward(value_type key, LinkedValueType valor)
+  {
+    Node **pParent = findPrev(key);
+    Node *pNew = CreateNode(key, valor);
     ::CreateBridge(*pParent, pNew, &Node::m_pNext);
     if (!pNew->getpNext())
       m_pTail = pNew;
-    m_size++;
+    return pParent;
   }
 
   Node **findPrev(value_type &valor) { return findPrev(m_pHead, valor); }
@@ -146,6 +158,8 @@ public:
   }
 
   Node *CreateNode(value_type &data, LinkedValueType &value, Node *pNext = nullptr, Node *pPrev = nullptr) { return new Node(data, value, pNext, pPrev); }
+  iterator begin() { iterator iter(this, m_pHead);    return iter;    }
+  iterator end()   { iterator iter(this, nullptr);    return iter;    }
   riterator rbegin(){ riterator iter(this, m_pTail);return iter; }
   riterator rend(){ riterator iter(this, nullptr);return iter; }
 
@@ -178,9 +192,7 @@ public:
       string puntuacion;
       while (filas--)
       {
-        is >> key;
-        is >> puntuacion;
-        is >> value;
+        is >> key;is >> puntuacion;is >> value;
         this->insert(key, value);
       }
   }

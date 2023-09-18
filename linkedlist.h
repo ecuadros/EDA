@@ -5,6 +5,7 @@
 #include <cassert>
 #include "types.h"
 #include "keynode.h"
+#include "iterator.h"
 using namespace std;
 
 template <typename Node, typename MemberType>
@@ -29,6 +30,8 @@ private:
     KeyNode<T,V> m_data;
     Node   *m_pNext;
   public:
+    NodeLinkedList(KeyNode<T, V> data, Node *pNext = nullptr)
+      : m_data(data), m_pNext(pNext){};
     NodeLinkedList(value_type key, LinkedValueType valor, Node *pNext = nullptr){
         m_data = KeyNode(key, valor);//TODO: Tarea 26: CLinkedList: add KeyNode
         m_pNext = pNext;
@@ -64,21 +67,23 @@ class forward_iterator
     }
 
   public:
-    forward_iterator operator++() 
+    myself operator++() 
     {
-      m_pNode = (Node *)m_pNode->getpNext();  
+      m_pNode = m_pNode->getpNext();  
       return *this;
     }
 
     forward_iterator operator=(forward_iterator &iter)
-          {   m_pContainer = move(iter.m_pContainer);
-              m_pNode      = move(iter.m_pNode);
-              return *(forward_iterator *)this;
-          }
+    {   
+      m_pContainer = move(iter.m_pContainer);
+      m_pNode      = move(iter.m_pNode);
+      return *(forward_iterator *)this;
+    }
 
     bool operator==(forward_iterator iter)   { return m_pNode == iter.m_pNode; }
     bool operator!=(forward_iterator iter)   { return !(*this == iter);        }
-    Node &operator*() { return m_pNode;}
+    Node *operator*() { return m_pNode;}
+
 };
 
 template <typename _T, typename _V>

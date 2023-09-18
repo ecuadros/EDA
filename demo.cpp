@@ -262,12 +262,21 @@ void DemoHash()
     cout << "Hello from DemoHash()" <<endl;
 }
 
+template <typename Node>
+void printIter(Node *pActual){
+    cout << pActual->getKeyRef() << "->[" << pActual->getValueRef() << "] ";
+}
+
 template <typename Container>
 void DemoLinkedList(Container &lista)
 {
     ifstream input("test.txt");
     input >> lista;
     cout << "Lista ordenada (key ->[value]):"<<"\t\t"<<lista<< endl;
+    typedef typename Container::Node Node;
+    cout << "Lista iterada (key ->[value]):"<<"\t\t";
+    foreach(lista.begin(), lista.end(), ::printIter<Node>);
+    cout << endl;
 }
 
 void DemoLinkedListSorted()
@@ -287,9 +296,14 @@ void DemoDoubleLinkedList(Container &lista)
 {
     ifstream input("test.txt");
     input >> lista;
-    cout << "Lista ordenada (key ->[value]):"<<"\t\t"<<lista<< endl;
-    cout << "Recorrido inverso (key ->[value]):"<<"\t";
-    lista.reverse_print(cout);
+    cout << "Lista ordenada (key ->[value]):"<<"\t\t\t"<<lista<< endl;
+    typedef typename Container::Node Node;
+    cout << "Lista iterada en orden (key ->[value]):"<<"\t\t";
+    foreach(lista.begin(), lista.end(), ::printIter<Node>);
+    cout << endl;
+    cout << "Lista iterada al reves (key ->[value]):"<<"\t\t";
+    foreach(lista.rbegin(), lista.rend(), ::printIter<Node>);
+    cout << endl;
 }
 
 void DemoDoubleLinkedListSorted()
