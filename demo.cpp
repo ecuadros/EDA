@@ -295,8 +295,14 @@ void demoLinkedList(Container &mylist)
     cout<<"\nReading External File"<<endl;
     ifstream of("file.txt",ios::in);
     of>>mylist;
-    cout<<"Print Value of MyList Update"<<endl;
+    cout<<"\nPrint Value of MyList Update"<<endl;
     mylist.print(cout);
+    cout<<"\nTest Read Function"<<endl;
+    mylist.Read("file.txt");
+    mylist.print(cout);
+    cout<<"\nTest Write Function"<<endl;
+    mylist.Write();
+
 }
 
 void demoLinkedListSorted()
@@ -304,12 +310,13 @@ void demoLinkedListSorted()
     cout << "Ascending list" << endl;
     LinkedList<Traits_LLAsc> myAscList;
     demoLinkedList(myAscList);
-    cout<<endl;
+    cout<<"\nTestForeach Final"<<endl;
     foreach(myAscList);
     cout<<endl;
     cout << "\nDescending list" << endl;
     LinkedList<Traits_LLDesc> myDescList;
     demoLinkedList(myDescList);
+    cout<<"\nTestForeach Final"<<endl;
     foreach(myDescList);
 }
 

@@ -8,6 +8,8 @@
 #include "xtrait.h"
 #include <sstream> 
 using namespace std;
+template <typename T>
+T convertFromString(const string& str);
 
 template<typename Container>
 class iterator_list{
@@ -144,6 +146,34 @@ class LinkedList
           m_pHead = pNew;
         m_size++;
     }
+    void Write(){
+      print(m_pHead,cout);
+    }
+    void Read(const std::string& filename){
+      std::ifstream is(filename); 
+      if (!is.is_open()) { 
+          std::cerr << "Error opening file: " << filename << std::endl;
+          return;
+      }
+      string tmp_flow,num;
+      size_t count;
+      value_type  value;
+      LinkedValueType kvalue;
+      while (getline(is,tmp_flow)) { 
+          std::istringstream iss(tmp_flow);
+          count = 0;
+          while (iss >> num && count < 2) {
+              if(count==0)
+                  value = convertFromString<value_type>(num);
+              else
+                  kvalue = convertFromString<LinkedValueType>(num);  
+              count++;
+          }
+          insert(value,kvalue);
+      } 
+
+      is.close();
+    }
 
   protected:
     void print(Node* pNode, std::ostream& os){
@@ -152,6 +182,7 @@ class LinkedList
         print(pNode->getpNext(),os);
       }
     }
+    
     Node **findPrev(value_type &elem) {
       return findPrev(m_pHead, elem);
     }

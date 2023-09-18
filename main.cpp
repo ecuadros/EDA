@@ -19,8 +19,8 @@ int main()
     //DemoHeap();
     // DemoBinaryTree();
     // DemoHash();
-    //demoLinkedListSorted();
-    demoDoubleLinkedListSorted();
+    demoLinkedListSorted();
+    //demoDoubleLinkedListSorted();
     // DemoPreandPostIncrement();
     // DemoSmartPointers();
     
