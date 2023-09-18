@@ -141,7 +141,7 @@ public:
 
   Node **insert_forward(value_type key, LinkedValueType valor)
   {
-    Node **pParent = findPrev(key);
+    Node **pParent = findPrev(valor);
     Node *pNew = CreateNode(key, valor);
     ::CreateBridge(*pParent, pNew, &Node::m_pNext);
     if (!pNew->getpNext())
