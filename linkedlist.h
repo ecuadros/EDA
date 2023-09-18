@@ -68,12 +68,12 @@ public:
     return m_data.getDataRef();
   }
 
-  T getKey()
+  V getKey()
   {
     return m_data.getValue();
   }
 
-  T &getKeyRef()
+  V &getKeyRef()
   {
     return m_data.getValueRef();
   }

@@ -15,6 +15,7 @@ void DemoBinaryTree();
 void DemoHash();
 
 void DemoLinkedList();
+void DemoDoubleLinkedList();
 
 
 

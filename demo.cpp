@@ -7,6 +7,7 @@
 #include "matrix.h"
 #include "foreach.h"
 #include "linkedlist.h"
+#include "doublelinkedlist.h"
 #include <string>
 using namespace std;
 
@@ -347,6 +348,9 @@ void DemoLinkedList()
     listaEnlazadaAsc.insert(30,3);
     listaEnlazadaAsc.insert(40,4);
     listaEnlazadaAsc.insert(50,5);
+
+    cout << "Demo de LinkedList " << endl;
+    cout << "===========================================" << endl;
     
     cout << "Se crea una lista enlazada ascendentemente:" << endl;
     cout << "Se imprime la lista en el formato { value  linkedvalue }" << endl;
@@ -378,6 +382,42 @@ void DemoLinkedList()
     cout << listaEnlazadaDes << endl;
 }
 // #################################################################
+
+void DemoDoubleLinkedList()
+{
+    DoubleLinkedList<DLLAscTraits<int, int>> listaDobleEnlazadaAsc;
+    DoubleLinkedList<DLLAscTraits<int, int>> listaDobleida;
+    DoubleLinkedList<DLLAscTraits<int, int>> listaDobleEnlazadaDesc;
+    listaDobleEnlazadaAsc.insert(1, 1);
+    listaDobleEnlazadaAsc.insert(2, 1);
+    listaDobleEnlazadaAsc.insert(3, 1);
+    listaDobleEnlazadaAsc.insert(4, 1);
+    listaDobleEnlazadaAsc.insert(5, 1);
+
+
+    cout << "Demo de DoubleLinkedList " << endl;
+    cout << "===========================================" << endl;
+
+    cout << "Se crea una lista enlazada ascendentemente:" << endl;
+    cout << "Se imprime la lista en el formato { value  linkedvalue }" << endl;
+    cout << listaDobleEnlazadaAsc;
+
+    cout << "Se guarda la informacion de la lista en el archivo text.txt" << endl;
+
+    ofstream myfile("test.txt");
+    if (myfile.is_open()) 
+    {
+        myfile << listaDobleEnlazadaAsc << endl;
+        myfile.close();
+    }
+
+    ifstream toread("test.txt");
+    toread >> listaDobleida;
+    cout << "Se crea otro objeto de lista enlazada llamado 'ListaDobleLeida'  y se muestra su contenido" << endl;
+    cout << listaDobleida << endl;
+    toread.close();
+
+}
 
 void demoLinkedListSorted()
 {
