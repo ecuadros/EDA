@@ -19,7 +19,7 @@ int main()
     //DemoHeap();
     // DemoBinaryTree();
     // DemoHash();
-    DemoTree();
+    DemoBTree();
 
     // DemoPreandPostIncrement();
     // DemoSmartPointers();

@@ -6,28 +6,12 @@
 #include <sstream> 
 #include <string>
 #include "xtrait.h"
+namespace BTreeNamespace {
+template <typename T>
+T convertFromString(const std::string &str) ;  
 #define DEFAULT_BTREE_ORDER 3
 
 const size_t MaxHeight = 5; 
-
-template <typename _value_type, typename _LinkedValueType>
-struct BTreeTrait
-{
-       using value_type = _value_type;
-       using LinkedValueType = _LinkedValueType;
-};
-
-template <typename Traits>
-struct BTreeTrait_Node
-{
-    using  value_type = typename Traits::value_type;
-    using  LinkedValueType= typename Traits::LinkedValueType;
-    using  Node= typename Traits::Node;
-    using  CompareFn = greater<value_type>;
-};
-using BTIntInt= XTrait<int,int>;
-using Traits_BTree= BTreeTrait_Node<BTIntInt>;
-
 template <typename Trait>
 class BTree // this is the full version of the BTree
 {
@@ -67,20 +51,14 @@ public:
        size_t            GetOrder() { return m_Order;     }
        BTNode          GetRoot(){ return m_Root;}
 
-       void            Print (ostream &os)
-       {               m_Root.Print(os);                              }
-       void            Print_Route ()
-       {               m_Root.Print_Route();                              }
+       void Write(){m_Root.Write();}
+       void Read(const std::string& filename);
+       void Print (ostream &os){m_Root.Print(os);}
+       void Print_Route (){m_Root.Print_Route();}
        template <typename Func, typename...Extras>
-       void            Function_G (Func f,Extras... extras)
-       {               m_Root.Function_G(f,extras...)   ;                           }
+       void Function_G (Func f,Extras... extras){m_Root.Function_G(f,extras...); }
        template <typename Func, typename...Extras>
-       void            Function_G_Reverse (Func f,Extras... extras)
-       {               m_Root.Function_G_Reverse(f,extras...)   ;                           }
-       // void            ForEach( lpfnForEach2 lpfn, void *pExtra1 )
-       // {               m_Root.ForEach(lpfn, 0, pExtra1);              }
-       // void            ForEach( lpfnForEach3 lpfn, void *pExtra1, void *pExtra2)
-       // {               m_Root.ForEach(lpfn, 0, pExtra1, pExtra2);     }
+       void Function_G_Reverse (Func f,Extras... extras){ m_Root.Function_G_Reverse(f,extras...);}
        Node*     FirstThat( lpfnFirstThat2 lpfn, void *pExtra1 )
        {               return m_Root.FirstThat(lpfn, 0, pExtra1);     }
        Node*     FirstThat( lpfnFirstThat3 lpfn, void *pExtra1, void *pExtra2)
@@ -98,29 +76,26 @@ protected:
        bool            m_Unique;  // Accept the elements only once ?
 };     
 
-// TODO change ObjID by LinkedValueType value
 template <typename Trait>
 bool BTree<Trait>::Insert(const value_type key,const  LinkedValueType ObjID){
-       bt_ErrorCode error = m_Root.Insert(key, ObjID);
-       if( error == bt_duplicate )
-               return false;
-       m_NumKeys++;
-       if( error == bt_overflow )
-       {
-               m_Root.SplitRoot();
-               m_Height++;
-       }
-       // cout<<"\nFinal Print route"<<endl;
-       // Print_Route();
-       // cout<<"\nPointers"<<endl;
-       // cout<<"m_Heap :"<<m_Root.m_Heap->getData()<<endl;
-       // cout<<"m_Tail :"<<m_Root.m_Tail->getData()<<endl;
-       return true;
+    bt_ErrorCode error = m_Root.Insert(key, ObjID);
+    if( error == bt_duplicate )
+            return false;
+    m_NumKeys++;
+    if( error == bt_overflow ){
+        m_Root.SplitRoot();
+        m_Height++;
+    }
+    // cout<<"\nFinal Print route"<<endl;
+    // Print_Route();
+    // cout<<"\nPointers"<<endl;
+    // cout<<"m_Heap :"<<m_Root.m_Heap->getData()<<endl;
+    // cout<<"m_Tail :"<<m_Root.m_Tail->getData()<<endl;
+    return true;
 }
 
 template <typename Trait>
-bool BTree<Trait>::Remove (const value_type key, const LinkedValueType  ObjID)
-{
+bool BTree<Trait>::Remove (const value_type key, const LinkedValueType  ObjID){
        bt_ErrorCode error = m_Root.Remove(key, ObjID);
        if( error == bt_duplicate || error == bt_nofound )
                return false;
@@ -131,24 +106,50 @@ bool BTree<Trait>::Remove (const value_type key, const LinkedValueType  ObjID)
        return true;
 }
 
+template <typename Trait>
+void BTree<Trait>::Read(const std::string& filename){
+    std::ifstream is(filename); 
+    if (!is.is_open()) { 
+        std::cerr << "Error opening file: " << filename << std::endl;
+        return;
+    }
+    string tmp_flow,num;
+    size_t count;
+    value_type  value;
+    LinkedValueType kvalue;
+    while (getline(is,tmp_flow)) { 
+        std::istringstream iss(tmp_flow);
+        count = 0;
+        while (iss >> num && count < 2) {
+            if(count==0)
+                value = BTreeNamespace::convertFromString<value_type>(num);
+            else
+                kvalue = BTreeNamespace::convertFromString<LinkedValueType>(num);  
+            count++;
+        }
+        m_Root.Insert(value,kvalue);
+    } 
+
+    is.close();
+}
+
+
 // operator<<
 template <typename T>
-ostream &operator<<(ostream &os, BTree<T> &obj){
+inline ostream &operator<<(ostream &os, BTree<T> &obj){
     obj.Print(os);
     return os;
 }
-
 //  operator>>
 template <typename T>
-T convertFromString(const std::string &str) {
+inline T convertFromString(const std::string &str) {
     std::istringstream iss(str);
     T value;
     iss >> value;
     return value;
 }
-
 template <typename T>
-istream & operator>>(istream &is, BTree<T> &obj){
+inline istream & operator>>(istream &is, BTree<T> &obj){
     string tmp_flow,num;
     size_t count;
     using vt      = typename T::value_type;
@@ -174,5 +175,5 @@ istream & operator>>(istream &is, BTree<T> &obj){
     return is;    
 }
 
-
+}
 #endif
