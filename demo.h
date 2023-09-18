@@ -10,10 +10,10 @@ void DemoArray();
 void DemoIterators();
 void DemoReverseIterators();
 void DemoHeap();
-
+//void DemoBTree();
+void DemoBPlus();
 void DemoBinaryTree();
 void DemoHash();
 
-void DemoMap();
 
 #endif // __DEMO_H__
