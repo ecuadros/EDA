@@ -264,12 +264,14 @@ void DemoBinaryTree()
     vector<int> vect3= {49,47,22,20,41,11,23,55,40,35,42,38,10,27,34,60,9,2,6,31,26};
     vector<int> vect4= {49,47,22,20,41,10,22,55,40,35,42,38,9,27,34,60,9,2,6,31,26};
     vector<int> vect5={41,49,22,10,26,44,54,25,33,59,8,5,9,1,30,2,55,46,18,43,40};
+    vector<int> vect6={22,56,13,19,38,37,31,43,21,48,21,14,32,26,29,5,28,45,57,22,7};
+    vector<int> vect7={11,36,11,2,53,13,17,10,37,38,35,43,20,38,42,6,49,22,47,23,33};
     for(auto i=0;i<=20;i++){
         int tmp= dist(gen);
         int tmp2= dist(gen);
-        // cout<<vect5[i]<<"-->";
-        // bt.insert(vect5[i],tmp2);
-        cout<<tmp<<"-->";
+        // cout<<vect7[i]<<"-->";
+        // bt.insert(vect7[i],tmp2);
+        cout<<tmp<<",";
         bt.insert(tmp,tmp2);
     }
     cout<<endl;

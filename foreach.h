@@ -13,24 +13,12 @@ void f1(T &x)
 
 //Foreach by bTree
 template <typename Iterator, typename F>
-void foreach_btree(Iterator ItBegin, Iterator ItEnd, F ope)
-{
-  auto iter = ItBegin;
-  for(; iter != ItEnd;++iter){
-    ope(*iter);
-  }
-  ope(*ItEnd);
-  ItEnd.fill_status();
-}
-
-template <typename Iterator, typename F>
 void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
 {
   auto iter = ItBegin;
   for(; iter != ItEnd;++iter){
     ope(*iter);
   }
-  ope(*ItEnd);
 }
 
 // template <typename Iterator, typename Callable, typename... Args>
@@ -57,17 +45,17 @@ void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
 template <typename Container, typename F>
 void foreach_btree_inorder(Container &container, F ope)
 {  
-    foreach_btree(container.begin_in(), container.end_in() , ope);
+    foreach(container.begin_in(), container.end_in() , ope);
 }
 template <typename Container, typename F>
 void foreach_btree_posorder(Container &container, F ope)
 {  
-    foreach_btree(container.begin_post(), container.end_post() , ope);
+    foreach(container.begin_post(), container.end_post() , ope);
 }
 template <typename Container, typename F>
 void foreach_btree_preorder(Container &container, F ope)
 {  
-    foreach_btree(container.begin_pre(), container.end_pre() , ope);
+    foreach(container.begin_pre(), container.end_pre() , ope);
 }
 
 template <typename Container, typename F>

@@ -22,9 +22,10 @@ class bt_iter_inorder : public general_iterator<Container,  class bt_iter_inorde
   private:
     Node *m_pRoot=nullptr;
     size_t count=0;
+    size_t m_count;
   public:
-    bt_iter_inorder(Container *pContainer, Node *pNode,Node *pRoot) : Parent (pContainer,pNode),m_pRoot(pRoot) {}
-    bt_iter_inorder(myself &other)  : Parent (other),m_pRoot(other.m_pRoot) {}
+    bt_iter_inorder(Container *pContainer, Node *pNode,Node *pRoot,size_t N_count) : Parent (pContainer,pNode),m_pRoot(pRoot),m_count(N_count) {}
+    bt_iter_inorder(myself &other)  : Parent (other),m_pRoot(other.m_pRoot),m_count(other.m_count) {}
     bt_iter_inorder(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
 
   private:
@@ -89,11 +90,16 @@ class bt_iter_inorder : public general_iterator<Container,  class bt_iter_inorde
     }
     bt_iter_inorder operator++() {
         count=count+1;
-        Node *NextNode= in_order(Parent::m_pNode);
-        if(NextNode){
+        Node *NextNode=nullptr;
+        if(count<m_count)
+            NextNode= in_order(Parent::m_pNode);
+        if(NextNode && count<m_count)
             Parent::m_pNode= NextNode;
+        else{
+            Parent::m_pNode= nullptr;
+            fill_status();
         }
-        return *this;
+        return *this;  
     }
 
     
@@ -105,21 +111,24 @@ class bt_iter_postorder : public general_iterator<Container,  class bt_iter_post
 
   private:
     Node *m_pRoot=nullptr;
+    Node *m_pNodei=nullptr;
     size_t count=0;
+    size_t m_count=0;
   public:
-    bt_iter_postorder(Container *pContainer, Node *pNode,Node *pRoot) : Parent (pContainer,pNode),m_pRoot(pRoot) {}
-    bt_iter_postorder(myself &other)  : Parent (other),m_pRoot(other.m_pRoot) {}
+    bt_iter_postorder(Container *pContainer, Node *pNode,Node *pRoot,size_t N_count) : Parent (pContainer,pNode),m_pRoot(pRoot),m_count(N_count),m_pNodei(pNode) {}
+    bt_iter_postorder(myself &other)  : Parent (other),m_pRoot(other.m_pRoot),m_count(other.m_count),m_pNodei(other.m_pNodei) {}
     bt_iter_postorder(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
 
   private:
     Node *post_order(Node *pNode){
         if(pNode){
             if(count==1)
-               pNode->setp_status(true); 
+                pNode->setp_status(true); 
+            //Direction 0;    
             if(pNode->getChild(0) && pNode->getChild(0)->get_status()==false){
                 while(pNode->getChild(0)&&pNode->getChild(0)->get_status()==false)
                     pNode= pNode->getChild(0); 
-                if(pNode->getChild(1)==nullptr){
+                if(!pNode->getChild(1)){
                     pNode->setp_status(true);         
                     return pNode;
                 }
@@ -130,12 +139,14 @@ class bt_iter_postorder : public general_iterator<Container,  class bt_iter_post
                 }    
             }
             else{
+                //Direction 1;
                 if(pNode->getChild(1)&& pNode->getChild(1)->get_status()==false){
                     pNode=pNode->getChild(1);
                     pNode= post_order(pNode);
                     return pNode;
                 }
                 else{
+                    //Does not have childs
                     Node *pParent = pNode->getParent();
                     Node *Child_0= pParent->getChild(0);
                     if(Child_0==pNode){
@@ -158,24 +169,28 @@ class bt_iter_postorder : public general_iterator<Container,  class bt_iter_post
                         }  
                     }
                     else{
+                        //Go to dir 1
+                        //cout<<"\n"<<pNode<<"-"<<m_pNodei<<endl;
                         if(count==1){
-                            pNode=pParent;
+                            if(pNode==m_pNodei)
+                                pNode=pParent;
+                            //cout<<"\nLeave0: "<<pNode->getData()<<endl;
                             pNode->setp_status(true);
                             return pNode;
-                        }
+                        } 
                         else{
                             if(!pNode->get_status()){
+                                //cout<<"\nLeave1: "<<pNode->getData()<<endl;
                                 pNode->setp_status(true);
                                 return pNode; 
                             }
                             else{
                               pNode=pParent;
+                              //cout<<"\nLeave2 : "<<pNode->getData()<<endl;
                               pNode->setp_status(true);
                               return pNode;  
                             }
-                          
-                        }
-                        
+                        }  
                     }
                 }      
             }
@@ -202,14 +217,17 @@ class bt_iter_postorder : public general_iterator<Container,  class bt_iter_post
     }
     bt_iter_postorder operator++() {
         count=count+1;
-        Node *NextNode= post_order(Parent::m_pNode);
-        if(NextNode){
+        Node *NextNode=nullptr;
+        if(m_count>count)
+            NextNode= post_order(Parent::m_pNode);
+        if(NextNode && m_count>count)
             Parent::m_pNode= NextNode;
+        else{
+            Parent::m_pNode= nullptr;
+            fill_status();
         }
         return *this;
     }
-
-    
 };
 // Iterator in pre order
 template <typename Container>
@@ -219,9 +237,10 @@ class bt_iter_preorder : public general_iterator<Container,  class bt_iter_preor
   private:
     Node *m_pRoot=nullptr;
     size_t count=0;
+    size_t m_count;
   public:
-    bt_iter_preorder(Container *pContainer, Node *pNode,Node *pRoot) : Parent (pContainer,pNode),m_pRoot(pRoot) {}
-    bt_iter_preorder(myself &other)  : Parent (other),m_pRoot(other.m_pRoot) {}
+    bt_iter_preorder(Container *pContainer, Node *pNode,Node *pRoot,size_t N_count) : Parent (pContainer,pNode),m_pRoot(pRoot),m_count(N_count) {}
+    bt_iter_preorder(myself &other)  : Parent (other),m_pRoot(other.m_pRoot),m_count(other.m_count) {}
     bt_iter_preorder(myself &&other) : Parent(other) {} // Move constructor C++11 en adelante
 
   private:
@@ -288,9 +307,16 @@ class bt_iter_preorder : public general_iterator<Container,  class bt_iter_preor
     }
     bt_iter_preorder operator++() {
         count=count+1;
-        Node *NextNode= pre_order(Parent::m_pNode);
-        if(NextNode){
+        Node *NextNode=nullptr;
+        //cout<<"\nData: "<<m_count<<"-"<<count<<endl;
+        if(m_count>count)
+            NextNode= pre_order(Parent::m_pNode);
+        //cout<<"\n"<<NextNode->getData()<<endl;    
+        if(NextNode && m_count>count)
             Parent::m_pNode= NextNode;
+        else{
+            Parent::m_pNode= nullptr;
+            fill_status();
         }
         return *this;
     }
@@ -490,7 +516,7 @@ protected:
              while (pNode->getChild(dir)) {
                 pNode = pNode->getChild(dir);
             }
-            if(pNode->getChild(1)==nullptr){
+            if(!pNode->getChild(1)){
                 return pNode;
             }
             else{
@@ -505,16 +531,16 @@ protected:
         Node* lnode_0 = find_last_node(m_pRoot,0);
         Node* lnode_1 = find_last_node(m_pRoot,1);
         if(m_pRoot==lnode_1){
-            in_iterator iter(this,lnode_0,m_pRoot); 
+            in_iterator iter(this,lnode_0,m_pRoot,m_size); 
             return iter;
         }
         else{
             if(m_pRoot==lnode_0){
-                in_iterator iter(this,m_pRoot,m_pRoot); 
+                in_iterator iter(this,m_pRoot,m_pRoot,m_size); 
                 return iter;
             }
             else{
-                in_iterator iter(this,lnode_0,m_pRoot);   
+                in_iterator iter(this,lnode_0,m_pRoot,m_size);   
                 return iter; 
             }
         }    
@@ -523,15 +549,15 @@ protected:
         Node* lnode_0 = find_last_node(m_pRoot,0);
         Node* lnode_1 = find_last_node(m_pRoot,1);
         if(m_pRoot==lnode_1){
-            in_iterator iter(this,lnode_1,m_pRoot); 
+            in_iterator iter(this,nullptr,m_pRoot,m_size); 
             return iter;
         }else{
             if(m_pRoot==lnode_0){
-                in_iterator iter(this,lnode_1,m_pRoot); 
+                in_iterator iter(this,nullptr,m_pRoot,m_size); 
                 return iter;
             }
             else{
-                in_iterator iter(this, lnode_1,m_pRoot);   
+                in_iterator iter(this, nullptr,m_pRoot,m_size);   
                 return iter; 
             }
         }       
@@ -541,16 +567,16 @@ protected:
         Node* lnode_0 = find_last_node_pos(m_pRoot,0);
         Node* lnode_1 = find_last_node_pos(m_pRoot,1);
         if(m_pRoot==lnode_1){
-            post_iterator iter(this,lnode_0,m_pRoot); 
+            post_iterator iter(this,lnode_0,m_pRoot,m_size); 
             return iter;
         }
         else{
             if(m_pRoot==lnode_0){
-                post_iterator iter(this,lnode_1,m_pRoot); 
+                post_iterator iter(this,lnode_1,m_pRoot,m_size); 
                 return iter;
             }
             else{
-                post_iterator iter(this,lnode_0,m_pRoot);   
+                post_iterator iter(this,lnode_0,m_pRoot,m_size);   
                 return iter; 
             }
         }    
@@ -559,29 +585,28 @@ protected:
         Node* lnode_0 = find_last_node_pos(m_pRoot,0);
         Node* lnode_1 = find_last_node_pos(m_pRoot,1);
         if(m_pRoot==lnode_1){
-            post_iterator iter(this,lnode_1,m_pRoot); 
+            post_iterator iter(this,nullptr,m_pRoot,m_size); 
             return iter;
         }else{
             if(m_pRoot==lnode_0){
-                post_iterator iter(this,m_pRoot,m_pRoot); 
+                post_iterator iter(this,nullptr,m_pRoot,m_size); 
                 return iter;
             }
             else{
-                post_iterator iter(this, m_pRoot,m_pRoot);   
+                post_iterator iter(this,nullptr,m_pRoot,m_size);   
                 return iter; 
             }
         }       
      }
      // Iterator preorder
     pre_iterator begin_pre() { 
-        pre_iterator iter(this,m_pRoot,m_pRoot);
+        pre_iterator iter(this,m_pRoot,m_pRoot,m_size);
         return iter; 
-
     }
     pre_iterator end_pre() {
         Node* lnode_0 = find_last_node_pre(m_pRoot,0);
         Node* lnode_1 = find_last_node_pre(m_pRoot,1);
-        pre_iterator iter(this,lnode_1,m_pRoot); 
+        pre_iterator iter(this,nullptr,m_pRoot,m_size); 
         return iter;
      }
 };

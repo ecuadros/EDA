@@ -11,7 +11,7 @@ class general_iterator
     //typedef class general_iterator<Container> Parent;
     typedef general_iterator<Container, IteratorBase> myself; // 
     
-protected:
+public:
     Container *m_pContainer;
     Node      *m_pNode;
 public:
@@ -29,8 +29,13 @@ public:
               return *(IteratorBase *)this; // Pending static_cast?
           }
 
-    bool operator==(IteratorBase iter)   { return m_pNode == iter.m_pNode; }
-    bool operator!=(IteratorBase iter)   { return !(*this == iter);        }
+    bool operator==(IteratorBase iter)   { 
+       // std::cout<<m_pNode<<std::endl;
+        return m_pNode == iter.m_pNode; 
+        }
+    bool operator!=(IteratorBase iter)   { 
+        //std::cout<<"\nIngrese a ver"<<std::endl;
+        return !(*this == iter);        }
     Type &operator*()                    { return m_pNode->getDataRef();   }
 };
 
