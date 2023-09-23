@@ -1,13 +1,20 @@
 #include <iostream> // cout
 #include <fstream>  // ofstream, ifstream
-#include <map>
 #include <cmath>
 #include <memory>
 #include "demo.h"
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include <random>
+#include <set>
+#include "btree.h"
+#include "BPlus.h"
+#include "keynode.h"
+#include "types.h"
 using namespace std;
+using namespace BTreeNamespace;
+using namespace BPlusNamespace;
 
 template <typename T, int N>
 void increment(T &x)
@@ -26,7 +33,12 @@ class ClassX
 };
 
 void Fx1(int n ) {    n++;    }
-void Fx2(int &n) {    n++;    }
+template <typename T>
+void Fx2(T &n) {    n++;    }
+template <typename T>
+void Fx2_M(T &n,T x) {    n=n+x*x;    }
+template <typename T>
+void Fx3_M(T &n,T x,T y) { n=n+x*x+x*y;    }
 void Fx3(int *pi){    ++*pi;  pi = nullptr; }
 void Fx4(int *&rp){   ++*rp;  rp = nullptr; }
 
@@ -186,14 +198,14 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = XTrait<string, string  , less<KeyNode<string, string> &>>;
-    CArray< TraitStringString > vx("Ernesto Cuadros");
-    vx.insert("Ernesto", "Cuadros");
-    vx.insert("Luis"   , "Tejada");
-    vx.insert("Jorge"  , "Lozano");
-    vx.insert("Edson"  , "Caceres");
-    vx.insert("Franz"  , "Maguiña");
-    vx.print(cout);
+    //using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+//     CArray< TraitStringString > vx("Ernesto Cuadros");
+//     vx.insert("Ernesto", "Cuadros");
+//     vx.insert("Luis"   , "Tejada");
+//     vx.insert("Jorge"  , "Lozano");
+//     vx.insert("Edson"  , "Caceres");
+//     vx.insert("Franz"  , "Maguiña");
+//     vx.print(cout);
 }
 
 void DemoIterators(){
@@ -357,48 +369,170 @@ void DemoHash()
 //     BinaryTree< BinaryTreeDescTraits<TX> > myDescBinaryTree;
 //     DemoBinaryTree(myDescBinaryTree);
 // }
+//This function is used to print
+template <typename T>
+void G_Print(T &info, size_t level, ostream* pExtra){
+       ostream &os = *pExtra;
+       for(size_t i = 0; i < level ; i++)
+               os << "\t";
+       os << info.getDataRef() << "-:>" << info.getValueRef()<< "\n";
+}
+template <typename T,typename Value>
+void G_Change_Value_1(T &info, size_t level,Value add_value){
+      info.getDataRef()+= add_value;       
+}
+template <typename T,typename Value>
+void G_Change_Value_2(T &info, size_t level,Value value_1,Value value_2){
+      info.getDataRef()+= value_1+pow(value_2,3);       
+}
+template <typename T,typename Value>
+void G_Change_Value_3(T &info, size_t level,Value value_1,Value value_2,Value value_3){
+      info.getDataRef()+= value_1+pow(value_2,value_3)+value_3;       
+}
+template <typename T>
+void G_Change_Value_(T &info, size_t level) {}
 
-// #include "btree.h"
-// void DemoTree()
-// {
-//     BTree < BtreeTrait<char,long> > bt;
-//     const char * keys = "DYZakHIUwxVJ203ejOP9Qc8AdtuEop1XvTRghSNbW567BfiCqrs4FGMyzKLlmn";
-//     for(size_t i = 0; keys[i]; i++)
-//         {
-//             //cout<<"Inserting "<<keys[i]<<endl;
-//             //result = bt.Insert(keys4[i], i*i);
-//             bt.Insert(keys[i], i*i);
-//             //bt.Print(cout);
-//         }
+template <typename T, typename Value, typename... Values>
+void G_Change_Value_(T &info, size_t level, Value value, Values... rest) {
+    info.getDataRef() += value;//Here add functions to applied
+    G_Change_Value_(info, level, rest...);
+}
+
+// void DemoBTree(){
+//     random_device rd;
+//     mt19937 gen(rd());
+//     //Type Definition
+//     using  Node_Type = typename Traits_BT_int_int::Node; //Using for referenciar KeyNode
+//     using  Value_Type = typename Traits_BT_int_int::value_type; //Using for referenciar valuetype
+//     uniform_int_distribution<Value_Type> dist(1,100);
+//     BTreeNamespace::BTree <Traits_BT_int_int> bt(3);
+//     std::set<int> generatedNumbers;
+//     for(int i=0;i<=30;i++){
+//         int tmp;
+//         do {
+//             tmp = dist(gen);
+//         } while (generatedNumbers.find(tmp) != generatedNumbers.end());
+//         generatedNumbers.insert(tmp);
+//         //cout<<i<<",";
+//         //cout<<"\nIter: "<<i<< " value: "<<tmp<<endl;
+//         bt.Insert(tmp,i);
+//         //bt.Print(cout);
+//         //bt.Function_G(&G_Print<int,int>, &cout);
+//     }
+//     cout<<"\nPrint"<<endl;
 //     bt.Print(cout);
+
+//     bt.Function_G(&G_Print<Node_Type>, &cout);// Appiled function Print
+//     bt.Function_G(&G_Change_Value_1<Node_Type,Value_Type>,10);// Applied function G_Change_Value
+//     bt.Function_G(&G_Change_Value_<Node_Type,Value_Type,Value_Type,Value_Type>,1,2,10);// Applied function G_Change_Value
+//     cout<<"\nPrint with changes 1 parameter"<<endl;
+//     bt.Function_G(&G_Print<Node_Type>, &cout);// Appiled function Print again
+//     bt.Function_G(&G_Change_Value_2<Node_Type,Value_Type>,10,3);// Applied function G_Change_Value
+//     cout<<"\nPrint with changes 2 parameters"<<endl;
+//     bt.Function_G(&G_Print<Node_Type>, &cout);// Appiled function Print again
+//     bt.Function_G(&G_Change_Value_3<Node_Type,Value_Type>,10,3,2);// Applied function G_Change_Value
+//     cout<<"\nPrint with changes 3 parameters"<<endl;
+//     bt.Function_G(&G_Print<Node_Type>, &cout);// Appiled function Print again
+//     cout<<"\nPrint Reverse"<<endl;
+//     bt.Function_G_Reverse(&G_Print<Node_Type>, &cout);// Appiled function Print Reverse 
+//     bt.Function_G_Reverse(&G_Change_Value_3<Node_Type,Value_Type>,10,3,3);// Applied function G_Change_Value
+//     cout<<"\nPrint with changes 3 parameters"<<endl;
+//     bt.Function_G_Reverse(&G_Print<Node_Type>, &cout);// Appiled function Print again
+//      cout<<"\nTest overload <<"<<endl;
+//      cout<<bt;
+//      cout<<"\nReading External File"<<endl;
+//      ifstream of("file.txt",ios::in);
+//      of>>bt;
+//      cout<<"Print Value of Btree Update"<<endl;
+//      cout<<bt;
+//      cout<<"Search element 10"<<endl;
+//      auto linked_vt=bt.Search(10);
+//      cout<<"Linked_Value Type is: "<<linked_vt<<endl;
+//      if(linked_vt>=0){
+//         cout<<"\nDelete element"<<endl;
+//         bt.Remove(10,linked_vt);
+//      }
+//     cout<<bt;
+//     cout<<"\nTesting of Iterators in Order with varidaty functions"<<endl;
+//     foreach(bt, Fx2<Value_Type>);  cout << endl;
+//     foreach(bt, print<Value_Type>);  cout << endl;
+//     foreach(bt, [&](Value_Type& value) { Fx2_M(value, 5); });  cout << endl;
+//     foreach(bt, print<Value_Type>);  cout << endl;
+//     cout<<"\nTesting of Iterators in Reverse Order with varidaty functions"<<endl;
+//     foreach_reverse(bt, [&](Value_Type& value) { Fx2_M(value, 3); });  cout << endl;
+//     foreach_reverse(bt, print<Value_Type>);  cout << endl;
+//     foreach_reverse(bt, [&](Value_Type& value) { Fx3_M(value, 3,2); });  cout << endl;
+//     foreach_reverse(bt, print<Value_Type>);  cout << endl;
 //     exit(0);
-
 // }
-
-void DemoMap(){
-    map<int, string> m;
-    m[1000] = "Francisco";
-    m[500]  = "Guiomar";
-    m[1300] = "Jorge";
-    m[2000] = "Eduardo";
-    m[600]  = "Lucero";
-    m[100]  = "Edson";
-    m[800]  = "Luis";
-    m[700]  = "Cristian";
-    m[900]  = "Pier";
-    m[750]  = "Ernesto";
-
-    // iterate using C++17 facilities
-    for (const auto& [key, value] : m)
-        cout << '[' << key << "] = " << value << "; " << endl;
-    
-    // C++11 alternative:
-    //  for (const auto& n : m)
-    //      cout << n.first << " = " << n.second << "; ";
-    //
-    // C++98 alternative modified to use auto
-    for (auto it = m.rbegin(); it != m.rend(); it++)
-        cout << it->first << " = " << it->second << "; " << endl;
- 
-
+void DemoBPlus(){
+    random_device rd;
+    mt19937 gen(rd());
+    //Type Definition
+    using  Node_Type = typename Traits_BT_int_int::Node; //Using for referenciar KeyNode
+    using  Value_Type = typename Traits_BT_int_int::value_type; //Using for referenciar valuetype
+    uniform_int_distribution<Value_Type> dist(1,100);
+    BPlusNamespace::BPlus<Traits_BT_int_int> bt(3);
+    std::set<int> generatedNumbers;
+    for(int i=0;i<=30;i++){
+        int tmp;
+        do {
+            tmp = dist(gen);
+        } while (generatedNumbers.find(tmp) != generatedNumbers.end());
+        generatedNumbers.insert(tmp);
+        //cout<<i<<",";
+        //cout<<"\nIter: "<<i<< " value: "<<tmp<<endl;
+        bt.Insert(tmp,i);
+        //bt.Print(cout);
+        //bt.Function_G(&G_Print<int,int>, &cout);
+    }
+    cout<<"\nPrint"<<endl;
+    bt.Print(cout);
+    bt.Function_G(&G_Print<Node_Type>, &cout);// Appiled function Print
+    bt.Function_G(&G_Change_Value_1<Node_Type,Value_Type>,10);// Applied function G_Change_Value
+    bt.Function_G(&G_Change_Value_<Node_Type,Value_Type,Value_Type,Value_Type>,1,2,10);// Applied function G_Change_Value
+    cout<<"\nPrint with changes 1 parameter"<<endl;
+    bt.Function_G(&G_Print<Node_Type>, &cout);// Appiled function Print again
+    bt.Function_G(&G_Change_Value_2<Node_Type,Value_Type>,10,3);// Applied function G_Change_Value
+    cout<<"\nPrint with changes 2 parameters"<<endl;
+    bt.Function_G(&G_Print<Node_Type>, &cout);// Appiled function Print again
+    bt.Function_G(&G_Change_Value_3<Node_Type,Value_Type>,10,3,2);// Applied function G_Change_Value
+    cout<<"\nPrint with changes 3 parameters"<<endl;
+    bt.Function_G(&G_Print<Node_Type>, &cout);// Appiled function Print again
+    cout<<"\nPrint Reverse"<<endl;
+    bt.Function_G_Reverse(&G_Print<Node_Type>, &cout);// Appiled function Print Reverse 
+    bt.Function_G_Reverse(&G_Change_Value_3<Node_Type,Value_Type>,10,3,3);// Applied function G_Change_Value
+    cout<<"\nPrint with changes 3 parameters"<<endl;
+    bt.Function_G_Reverse(&G_Print<Node_Type>, &cout);// Appiled function Print again
+     cout<<"\nTest overload <<"<<endl;
+     cout<<bt;
+     cout<<"\nReading External File"<<endl;
+     ifstream of("file.txt",ios::in);
+     of>>bt;
+     cout<<"Print Value of Btree Update"<<endl;
+     cout<<bt;
+     cout<<"Search element 10"<<endl;
+     auto linked_vt=bt.Search(10);
+     cout<<"Linked_Value Type is: "<<linked_vt<<endl;
+     if(linked_vt>=0){
+        cout<<"\nDelete element"<<endl;
+        bt.Remove(10,linked_vt);
+     }
+    cout<<bt;
+    cout<<"\nTesting of Iterators in Order with varidaty functions"<<endl;
+    foreach(bt, Fx2<Value_Type>);  cout << endl;
+    foreach(bt, print<Value_Type>);  cout << endl;
+    foreach(bt, [&](Value_Type& value) { Fx2_M(value, 5); });  cout << endl;
+    foreach(bt, print<Value_Type>);  cout << endl;
+    cout<<"\nTesting of Iterators in Reverse Order with varidaty functions"<<endl;
+    foreach_reverse(bt, [&](Value_Type& value) { Fx2_M(value, 3); });  cout << endl;
+    foreach_reverse(bt, print<Value_Type>);  cout << endl;
+    foreach_reverse(bt, [&](Value_Type& value) { Fx3_M(value, 3,2); });  cout << endl;
+    foreach_reverse(bt, print<Value_Type>);  cout << endl;
+    cout<<"\nTest write functions"<<endl;
+    bt.Write();
+    cout<<"\nTest Read functions"<<endl;
+    bt.Read("file.txt");
+    bt.Write();
+    exit(0);
 }
