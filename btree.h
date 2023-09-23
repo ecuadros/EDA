@@ -7,6 +7,79 @@
 
 const size_t MaxHeight = 5; 
 
+//TODO: Tarea 36: BTree: forward iterator
+template <typename Container>
+class forward_iterator
+{
+       public: 
+              typedef typename Container::Node Node;
+              typedef typename Node::value_type Type;
+              typedef forward_iterator<Container> myself;
+       protected:
+              Container *m_pContainer;
+              Node *m_pNode;
+       public:
+              forward_iterator(Container *pContainer, Node *pNode) : m_pContainer(pContainer), m_pNode(pNode) {}
+              forward_iterator(myself &other)  : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode) {}
+              forward_iterator(myself &&other) {   
+                     m_pContainer = move(other.m_pContainer);
+                     m_pNode      = move(other.m_pNode);
+              }
+       public:
+              myself operator++() 
+              {
+                     return *this;
+              }
+
+              forward_iterator operator=(forward_iterator &iter)
+              {   
+                     m_pContainer = move(iter.m_pContainer);
+                     m_pNode      = move(iter.m_pNode);
+                     return *(forward_iterator *)this;
+              }
+
+              bool operator==(forward_iterator iter)   { return m_pNode == iter.m_pNode; }
+              bool operator!=(forward_iterator iter)   { return !(*this == iter); }
+              Node *operator*() { return m_pNode;}
+};
+
+// TODO: Tarea 37: BTree: backward iterator
+template <typename Container>
+class backward_iterator
+{
+       public:
+              typedef typename Container::Node Node;
+              typedef typename Node::value_type Type;
+              typedef backward_iterator<Container> myself;
+       protected:
+              Container *m_pContainer;
+              Node *m_pNode;
+       public:
+              backward_iterator(Container *pContainer, Node *pNode) : m_pContainer(pContainer), m_pNode(pNode) {}
+              backward_iterator(myself &other) : m_pContainer(other.m_pContainer), m_pNode(other.m_pNode) {}
+              backward_iterator(myself &&other) {   
+                     m_pContainer = move(other.m_pContainer);
+                     m_pNode      = move(other.m_pNode);
+              }
+       public:
+       myself operator++()
+       {
+              m_pNode = m_pNode->getpPrev();
+              return *this;
+       }
+
+       backward_iterator operator=(backward_iterator &iter)
+       {
+              m_pContainer = move(iter.m_pContainer);
+              m_pNode      = move(iter.m_pNode);
+              return *(backward_iterator *)this;
+       }
+
+       bool operator==(backward_iterator iter)   { return m_pNode == iter.m_pNode; }
+       bool operator!=(backward_iterator iter)   { return !(*this == iter);        }
+       Node *operator*() { return m_pNode;}
+};
+
 template <typename _T, typename _V>
 struct BTreeTrait
 {
@@ -19,11 +92,13 @@ struct BTreeTrait
 template <typename Traits>
 class BTree // this is the full version of the BTree
 {
+public:
        typedef typename Traits::T value_type;
        typedef typename Traits::Node Node;
        typedef typename Traits::LinkedValueType LinkedValueType;
-       typedef typename Traits::CompareFn CompareFn;
-
+       typedef typename Traits::CompareFn CompareFn; 
+       typedef BTree<Traits> myself;
+       typedef forward_iterator<myself> iterator;
 public:
        BTree(size_t order = DEFAULT_BTREE_ORDER, bool unique = true)
               : m_Order(order),
@@ -38,6 +113,9 @@ public:
        bool Insert (const value_type key, const LinkedValueType value);
        bool Remove (const value_type key, const LinkedValueType value);
 
+       iterator begin() { iterator iter(this, m_Root);    return iter;    }
+       iterator end()   { iterator iter(this, nullptr);    return iter;    }
+
        LinkedValueType Search (const value_type key)
        {      LinkedValueType value = -1;
               m_Root.Search(key, value, m_compareFn);
@@ -48,7 +126,7 @@ public:
        size_t            height() { return m_Height;      }
        size_t            GetOrder() { return m_Order;     }
 
-       void Print (ostream &os)
+       void Write (ostream &os)
        {
               m_Root.Print(os);
        }
@@ -58,6 +136,7 @@ public:
        void ForEach( Callable fn, Args&& ...args)
        {
               m_Root.ForEach(fn, 0, args...);
+              //ForEach(&::Print<T, V>, 0, &os);
        }
 
        template<typename Callable, typename... Args>
@@ -123,7 +202,7 @@ bool BTree<Traits>::Remove (const value_type key, const LinkedValueType value)
 template <typename Traits>
 ostream &operator<<(ostream &os, BTree<Traits> &bt)
 {
-       bt.Print(os);
+       bt.Write(os);
        return os;
 }
 

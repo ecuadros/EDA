@@ -4,6 +4,7 @@
 #include <vector>
 #include <assert.h>
 #include <functional>
+#include <mutex>
 
 #include "keynode.h"
 
@@ -89,34 +90,48 @@ private:
 public:
   typedef tagObjectInfo<value_type, LinkedValueType> ObjectInfo;
  public:
-       CBTreePage(size_t maxKeys, bool unique = true);
-       virtual ~CBTreePage();
-       template <typename CompareFn>
-       bt_ErrorCode    Insert (const value_type &key, const LinkedValueType value, CompareFn compareFn);
-       template <typename CompareFn>
-       bt_ErrorCode    Remove (const value_type &key, const LinkedValueType value, CompareFn compareFn);
-       template <typename CompareFn>
-       bool            Search (const value_type &key, LinkedValueType &value, CompareFn compareFn);
-       void            Print  (ostream &os);
-       template <typename Callable, typename Iter, typename... Args>
-       void ForEach(Callable fn, Iter level, Args&&... args);
-       template <typename Callable, typename Iter, typename... Args>
-       void ForEachReverse(Callable fn, Iter level, Args&&... args);
-       template <typename Callable, typename Iter, typename... Args>
-       ObjectInfo* FirstThat(Callable fn, Iter level, Args&&... args);
+        //TODO: Tarea 38: BTree: mutex
+        Mutex() : valorCompartido() {} // Constructor
+        CBTreePage(size_t maxKeys, bool unique = true);
+        virtual ~CBTreePage();
+        template <typename CompareFn>
+        //TODO: Tarea 38: BTree: mutex
+        bt_ErrorCode    Insert (const value_type &key, const LinkedValueType value, CompareFn compareFn)
+        {
+                lock_guard<mutex> lock(mutex);
+                ++valorCompartido;
+        };
+        template <typename CompareFn>
+        bt_ErrorCode    Remove (const value_type &key, const LinkedValueType value, CompareFn compareFn);
+        template <typename CompareFn>
+        bool            Search (const value_type &key, LinkedValueType &value, CompareFn compareFn);
+        //TODO: Tarea 38: BTree: mutex
+        void            Print  (ostream &os)
+        {
+                lock_guard<std::mutex> lock(mutex);
+        };
+        template <typename Callable, typename Iter, typename... Args>
+        void ForEach(Callable fn, Iter level, Args&&... args);
+        template <typename Callable, typename Iter, typename... Args>
+        void ForEachReverse(Callable fn, Iter level, Args&&... args);
+        template <typename Callable, typename Iter, typename... Args>
+        ObjectInfo* FirstThat(Callable fn, Iter level, Args&&... args);
 
 protected:
-       size_t  m_MinKeys; // minimum number of keys in a node
-       size_t  m_MaxKeys; // maximum number of keys in a node
-       size_t m_MaxKeysForChilds; // just to distinguish the root
-       bool m_Unique;
-       bool m_isRoot;
-       //size_t           NextNode; // address of next node at same level
-       //size_t RecAddr; // address of this node in the BTree file
-       vector<ObjectInfo> m_Keys;
-       vector<BTPage *>m_SubPages;
-       
-       size_t  m_KeyCount;
+        size_t  m_MinKeys; // minimum number of keys in a node
+        size_t  m_MaxKeys; // maximum number of keys in a node
+        size_t m_MaxKeysForChilds; // just to distinguish the root
+        bool m_Unique;
+        bool m_isRoot;
+        //size_t           NextNode; // address of next node at same level
+        //size_t RecAddr; // address of this node in the BTree file
+        vector<ObjectInfo> m_Keys;
+        vector<BTPage *>m_SubPages;
+
+        size_t  m_KeyCount;
+
+        int valorCompartido;
+        mutable std::mutex mutex; 
 public:
        void  Create();
        void  Reset ();

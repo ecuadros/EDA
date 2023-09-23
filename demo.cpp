@@ -360,11 +360,11 @@ void DemoHash()
 #include "btree.h"
 void DemoTree()
 {   
-    BTree<BTreeTrait<size_t, size_t>> bt;
+    BTree<BTreeTrait<size_t, size_t>> bTree;
     ifstream input("test.txt");
-    input >> bt;
-    cout << bt;
-
+    input >> bTree;
+    cout << bTree;
+    
     exit(0);
 }
 
