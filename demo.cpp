@@ -185,7 +185,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string  , std::less<KeyNode<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -357,20 +357,33 @@ void DemoHash()
 //     DemoBinaryTree(myDescBinaryTree);
 // }
 
-// #include "btree.h"
-// void DemoTree()
+// template<typename Node>
+// void printAsTree(Node &pNode, ostream &os)
 // {
-//     BTree < BtreeTrait<char,long> > bt;
-//     const char * keys = "DYZakHIUwxVJ203ejOP9Qc8AdtuEop1XvTRghSNbW567BfiCqrs4FGMyzKLlmn";
-//     for(size_t i = 0; keys[i]; i++)
-//         {
-//             //cout<<"Inserting "<<keys[i]<<endl;
-//             //result = bt.Insert(keys4[i], i*i);
-//             bt.Insert(keys[i], i*i);
-//             //bt.Print(cout);
-//         }
-//     bt.Print(cout);
-//     exit(0);
-
+//     os << string(" | ") * pNode.getLevel() << pNode.getDataRef() << "(" << (pNode.getParent() ? to_string(pNode.getParent()->getData()) : "Root") << ")" << endl;
 // }
+
+#include "btree.h"
+void DemoTree()
+{
+    BTree < BTreeTrait<char,long> > bt;
+    const char * keys = "DYZakHIUwxVJ203ejOP9Qc8AdtuEop1XvTRghSNbW567BfiCqrs4FGMyzKLlmn";
+    for(size_t i = 0; keys[i]; i++)
+        {
+            // cout<<"Inserting "<<keys[i]<<endl;
+            //result = bt.Insert(keys4[i], i*i);
+            bt.Insert(keys[i], i*i);
+            //bt.Print(cout);
+        }
+    // bt.Print(cout);
+    cout << bt;
+    BTree < BTreeTrait<float,long> > btTestFile;
+    cout << "Reading from test.txt" << endl;
+    ifstream testFile("test.txt");
+    testFile >> btTestFile;
+    cout << btTestFile;
+    cout << endl;
+    exit(0);
+
+}
 
