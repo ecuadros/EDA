@@ -6,6 +6,7 @@
 #include <sstream> 
 #include <string>
 #include "xtrait.h"
+#include <mutex>
 namespace BPlusNamespace {
 #define DEFAULT_BPLUS_ORDER 3
 const size_t MaxHeight = 5; 
@@ -15,6 +16,8 @@ class BPlus{
        typedef typename Trait::value_type    value_type;
        typedef typename Trait::LinkedValueType    LinkedValueType;
        typedef CBTreePage <Trait> BTNode;
+private:
+    mutable std::mutex m_Mutex;       
 public:
        typedef typename BTNode::Node  Node;
 public:
@@ -31,7 +34,8 @@ public:
        bool Insert (const value_type key, const LinkedValueType ObjID);
        bool Remove (const value_type key, const LinkedValueType ObjID);
        LinkedValueType  Search (const value_type key)
-       {      LinkedValueType ObjID = -1;
+       {      std::lock_guard<std::mutex> lock(m_Mutex);
+              LinkedValueType ObjID = -1;
               m_Root.Search(key, ObjID);
               return ObjID;
        }
@@ -63,6 +67,7 @@ protected:
 
 template <typename Trait>
 bool BPlus<Trait>::Insert(const value_type key,const  LinkedValueType ObjID){
+    std::lock_guard<std::mutex> lock(m_Mutex);
     bt_ErrorCode error = m_Root.Insert(key, ObjID);
     if( error == bt_duplicate )
             return false;
@@ -76,6 +81,7 @@ bool BPlus<Trait>::Insert(const value_type key,const  LinkedValueType ObjID){
 
 template <typename Trait>
 bool BPlus<Trait>::Remove (const value_type key, const LinkedValueType  ObjID){
+       std::lock_guard<std::mutex> lock(m_Mutex);
        bt_ErrorCode error = m_Root.Remove(key, ObjID);
        if( error == bt_duplicate || error == bt_nofound )
                return false;
@@ -88,6 +94,7 @@ bool BPlus<Trait>::Remove (const value_type key, const LinkedValueType  ObjID){
 
 template <typename Trait>
 void BPlus<Trait>::Read(const std::string& filename){
+    std::lock_guard<std::mutex> lock(m_Mutex);
     std::ifstream is(filename); 
     if (!is.is_open()) { 
         std::cerr << "Error opening file: " << filename << std::endl;

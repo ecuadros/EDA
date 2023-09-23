@@ -6,6 +6,7 @@
 #include <sstream> 
 #include <string>
 #include "xtrait.h"
+#include <mutex>
 namespace BTreeNamespace {
 #define DEFAULT_BTREE_ORDER 3
 
@@ -41,7 +42,8 @@ public:
        typedef typename BTNode::lpfnFirstThat2  lpfnFirstThat2;
        typedef typename BTNode::lpfnFirstThat3  lpfnFirstThat3;
        typedef typename BTNode::Node      Node;
-
+private:
+    mutable std::mutex m_Mutex;
 public:
        BTree(size_t order = DEFAULT_BTREE_ORDER, bool unique = true)
               : m_Order(order),
@@ -59,7 +61,8 @@ public:
        bool            Insert (const value_type key, const LinkedValueType ObjID);
        bool            Remove (const value_type key, const LinkedValueType ObjID);
        LinkedValueType       Search (const value_type key)
-       {      LinkedValueType ObjID = -1;
+       {      std::lock_guard<std::mutex> lock(m_Mutex);
+              LinkedValueType ObjID = -1;
               m_Root.Search(key, ObjID);
               return ObjID;
        }
@@ -93,6 +96,7 @@ protected:
 
 template <typename Trait>
 bool BTree<Trait>::Insert(const value_type key,const  LinkedValueType ObjID){
+    std::lock_guard<std::mutex> lock(m_Mutex);
     bt_ErrorCode error = m_Root.Insert(key, ObjID);
     if( error == bt_duplicate )
             return false;
@@ -111,6 +115,7 @@ bool BTree<Trait>::Insert(const value_type key,const  LinkedValueType ObjID){
 
 template <typename Trait>
 bool BTree<Trait>::Remove (const value_type key, const LinkedValueType  ObjID){
+       std::lock_guard<std::mutex> lock(m_Mutex);
        bt_ErrorCode error = m_Root.Remove(key, ObjID);
        if( error == bt_duplicate || error == bt_nofound )
                return false;
