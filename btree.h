@@ -7,30 +7,22 @@
 
 const size_t MaxHeight = 5; 
 
-template <typename _keyType, typename _ObjIDType>
+template <typename _T, typename _V>
 struct BTreeTrait
 {
-       using keyType = _keyType;
-       using ObjIDType = _ObjIDType;
+       using T = _T;
+       using LinkedValueType = _V;
+       using Node = CBTreePage<_T, _V>;
+       using CompareFn = std::greater<CBTreePage<_T, _V>>;
 };
 
-template <typename Trait>
+template <typename Traits>
 class BTree // this is the full version of the BTree
 {
-       typedef typename Trait::keyType    keyType;
-       typedef typename Trait::ObjIDType    ObjIDType;
-       
-       typedef CBTreePage <Trait> BTNode;// useful shorthand
-
-public:
-       //typedef ObjectInfo iterator;
-       // TODO replace thius functions by foreach
-       typedef typename BTNode::lpfnForEach2    lpfnForEach2;
-       typedef typename BTNode::lpfnForEach3    lpfnForEach3;
-       typedef typename BTNode::lpfnFirstThat2  lpfnFirstThat2;
-       typedef typename BTNode::lpfnFirstThat3  lpfnFirstThat3;
-
-       typedef typename BTNode::ObjectInfo      ObjectInfo;
+       typedef typename Traits::T value_type;
+       typedef typename Traits::Node Node;
+       typedef typename Traits::LinkedValueType LinkedValueType;
+       typedef typename Traits::CompareFn CompareFn;
 
 public:
        BTree(size_t order = DEFAULT_BTREE_ORDER, bool unique = true)
@@ -43,44 +35,66 @@ public:
               m_Height = 1;
        }
        ~BTree() {}
-       //int           Open (char * name, int mode);
-       //int           Create (char * name, int mode);
-       //int           Close ();
-       bool            Insert (const keyType key, const long ObjID);
-       bool            Remove (const keyType key, const long ObjID);
-       ObjIDType       Search (const keyType key)
-       {      ObjIDType ObjID = -1;
-              m_Root.Search(key, ObjID);
-              return ObjID;
+       bool Insert (const value_type key, const LinkedValueType value);
+       bool Remove (const value_type key, const LinkedValueType value);
+
+       LinkedValueType Search (const value_type key)
+       {      LinkedValueType value = -1;
+              m_Root.Search(key, value, m_compareFn);
+              return value;
        }
+
        size_t            size()  { return m_NumKeys; }
        size_t            height() { return m_Height;      }
        size_t            GetOrder() { return m_Order;     }
 
-       void            Print (ostream &os)
-       {               m_Root.Print(os);                              }
-       void            ForEach( lpfnForEach2 lpfn, void *pExtra1 )
-       {               m_Root.ForEach(lpfn, 0, pExtra1);              }
-       void            ForEach( lpfnForEach3 lpfn, void *pExtra1, void *pExtra2)
-       {               m_Root.ForEach(lpfn, 0, pExtra1, pExtra2);     }
-       ObjectInfo*     FirstThat( lpfnFirstThat2 lpfn, void *pExtra1 )
-       {               return m_Root.FirstThat(lpfn, 0, pExtra1);     }
-       ObjectInfo*     FirstThat( lpfnFirstThat3 lpfn, void *pExtra1, void *pExtra2)
-       {               return m_Root.FirstThat(lpfn, 0, pExtra1, pExtra2);   }
-       //typedef               ObjectInfo iterator;
+       void Print (ostream &os)
+       {
+              m_Root.Print(os);
+       }
+
+       //TODO: Tarea 33: BTree: generalizar foreach
+       template<typename Callable, typename... Args>
+       void ForEach( Callable fn, Args&& ...args)
+       {
+              m_Root.ForEach(fn, 0, args...);
+       }
+
+       template<typename Callable, typename... Args>
+       LinkedValueType* FirstThat( Callable fn, Args&& ...args)
+       {
+              return m_Root.FirstThat(fn, 0, args...);
+       }
+
+       void Read(istream &is)
+       {
+              int filas;
+              is >> filas;
+              value_type key;
+              LinkedValueType value;
+              string puntuacion;
+              while (filas--)
+              {
+                     is >> key;
+                     is >> puntuacion;
+                     is >> value;
+                     this->Insert(key, value);
+              }
+       }
 
 protected:
-       BTNode          m_Root;
-       size_t          m_Height;  // height of tree
-       size_t          m_Order;   // order of tree
-       size_t          m_NumKeys; // number of keys
-       bool            m_Unique;  // Accept the elements only once ?
+       Node m_Root;
+       size_t m_Height;  // height of tree
+       size_t m_Order;   // order of tree
+       size_t m_NumKeys; // number of keys
+       bool m_Unique;  // Accept the elements only once ?
+       CompareFn m_compareFn;
 };     
 
 // TODO change ObjID by LinkedValueType value
-template <typename Trait>
-bool BTree<Trait>::Insert(const keyType key, const long ObjID){
-       bt_ErrorCode error = m_Root.Insert(key, ObjID);
+template <typename Traits>
+bool BTree<Traits>::Insert(const value_type key, const LinkedValueType value){
+       bt_ErrorCode error = m_Root.Insert(key, value, m_compareFn);
        if( error == bt_duplicate )
                return false;
        m_NumKeys++;
@@ -92,10 +106,10 @@ bool BTree<Trait>::Insert(const keyType key, const long ObjID){
        return true;
 }
 
-template <typename Trait>
-bool BTree<Trait>::Remove (const keyType key, const long ObjID)
+template <typename Traits>
+bool BTree<Traits>::Remove (const value_type key, const LinkedValueType value)
 {
-       bt_ErrorCode error = m_Root.Remove(key, ObjID);
+       bt_ErrorCode error = m_Root.Remove(key, value, m_compareFn);
        if( error == bt_duplicate || error == bt_nofound )
                return false;
        m_NumKeys--;
@@ -105,8 +119,20 @@ bool BTree<Trait>::Remove (const keyType key, const long ObjID)
        return true;
 }
 
-// TODO Add operator<<
+//TODO: Tarea 35: BTree: write
+template <typename Traits>
+ostream &operator<<(ostream &os, BTree<Traits> &bt)
+{
+       bt.Print(os);
+       return os;
+}
 
-// TODO Add operator>>
+//TODO: Tarea 34: BTree: read
+template <typename Traits>
+istream &operator>>(istream &is, BTree<Traits> &bt)
+{
+       bt.Read(is);
+       return is;
+}
 
 #endif
