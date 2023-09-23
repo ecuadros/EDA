@@ -6,6 +6,7 @@
 #include <sstream> 
 #include <string>
 #include "xtrait.h"
+#include <mutex>
 namespace BTreeNamespace {
 template <typename T>
 T convertFromString(const std::string &str) ;  
@@ -25,6 +26,8 @@ public:
        typedef typename BTNode::lpfnFirstThat3  lpfnFirstThat3;
        typedef typename BTNode::Node      Node;
 
+private:
+    mutable std::mutex m_Mutex;
 public:
        BTree(size_t order = DEFAULT_BTREE_ORDER, bool unique = true)
               : m_Order(order),
@@ -78,6 +81,7 @@ protected:
 
 template <typename Trait>
 bool BTree<Trait>::Insert(const value_type key,const  LinkedValueType ObjID){
+    std::lock_guard<std::mutex> lock(m_Mutex);
     bt_ErrorCode error = m_Root.Insert(key, ObjID);
     if( error == bt_duplicate )
             return false;
@@ -96,6 +100,7 @@ bool BTree<Trait>::Insert(const value_type key,const  LinkedValueType ObjID){
 
 template <typename Trait>
 bool BTree<Trait>::Remove (const value_type key, const LinkedValueType  ObjID){
+       std::lock_guard<std::mutex> lock(m_Mutex);
        bt_ErrorCode error = m_Root.Remove(key, ObjID);
        if( error == bt_duplicate || error == bt_nofound )
                return false;
@@ -108,6 +113,7 @@ bool BTree<Trait>::Remove (const value_type key, const LinkedValueType  ObjID){
 
 template <typename Trait>
 void BTree<Trait>::Read(const std::string& filename){
+    std::lock_guard<std::mutex> lock(m_Mutex);
     std::ifstream is(filename); 
     if (!is.is_open()) { 
         std::cerr << "Error opening file: " << filename << std::endl;
