@@ -2,11 +2,16 @@
 #include <fstream>  // ofstream, ifstream
 #include <map>
 #include <cmath>
+#include <random>
+#include <thread>
+#include <mutex>
 #include <memory>
+#include <vector>
 #include "demo.h"
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "BPlus.h"
 using namespace std;
 
 template <typename T, int N>
@@ -80,7 +85,7 @@ void DemoSmartPointers(){
     auto &rA = *pV3;
     for(auto i = 100 ; i < 112 ; i++)
     {   v2.insert(i, i*i);
-        pV3->insert(sqrt(i), string("**")+to_string(sqrt(i)+5)+string("**"));
+        // pV3->insert(sqrt(i), string("**")+to_string(sqrt(i)+5)+string("**"));
         //  (*pv3).insert(i);
         //  rA.insert(i);
     }
@@ -401,4 +406,65 @@ void DemoMap(){
         cout << it->first << " = " << it->second << "; " << endl;
  
 
+}
+
+void concurrentInsert(CBPlusTree<XTraitIntIntAsc>& tree, mutex& mut, std::uniform_int_distribution<int>& distribution)
+{
+    std::default_random_engine generator;
+    for(int i = 1; i <= 5; i++)
+    {
+        std::this_thread::sleep_for(chrono::milliseconds(250));
+        std::lock_guard<mutex> lock(mut); // Will Lock
+        tree.insert(distribution(generator), distribution(generator));
+        // Will unlock when lock goes out of scope
+    }
+}
+
+
+void DemoBPlusTree() {
+    CBPlusTree<XTraitIntIntAsc> tree("B+ Tree", 4);
+    cout << "Reading tree from test.txt..." << endl;
+    ifstream file("test.txt", ios::in);
+    file >> tree;
+    cout << "Done reading tree from test.txt..." << endl;
+    cout << tree << endl;
+
+    cout << "Printing tree data with foreach..." << endl;
+    tree.forEach([](auto &n) {
+        cout << "(" << n.getDataRef() << "->" << n.getValueRef() << ")" << " "; 
+    });
+    cout << endl << endl;
+
+    cout << "Printing tree with values * 2 (Foreach and variadic templates)..." << endl;
+    tree.forEach([](auto &n, int& x) {
+        cout << "(" << n.getDataRef() << "->" << n.getValueRef() * x << ")" << " ";
+    }, 2);
+    cout << endl << endl;
+
+    cout << "***Deleting from tree***" << endl;
+    cout << "Delete 1 (no borrowing is needed)..." << endl;
+    tree.remove(1);
+    cout << tree << endl;
+
+    cout << "Delete 2 (borrowing is needed)..." << endl;
+    tree.remove(2);
+    cout << tree << endl;
+
+    cout << "Delete 3 (merging is needed)..." << endl;
+    tree.remove(3);
+    cout << tree << endl;
+
+    CBPlusTree<XTraitIntIntAsc> bt2("Concurrent B+ Tree", 4);
+    cout<< "Inserting random numbers concurrently into a newly created tree: " << endl;
+    mutex mut;
+    std::uniform_int_distribution<int> d1(1,10000);
+    std::uniform_int_distribution<int> d2(40000,50000);
+    thread t1(concurrentInsert, ref(bt2), ref(mut), ref(d1));
+    thread t2(concurrentInsert, ref(bt2), ref(mut), ref(d2));
+    t1.join();
+    t2.join();
+    cout<< "Printing tree:" << endl;
+    cout << bt2;
+
+    cout << endl;
 }
