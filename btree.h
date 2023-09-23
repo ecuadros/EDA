@@ -61,6 +61,18 @@ public:
        {               
               m_Root.Print(os);                              
        }
+
+       void Read(istream &is)
+       {
+              while (!is.eof()) {
+                     using value_type = typename BTree<Trait>::value_type;
+                     using LinkedValueType = typename BTree<Trait>::LinkedValueType;
+                     value_type key;
+                     LinkedValueType val;
+                     is >> key >> val;
+                     Insert(key, val);
+              }
+       }
        // void            ForEach( lpfnForEach2 lpfn, void *pExtra1 )
        // {               m_Root.ForEach(lpfn, 0, pExtra1);              }
        // void            ForEach( lpfnForEach3 lpfn, void *pExtra1, void *pExtra2)
@@ -71,10 +83,16 @@ public:
        // {               return m_Root.FirstThat(lpfn, 0, pExtra1, pExtra2);   }
        typedef               ObjectInfo iterator;
 
-       template <typename Callable>
-        void            ForEach(Callable f)
+       template <typename Callable, typename... Args>
+        void            ForEach(Callable f, Args&& ...args)
         {
-              m_Root.ForEach(f);
+              m_Root.ForEach(f, args...);
+        }
+
+       template <typename Callable, typename... Args>
+        void            BackwardsForEach(Callable f, Args&& ...args)
+        {
+              m_Root.BackwardsForEach(f, args...);
         }
 
         template <typename Callable, typename... Args>
@@ -137,13 +155,7 @@ ostream &operator<<(ostream &os, BTree<Trait> &obj)
 template <typename Trait>
 istream &operator>>(istream &is, BTree<Trait> &obj)
 {
-       // DONE: Read from stream
-       using value_type = typename BTree<Trait>::value_type;
-       using LinkedValueType = typename BTree<Trait>::LinkedValueType;
-       value_type key;
-       LinkedValueType val;
-       is >> key >> val;
-       obj.Insert(key, val);
+       obj.Read(is);
        return is;
 }
 

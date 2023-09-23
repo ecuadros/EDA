@@ -1,5 +1,6 @@
 #include <iostream> // cout
 #include <fstream>  // ofstream, ifstream
+#include <stdlib.h>
 #include <cmath>
 #include <memory>
 #include "demo.h"
@@ -7,6 +8,10 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include <thread>
+#include <mutex>
+#include <chrono>
+#include <random>
 using namespace std;
 
 template <typename T, int N>
@@ -249,25 +254,25 @@ void DemoHeap()
     cout << "Hello from DemoHeap()" <<endl;
 }
 
+void concurrentInsert(BTree<XTraitIntIntAsc>& tree, mutex& mut, std::uniform_int_distribution<int>& distribution)
+{
+    std::default_random_engine generator;
+    for(int i = 1; i <= 5; i++)
+    {
+        std::this_thread::sleep_for(chrono::milliseconds(250));
+        std::lock_guard<mutex> lock(mut); // Will Lock
+        tree.Insert(distribution(generator), distribution(generator));
+        // Will unlock when lock goes out of scope
+    }
+}
+
 void DemoBTree()
 {
     BTree<XTraitIntIntAsc> bt;
-    bt.Insert(1, 2);
-    bt.Insert(12, 4);
-    bt.Insert(10, 8);
-    bt.Insert(2, 0);
-    bt.Insert(4, 2);
-    bt.Insert(5, 3);
-    bt.Insert(7, 7);
-    bt.Insert(9, 4);
-    bt.Insert(0, 6);
-    bt.Insert(19, 10);
-    bt.Insert(18, 4);
-    bt.Insert(15, 1);
-    cout << bt;
-    cout << "Insert a new element (key value): ";
-    cin >> bt;
-    cout << "Tree with the new element: " << endl;
+    cout << "Reading tree from test.txt (Uses read funciton)" << endl;
+    ifstream file("test.txt", ios::in);
+    file >> bt;
+    cout<< "Printing tree (Uses print function and iterator): " << endl;
     cout << bt;
     
     auto* val = bt.FirstThat([](auto &n){ return n == 10; });
@@ -279,14 +284,35 @@ void DemoBTree()
 
     auto* val2 = bt.FirstThat([](auto &n, int v){ return n * v == 120; }, 10);
     if(val2) {
-        cout<< "First that is 120, when multiplied by 10: " << val2->key << " -> " << val->ObjID << endl;
+        cout<< "First with key that is 120, when multiplied by 10: " << val2->key << " -> " << val->ObjID << endl;
     } else {
         cout<< "Value not found" << endl;
     }
 
-    cout<< "Printing tree with foreach: ";
+    cout<< "Printing tree with foreach (Uses forwards iterator), generalized: ";
     bt.ForEach([](auto &n){ cout << n << " "; });
     cout<< endl;
+
+    cout<< "Printing tree with backwards foreach (Uses backwards iterator), generalized: ";
+    bt.BackwardsForEach([](auto &n){ cout << n << " "; });
+    cout<< endl;
+
+    cout<<"Printing tree with foreach that uses variadic templates (multiplied by 10): ";
+    bt.ForEach([](auto &n, int v){ cout << n * v << " "; }, 10);
+    cout<< endl;
+
+    BTree<XTraitIntIntAsc> bt2;
+    cout<< "Inserting random numbers concurrently into a newly created tree: " << endl;
+    mutex mut;
+    std::uniform_int_distribution<int> d1(1,10000);
+    std::uniform_int_distribution<int> d2(40000,50000);
+    thread t1(concurrentInsert, ref(bt2), ref(mut), ref(d1));
+    thread t2(concurrentInsert, ref(bt2), ref(mut), ref(d2));
+    t1.join();
+    t2.join();
+    cout<< "Printing tree:" << endl;
+    // Print tree
+    cout << bt2;
 }
 
 void DemoBinaryTree()
