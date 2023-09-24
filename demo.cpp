@@ -7,6 +7,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "Graph.h"
 using namespace std;
 
 template <typename T, int N>
@@ -80,7 +81,7 @@ void DemoSmartPointers(){
     auto &rA = *pV3;
     for(auto i = 100 ; i < 112 ; i++)
     {   v2.insert(i, i*i);
-        pV3->insert(sqrt(i), string("**")+to_string(sqrt(i)+5)+string("**"));
+    //    pV3->insert(sqrt(i), string("**")+to_string(sqrt(i)+5)+string("**"));
         //  (*pv3).insert(i);
         //  rA.insert(i);
     }
@@ -401,4 +402,33 @@ void DemoMap(){
         cout << it->first << " = " << it->second << "; " << endl;
  
 
+}
+
+void DemoGraph()
+{
+    CGraph<XTraitIntIntAsc> graph("Graph 1");
+    
+    // Each vertex is a pair of <key, value>
+    graph.insertVertex(1, 2);
+    graph.insertVertex(2, 4);
+    graph.insertVertex(3, 6);
+
+    // Each edge is a pair of <key1, key2>
+    graph.insertEdge(1, 2);
+    graph.insertEdge(1, 3);
+
+    // Print and operator <<
+    cout<< graph << endl;
+
+    // Read and operator >>
+    cout << "Reading the same graph from a file: " << endl;
+    CGraph<XTraitIntIntAsc> graphFromFile("Graph From File");
+    ifstream is("test.txt", ios::in);
+    is >> graphFromFile;
+    cout<< graphFromFile << endl;
+
+    // Operator[]
+    cout << "Value for key 1: " << graphFromFile[1] << endl;
+    graphFromFile[1] = 20;
+    cout << "Value for key 1 after change: " << graphFromFile[1] << endl;
 }
