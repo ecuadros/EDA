@@ -5,16 +5,15 @@ template <typename Container>
 class forward_iterator
 {
 public:
-  typedef typename Container::Node Node;
-  typedef typename Node::Type Type;
+  typedef typename Container::BTNode BTNode;
   typedef forward_iterator<Container> myself;
 
 private:
   Container *m_pContainer;
-  Node *m_pNode;
+  BTNode *m_pNode;
 
 public:
-  forward_iterator(Container *pContainer, Node *pNode) : m_pContainer(pContainer), m_pNode(pNode) {}
+  forward_iterator(Container *pContainer, BTNode *pNode) : m_pContainer(pContainer), m_pNode(pNode) {}
   forward_iterator(myself &other)
   {
     m_pContainer = other.m_pContainer;
@@ -38,14 +37,15 @@ public:
   {
     return !(*this == iter);
   }
-  Node &operator*()
+  BTNode &operator*()
   {
     return *m_pNode;
   }
-  forward_iterator operator++()
+  myself operator++()
   {
     return *this;
   }
+  
 };
 
 // template <typename Container>

@@ -19,6 +19,15 @@ void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
       ope(*iter);
 }
 
+template <typename Iterator, typename Callable, typename... Args>
+void foreach(Iterator ItBegin, Iterator ItEnd, Callable op, Args&&... args)
+{
+  auto iter = ItBegin;
+  for(; iter != ItEnd ; ++iter)
+      invoke(op, *iter, forward<Args>(args)...);
+  invoke(op, *iter, forward<Args>(args)...);
+}
+
 // Variadic templates
 // template <typename Iterator, typename Callable, typename... Args>
 // void foreach(Iterator ItBegin, Iterator ItEnd, Callable op, Args&&... args)

@@ -121,6 +121,9 @@ protected:
        vector<BTPage *>m_SubPages;
        
        size_t  m_KeyCount;
+       size_t m_level;
+       size_t getLevel() { return m_level; }
+       void setLevel(size_t level) { m_level = level; }
        void  Create();
        void  Reset ();
        void  Destroy () {   Reset(); delete this;}
@@ -533,6 +536,7 @@ void CBTreePage<Trait>::ForEach(lpfnForEach2 lpfn, size_t level, void *pExtra1)
                        m_SubPages[i]->ForEach(lpfn, level+1, pExtra1);
                lpfn(m_Keys[i], level, pExtra1);
        }
+//        cout << "m_KeyCount " << m_KeyCount << endl;
        if( m_SubPages[m_KeyCount] )
                m_SubPages[m_KeyCount]->ForEach(lpfn, level+1, pExtra1);
 }
@@ -552,18 +556,18 @@ void CBTreePage<keyType, ObjIDType>::ForEachReverse(lpfnForEach3 lpfn,
 }*/
 
 // TODO replace by generic foreach
-template <typename Trait>
-void CBTreePage<Trait>::ForEach(lpfnForEach3 lpfn, size_t level, void *pExtra1, void *pExtra2)
-{
-       for(size_t i = 0 ; i < m_KeyCount ; i++)
-       {
-               if( m_SubPages[i] )
-                       m_SubPages[i]->ForEach(lpfn, level+1, pExtra1, pExtra2);
-               lpfn(m_Keys[i], level, pExtra1, pExtra2);
-       }
-       if( m_SubPages[m_KeyCount] )
-               m_SubPages[m_KeyCount]->ForEach(lpfn, level+1, pExtra1, pExtra2);
-}
+// template <typename Trait>
+// void CBTreePage<Trait>::ForEach(lpfnForEach3 lpfn, size_t level, void *pExtra1, void *pExtra2)
+// {
+//        for(size_t i = 0 ; i < m_KeyCount ; i++)
+//        {
+//                if( m_SubPages[i] )
+//                        m_SubPages[i]->ForEach(lpfn, level+1, pExtra1, pExtra2);
+//                lpfn(m_Keys[i], level, pExtra1, pExtra2);
+//        }
+//        if( m_SubPages[m_KeyCount] )
+//                m_SubPages[m_KeyCount]->ForEach(lpfn, level+1, pExtra1, pExtra2);
+// }
 
 // TODO replace by generic firstthat
 template <typename Trait>

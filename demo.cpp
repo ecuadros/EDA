@@ -363,6 +363,14 @@ void DemoHash()
 //     os << string(" | ") * pNode.getLevel() << pNode.getDataRef() << "(" << (pNode.getParent() ? to_string(pNode.getParent()->getData()) : "Root") << ")" << endl;
 // }
 
+template <typename Container>
+void PrintAsTree(Container &info, ostream &os)
+{
+       for(size_t i = 0; i < info.level ; i++)
+               os << "\t";
+       os << info.key << "->" << info.ObjID << "\n";
+}
+
 #include "btree.h"
 void DemoTree()
 {
@@ -375,13 +383,14 @@ void DemoTree()
             bt.Insert(keys[i], i*i);
             //bt.Print(cout);
         }
-    // bt.Print(cout);
+    bt.Print(cout);
     cout << bt;
     BTree < BTreeTrait<float,long> > btTestFile;
     cout << "Reading from test.txt" << endl;
     ifstream testFile("test.txt");
     testFile >> btTestFile;
     cout << btTestFile;
+    // btTestFile.print(PrintAsTree<btTestFile>, cout);
     cout << endl;
     exit(0);
 

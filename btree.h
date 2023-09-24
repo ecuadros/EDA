@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <mutex>
 #include "btreepage.h"
 #include "btree_iterators.h"
 #define DEFAULT_BTREE_ORDER 3
@@ -29,12 +30,6 @@ class BTree // this is the full version of the BTree
        typedef forward_iterator<myself> iterator;
 
 public:
-       // typedef ObjectInfo iterator;
-       //  TODO replace thius functions by foreach
-       // typedef typename BTNode::lpfnForEach2 lpfnForEach2;
-       // typedef typename BTNode::lpfnForEach3 lpfnForEach3;
-       // typedef typename BTNode::lpfnFirstThat2 lpfnFirstThat2;
-       // typedef typename BTNode::lpfnFirstThat3 lpfnFirstThat3;
 
        typedef typename BTNode::ObjectInfo ObjectInfo;
 
@@ -68,22 +63,12 @@ public:
        {
               m_Root.Print(os);
        }
-       // void ForEach(lpfnForEach2 lpfn, void *pExtra1)
-       // {
-       //        m_Root.ForEach(lpfn, 0, pExtra1);
-       // }
-       // void ForEach(lpfnForEach3 lpfn, void *pExtra1, void *pExtra2)
-       // {
-       //        m_Root.ForEach(lpfn, 0, pExtra1, pExtra2);
-       // }
-       // ObjectInfo *FirstThat(lpfnFirstThat2 lpfn, void *pExtra1)
-       // {
-       //        return m_Root.FirstThat(lpfn, 0, pExtra1);
-       // }
-       // ObjectInfo *FirstThat(lpfnFirstThat3 lpfn, void *pExtra1, void *pExtra2)
-       // {
-       //        return m_Root.FirstThat(lpfn, 0, pExtra1, pExtra2);
-       // }
+
+       void print(void (*func) (BTNode& node, ostream &os), ostream &os)
+       {
+              foreach(begin(),end(), func, os);
+       }
+
        iterator begin()
        {
               iterator iter(this, m_Root);
@@ -94,6 +79,7 @@ public:
               iterator iter(this, nullptr);
               return iter;
        }
+
        // typedef               ObjectInfo iterator;
        void read(istream &is)
        {
@@ -116,12 +102,14 @@ protected:
        size_t m_Order;   // order of tree
        size_t m_NumKeys; // number of keys
        bool m_Unique;    // Accept the elements only once ?
+       mutex mutex_;
 };
 
 // TODO change ObjID by LinkedValueType value
 template <typename Trait>
 bool BTree<Trait>::Insert(const keyType key, const long ObjID)
 {
+       lock_guard<mutex> lock(mutex_);
        bt_ErrorCode error = m_Root.Insert(key, ObjID);
        if (error == bt_duplicate)
               return false;
