@@ -2,11 +2,13 @@
 #include <fstream>  // ofstream, ifstream
 #include <map>
 #include <cmath>
+#include <string>
 #include <memory>
 #include "demo.h"
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "hash.h"
 using namespace std;
 
 template <typename T, int N>
@@ -256,7 +258,24 @@ void DemoBinaryTree()
 
 void DemoHash()
 {
-    cout << "Hello from DemoHash()" <<endl;
+    cout << "Map 1 (int a int), leido de archivo" << endl;
+    HashMap<XTraitIntIntAsc> m;
+    ifstream is("test.txt", ios::in);
+    is >> m;
+    cout << m;
+    cout << "Find value for key 1: " << m[1] << endl;
+    cout << "Find value for key 10: " << m[10] << endl;
+    cout << endl;
+
+    cout << "Map 2 (float a string)" << endl;
+    HashMap<XTraitFloatStringDesc> m2;
+    m2.insert(1, "Juan");
+    m2.insert(2, "Pedro");
+    m2.insert(3, "Pepe");
+    m2.insert(4, "Maria");
+    cout << m2;
+    cout << "Find value for key 1: " << m2[1] << endl;
+    cout << "Find value for key 3: " << m2[3] << endl;
 }
 
 // template <typename Container>

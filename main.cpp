@@ -18,12 +18,12 @@ int main()
 
     // DemoHeap();
     // DemoBinaryTree();
-    // DemoHash();
+    DemoHash();
 
     // DemoPreandPostIncrement();
     // DemoSmartPointers();
 
-    DemoMap();
+    // DemoMap();
     
     return 0;
 }
