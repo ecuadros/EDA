@@ -2,10 +2,12 @@
 #include <fstream>  // ofstream, ifstream
 #include <cmath>
 #include <memory>
+#include <string>
 #include "demo.h"
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "btree.h"
 using namespace std;
 
 template <typename T, int N>
@@ -141,7 +143,7 @@ void DemoPreandPostIncrement(){
     cout << "z=" << z << " x=" << x << endl;
 }
 
-void DemoArray(){   
+/* void DemoArray(){   
     cout << "Hello from DemoArray()" <<endl;
     cout << "Vector #1()" <<endl;
     
@@ -193,7 +195,7 @@ void DemoArray(){
     vx.insert("Edson"  , "Caceres");
     vx.insert("Franz"  , "Maguiña");
     vx.print(cout);
-}
+} */
 
 void DemoIterators(){
     CArray< TraitArrayIntInt > v1("Jorge");
@@ -357,20 +359,34 @@ void DemoHash()
 //     DemoBinaryTree(myDescBinaryTree);
 // }
 
-// #include "btree.h"
-// void DemoTree()
-// {
-//     BTree < BtreeTrait<char,long> > bt;
-//     const char * keys = "DYZakHIUwxVJ203ejOP9Qc8AdtuEop1XvTRghSNbW567BfiCqrs4FGMyzKLlmn";
-//     for(size_t i = 0; keys[i]; i++)
-//         {
-//             //cout<<"Inserting "<<keys[i]<<endl;
-//             //result = bt.Insert(keys4[i], i*i);
-//             bt.Insert(keys[i], i*i);
-//             //bt.Print(cout);
-//         }
-//     bt.Print(cout);
-//     exit(0);
 
-// }
+ void DemoTree()
+ {
+    BTree < BTreeTrait<char,long> > bt;
+    const char * keys = "DYZakHIUwxVJ203ejOP9Qc8AdtuEop1XvTRghSNbW567BfiCqrs4FGMyzKLlmn";
+    for(size_t i = 0; keys[i]; i++)
+    {
+        //cout<<"Inserting "<<keys[i]<<endl;
+        //result = bt.Insert(keys4[i], i*i);
+        bt.Insert(keys[i], i*i);
+        //bt.Print(cout);
+    }
+    //bt.Print(cout);
+    
+    ofstream myfile("test.txt");
+    if (myfile.is_open()) 
+    {
+        myfile << bt << endl;
+        myfile.close();
+    }
+
+    BTree < BTreeTrait<char,long> > btRead;
+    ifstream toread("test.txt");
+    toread >> btRead;
+
+    cout << "Se muestra el txt leido" << endl;
+    cout << btRead << endl;
+
+    exit(0);
+ }
 

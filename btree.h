@@ -59,6 +59,19 @@ public:
 
        void            Print (ostream &os)
        {               m_Root.Print(os);                              }
+       void            Read (istream &is)
+       {
+              while (!is.eof()) {
+                     using key_type = typename BTree<Trait>::keyType;
+                     using objID_type = typename BTree<Trait>::ObjIDType;
+                     key_type key;
+                     objID_type objID;
+                     char arrow;
+                     is >> key >> arrow >> arrow >> objID;
+                     
+                     Insert(key, objID);
+              };
+       }
        void            ForEach( lpfnForEach2 lpfn, void *pExtra1 )
        {               m_Root.ForEach(lpfn, 0, pExtra1);              }
        void            ForEach( lpfnForEach3 lpfn, void *pExtra1, void *pExtra2)
@@ -106,7 +119,17 @@ bool BTree<Trait>::Remove (const keyType key, const long ObjID)
 }
 
 // TODO Add operator<<
-
+template <typename Trait>
+ostream& operator<< (ostream& os, BTree<Trait>& obj)
+{
+       obj.Print(os);
+       return os;
+}
 // TODO Add operator>>
-
+template <typename Trait>
+istream& operator>> (istream& is, BTree<Trait>& obj)
+{
+       obj.Read(is);
+       return is;
+}
 #endif
