@@ -2,10 +2,14 @@
 #include <fstream>  // ofstream, ifstream
 #include <cmath>
 #include <memory>
+#include <vector>
 #include "demo.h"
+#include "keynode.h"
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "btree.h"
+
 using namespace std;
 
 template <typename T, int N>
@@ -185,7 +189,7 @@ void DemoArray(){
     of << v2 << endl; 
     cout << "DemoArray finished !" << endl;
 
-    using TraitStringString = ArrayTrait<string, string  , std::less<NodeArray<string, string> &>>;
+    using TraitStringString = XTrait<string, string  , std::less<KeyNode<string, string> &>>;
     CArray< TraitStringString > vx("Ernesto Cuadros");
     vx.insert("Ernesto", "Cuadros");
     vx.insert("Luis"   , "Tejada");
@@ -258,119 +262,55 @@ void DemoHash()
     cout << "Hello from DemoHash()" <<endl;
 }
 
-// template <typename Container>
-// void demoLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden: ";
-//     //for(size_t pos = 0; pos < mylist.size(); pos++)
-//     //    cout << mylist[pos] << endl;
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
-// }
+//======================================================================
+template <typename T,typename Cout>
 
-// void demoLinkedListSorted()
-// {
-//     cout << "Ascending list" << endl;
-//     LinkedList< LLTraitAsc<TX> > myAscList;
-//     demoLinkedList(myAscList);
-//     foreach(myAscList);
-
-//     cout << "Descending list" << endl;
-//     LinkedList< LLTraitDesc<TX> > myDescList;
-//     demoLinkedList(myDescList);
-//     foreach(myDescList);
-// }
-
-// template <typename Container>
-// void demoDoubleLinkedList(Container &mylist)
-// {
-//     cout << "Inserting:       ";
-//     for(auto x=0; x<nElem; x++)
-//     {   
-//       cout << vect[x] << ", "; 
-//       mylist.insert(vect[x]);
-//       //mylist.push_back(vect[x]);
-//     }
-//     cout << endl;
-//     cout << "Lista en orden : ";
-//     using T = typename Container::value_type;
-//     foreach(mylist, fx<T>);  cout << endl;
+void showing(T Node, size_t level, Cout &OS){
+     for(size_t i = 0; i < level ; i++)
+        OS << "\t";
+     OS << Node.getData()<<" "<<endl; 
     
-//     cout << "Lista invertida: ";
-//     foreach_inverso(mylist, fx<T>);  cout << endl;
-// }
+    }
+// ================= Demo Btree ======================
 
-// void demoDoubleLinkedListSorted()
-// {
-//     cout << "Ascending double list" << endl;
-//     DoubleLinkedList< DLLAscTraits<TX> > myAscList;
-//     demoDoubleLinkedList(myAscList);
-
-//     cout << "Descending double list" << endl;
-//     DoubleLinkedList< DLLDescTraits<TX> > myDescList;
-//     demoDoubleLinkedList(myDescList); 
-// }
-
-// template <typename Container>
-// void DemoBinaryTree(Container &container)
-// {   using T = typename Container::value_type;
-//     vector<T> values = {50, 30, 20, 80, 60, 70, 40, 90};
-//     for(auto &v: values)
-//     {
-//         container.insert(v);
-//     }    
-//     cout << endl;
-//     cout << "Recorrido inorden: " << endl;
-//     container.inorder(cout);
-//     cout << "\nRecorrido postorden: " << endl;
-//     container.postorder(cout);
-//     cout << "\nRecorrido preorden: " << endl;
-//     container.preorder(cout);
-//     cout << "\nTREE: " << endl;
-//     container.print(cout);
-
-//     /*
-//     // aplicando función
-//     cout << "Recorrido aplicando funci'on duplicar (recorrido inorden) " << endl;               
-//     //container.inorder(duplicate);
-//     cout << "Aplicando funci'on imprimir: " << endl;               
-//     //container.inorder(printTree);
-//     */
-// }
-
-// #include "binarytree.h"
-// void DemoBinaryTree()
-// {   
-//     cout << "Ascending Binarytree ..." << endl;
-//     BinaryTree< BinaryTreeAscTraits<TX> > myAscBinaryTree;
-//     DemoBinaryTree(myAscBinaryTree);
+template <typename Container>
+void demoBTree(){
+  
+   using value_type        = typename Container::value_type;
+    using Node              = typename Container::BNode;
     
-//     cout << "Descending Binarytree ..." << endl;
-//     BinaryTree< BinaryTreeDescTraits<TX> > myDescBinaryTree;
-//     DemoBinaryTree(myDescBinaryTree);
-// }
+    vector<value_type> vec{12,15,33,66,55,24,22,11,85,102,105,210,153,653,38,308,350,450}; 
+    BTree<bTreeIntInt> BTOne;
+ 
+    for(auto i=0;i<vec.size();i++) { 
+        
+        BTOne.Insert(vec[i],i*i); 
+   
+       }
+    
+    cout<<"---------------Printing current Btree----------"<<endl;
+    cout<<BTOne<<endl;
+   
+   cout<<"-------------Searching 105--------------";
+  if(BTOne.Search(105)) cout<<" Found it! "<<endl;
 
-// #include "btree.h"
-// void DemoTree()
-// {
-//     BTree < BtreeTrait<char,long> > bt;
-//     const char * keys = "DYZakHIUwxVJ203ejOP9Qc8AdtuEop1XvTRghSNbW567BfiCqrs4FGMyzKLlmn";
-//     for(size_t i = 0; keys[i]; i++)
-//         {
-//             //cout<<"Inserting "<<keys[i]<<endl;
-//             //result = bt.Insert(keys4[i], i*i);
-//             bt.Insert(keys[i], i*i);
-//             //bt.Print(cout);
-//         }
-//     bt.Print(cout);
-//     exit(0);
+    BTOne.Remove(105,100);
+    cout<<"--------After removing 105--------"<<endl;
+    cout << BTOne<<endl;
+     
+    BTree<bTreeIntInt> BTwo;
+     cout<<"------------Reading  File-----------"<<endl;
+     ifstream IN("FileTest.txt");
+     IN>>BTwo;
+     cout<<"-----------Printing the content----------------"<<endl;
+     cout<<BTwo;
+      
+       
+}   
 
-// }
+ void DemoBTree(){
+    
+    demoBTree<bTreeIntInt>();
 
+     }
+    
