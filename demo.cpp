@@ -7,6 +7,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "hash.h"
 using namespace std;
 
 template <typename T, int N>
@@ -254,10 +255,6 @@ void DemoBinaryTree()
     cout << "Hello from DemoBinaryTree()" <<endl;
 }
 
-void DemoHash()
-{
-    cout << "Hello from DemoHash()" <<endl;
-}
 
 // template <typename Container>
 // void demoLinkedList(Container &mylist)
@@ -375,30 +372,59 @@ void DemoHash()
 
 // }
 
-void DemoMap(){
-    map<int, string> m;
-    m[1000] = "Francisco";
-    m[500]  = "Guiomar";
-    m[1300] = "Jorge";
-    m[2000] = "Eduardo";
-    m[600]  = "Lucero";
-    m[100]  = "Edson";
-    m[800]  = "Luis";
-    m[700]  = "Cristian";
-    m[900]  = "Pier";
-    m[750]  = "Ernesto";
-
-    // iterate using C++17 facilities
-    for (const auto& [key, value] : m)
-        cout << '[' << key << "] = " << value << "; " << endl;
+void DemoHash(){
+    HashMap<Traits_LL_str_int> hashTable;
+    hashTable.insert("one", 1);
+    hashTable.insert("two", 2);
+    hashTable.insert("three", 3);
+    hashTable.insert("two", 10);
+    hashTable.insert("two", 13);
+    hashTable.insert("four", 7);
+    cout<<"\nTest get value"<<endl;
+    auto value = hashTable.get("two");
+    if (value) {
+        std::cout<< *value << endl; // Outputs: 2
+    }
+    cout<<"\nTes remove value"<<endl;
+    for(auto i=1 ;i<=5;i++){
+        value = hashTable.get("two");
+        if (!value) {
+            std::cout << "Key not found!" << std::endl; // Outputs: Key not found!
+        }
+        else{
+            std::cout<<"Value found: "<<*value << endl; // Outputs: 2
+        }
+        hashTable.remove("two");
+    }
+   
     
-    // C++11 alternative:
-    //  for (const auto& n : m)
-    //      cout << n.first << " = " << n.second << "; ";
-    //
-    // C++98 alternative modified to use auto
-    for (auto it = m.rbegin(); it != m.rend(); it++)
-        cout << it->first << " = " << it->second << "; " << endl;
+    
+}
+
+// void DemoMap(){
+//     map<int, string> m;
+//     m[1000] = "Francisco";
+//     m[500]  = "Guiomar";
+//     m[1300] = "Jorge";
+//     m[2000] = "Eduardo";
+//     m[600]  = "Lucero";
+//     m[100]  = "Edson";
+//     m[800]  = "Luis";
+//     m[700]  = "Cristian";
+//     m[900]  = "Pier";
+//     m[750]  = "Ernesto";
+
+//     // iterate using C++17 facilities
+//     for (const auto& [key, value] : m)
+//         cout << '[' << key << "] = " << value << "; " << endl;
+    
+//     // C++11 alternative:
+//     //  for (const auto& n : m)
+//     //      cout << n.first << " = " << n.second << "; ";
+//     //
+//     // C++98 alternative modified to use auto
+//     for (auto it = m.rbegin(); it != m.rend(); it++)
+//         cout << it->first << " = " << it->second << "; " << endl;
  
 
-}
+// }
