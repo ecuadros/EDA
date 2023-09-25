@@ -14,6 +14,8 @@ void DemoHeap();
 void DemoBinaryTree();
 void DemoHash();
 
-void DemoMap();
+//void DemoMap();
+void DemoGraph();
+//void DemoQueue();
 
 #endif // __DEMO_H__

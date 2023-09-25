@@ -7,8 +7,11 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "QueueT.h"
+#include "Graph.h"
 using namespace std;
-
+using namespace GraphNamespace;
+using namespace QueueNamespace;
 template <typename T, int N>
 void increment(T &x)
 {  x+= N; }
@@ -375,30 +378,72 @@ void DemoHash()
 
 // }
 
-void DemoMap(){
-    map<int, string> m;
-    m[1000] = "Francisco";
-    m[500]  = "Guiomar";
-    m[1300] = "Jorge";
-    m[2000] = "Eduardo";
-    m[600]  = "Lucero";
-    m[100]  = "Edson";
-    m[800]  = "Luis";
-    m[700]  = "Cristian";
-    m[900]  = "Pier";
-    m[750]  = "Ernesto";
+// void DemoMap(){
+//     map<int, string> m;
+//     m[1000] = "Francisco";
+//     m[500]  = "Guiomar";
+//     m[1300] = "Jorge";
+//     m[2000] = "Eduardo";
+//     m[600]  = "Lucero";
+//     m[100]  = "Edson";
+//     m[800]  = "Luis";
+//     m[700]  = "Cristian";
+//     m[900]  = "Pier";
+//     m[750]  = "Ernesto";
 
-    // iterate using C++17 facilities
-    for (const auto& [key, value] : m)
-        cout << '[' << key << "] = " << value << "; " << endl;
+//     // iterate using C++17 facilities
+//     for (const auto& [key, value] : m)
+//         cout << '[' << key << "] = " << value << "; " << endl;
     
-    // C++11 alternative:
-    //  for (const auto& n : m)
-    //      cout << n.first << " = " << n.second << "; ";
-    //
-    // C++98 alternative modified to use auto
-    for (auto it = m.rbegin(); it != m.rend(); it++)
-        cout << it->first << " = " << it->second << "; " << endl;
+//     // C++11 alternative:
+//     //  for (const auto& n : m)
+//     //      cout << n.first << " = " << n.second << "; ";
+//     //
+//     // C++98 alternative modified to use auto
+//     for (auto it = m.rbegin(); it != m.rend(); it++)
+//         cout << it->first << " = " << it->second << "; " << endl;
  
 
+// }
+struct Data{
+	int v1;
+	int v2;
+};
+void DemoQueue(){
+    //typedef Data dt;
+    QueueNamespace::QueueT<Traits_Data_Key> q;
+	for(int i=1;i<10;i++){
+		// dt ar;
+		// ar.v1=1;
+		// ar.v2=3;
+		q.inQueue(i,i);
+	}
+	// int pq= q.QCount();
+	// cout<<pq<<endl;
+    cout<<"\nPrint"<<endl;
+	q.PrintS();
+    q.dnQueue();
+    cout<<"\nPrint"<<endl;
+    q.PrintS();
+}
+void DemoGraph(){
+    grafo<Traits_Data_Key_G> g;
+	for (int i=0;i<=20;i++){
+		g.insertarVertice(i,i+4);
+	}
+	// Carga de información de Grafo g
+	g.insertarArista(10,1);
+	g.insertarArista(0,2);
+	g.insertarArista(1,2);
+	g.insertarArista(1,3);
+	g.insertarArista(2,4);
+	g.insertarArista(3,2);
+	g.insertarArista(3,5);
+	g.insertarArista(4,3);
+	g.insertarArista(4,5);
+
+// 	cout<<"Ejemplo de Grafo"<<endl;
+	cout<<"Vertices|Aristas"<<endl;
+	g.imprimirGrafo();
+	cout<<endl;
 }

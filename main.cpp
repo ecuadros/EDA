@@ -23,7 +23,8 @@ int main()
     // DemoPreandPostIncrement();
     // DemoSmartPointers();
 
-    DemoMap();
+    DemoGraph();
+    //DemoQueue();
     
     return 0;
 }
