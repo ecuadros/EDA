@@ -384,7 +384,12 @@ void DemoHash()
     ifstream toread("test.txt");
     toread >> btRead;
 
-    cout << "Se muestra el txt leido" << endl;
+    cout << endl;
+    cout << "Se crea el objeto bt de la clase BTree" << endl;
+    cout << "Se le agregan elementos y se guarda en test.txt" << endl;
+    cout << "======================================" << endl;
+    cout << "Se crea el objeto toread de la clase BTree" << endl;
+    cout << "Y lee test.txt, almacena en toread y lo muestra" << endl;
     cout << btRead << endl;
 
     exit(0);
