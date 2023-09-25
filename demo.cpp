@@ -7,6 +7,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "graph.h"
 using namespace std;
 
 template <typename T, int N>
@@ -400,5 +401,26 @@ void DemoMap(){
     for (auto it = m.rbegin(); it != m.rend(); it++)
         cout << it->first << " = " << it->second << "; " << endl;
  
+
+}
+
+void DemoGraph() 
+{
+    Graph< GraphTrait<TX, TX> > myGraph;
+
+    myGraph.insertEdge(1, 2, 0.5);
+    myGraph.insertEdge(2, 3, 1.2);
+    myGraph.insertEdge(3, 4, 0.8);
+    myGraph.insertEdge(4, 1, 1.7);
+    myGraph.insertEdge(3, 8, 0.8);
+    myGraph.insertEdge(8, 0, 0);
+
+    myGraph.print(cout);
+
+    cout << "Reading from test.txt" << endl;
+    ifstream testFile("test.txt");
+    testFile >> myGraph;
+    cout << myGraph;
+    cout << endl;
 
 }
