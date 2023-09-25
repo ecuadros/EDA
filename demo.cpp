@@ -428,7 +428,7 @@ void DemoQueue(){
 }
 void DemoGraph(){
     grafo<Traits_Data_Key_G> g;
-	for (int i=0;i<=20;i++){
+	for (int i=0;i<=5;i++){
 		g.insertarVertice(i,i+4);
 	}
 	// Carga de información de Grafo g
@@ -445,5 +445,13 @@ void DemoGraph(){
 // 	cout<<"Ejemplo de Grafo"<<endl;
 	cout<<"Vertices|Aristas"<<endl;
 	g.imprimirGrafo();
+    cout<<"\nTest Overload Operator <<"<<endl;
+    cout<<g;
+    cout<<"\nTest Write functions"<<endl;
+    g.Write();
+    cout<<"\nTest Read functions"<<endl;
+    g.Read("file.txt");
+    g.Write();
 	cout<<endl;
+
 }

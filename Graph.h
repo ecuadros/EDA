@@ -1,10 +1,14 @@
 #ifndef __GRAPH_H__  
 #define __GRAPH_H__
 #include<iostream>
+#include <sstream> 
 #include "xtrait.h"
 namespace GraphNamespace {
+
 #define INF 999999
 using namespace std;
+template <typename T>
+inline T convertFromString(const std::string &str);
 template <typename Traits>
 class NodeQ{
   public:
@@ -81,6 +85,8 @@ class grafo{
 		void insertarVertice(const value_type &val_1,const LinkedValueType &val_2);
 		void insertarArista(const value_type &x,const value_type &y);
 		void imprimirGrafo();
+		void Write(){imprimirGrafo();};
+		void Read(const std::string& filename);
 		~grafo();
 	private:
 		pvertice pGrafo;
@@ -177,7 +183,8 @@ void grafo<Traits>::imprimirGrafo(){
 	else
 	{
 		while(p!=nullptr){
-			cout<<"V"<<p->datoOrign.getData()<<"-->>";
+			//cout<<"V"<<p->datoOrign.getData()<<"-->>";
+			cout<<"V"<<p->datoOrign.getData()<<"{"<<p->datoOrign.getValue()<<"}"<<"-->>";
 			a=p->adyacente;
 			while(a!=nullptr){
 				cout<<"V"<<a->datoDestino.getData()<<"{"<<a->datoDestino.getValue()<<"}"<<",";
@@ -187,6 +194,73 @@ void grafo<Traits>::imprimirGrafo(){
 			p=p->sgteVertice;
 		}
 	}	
+}
+template <class Traits>
+void grafo<Traits>::Read(const std::string& filename){
+    std::ifstream is(filename); 
+    if (!is.is_open()) { 
+        std::cerr << "Error opening file: " << filename << std::endl;
+        return;
+    }
+    string tmp_flow,num;
+    size_t count;
+    value_type  value;
+    LinkedValueType kvalue;
+    while (getline(is,tmp_flow)) { 
+        std::istringstream iss(tmp_flow);
+        count = 0;
+        while (iss >> num && count < 2) {
+            if(count==0)
+                value = GraphNamespace::convertFromString<value_type>(num);
+            else
+                kvalue = GraphNamespace::convertFromString<LinkedValueType>(num);  
+            count++;
+        }
+        insertarVertice(value,kvalue);
+    } 
+
+    is.close();
+
+}
+// operator<<
+template <typename T>
+inline ostream &operator<<(ostream &os, grafo<T> &obj){
+    obj.imprimirGrafo();
+    return os;
+}
+//  operator>>
+template <typename T>
+inline T convertFromString(const std::string &str) {
+    std::istringstream iss(str);
+    T value;
+    iss >> value;
+    return value;
+}
+template <typename T>
+inline istream & operator>>(istream &is,grafo<T> &obj){
+    string tmp_flow,num;
+    size_t count;
+    using vt      = typename T::value_type;
+    using lvt     = typename T::LinkedValueType ;
+    vt  value;
+    lvt kvalue;
+    while (getline(is,tmp_flow)) { 
+        istringstream iss(tmp_flow);
+        count = 0;
+        while (iss >> num && count < 2) {
+            if(count==0){
+                vt num_f = convertFromString<vt>(num);
+                value=num_f;
+            } 
+            else{
+                lvt num_f = convertFromString<lvt>(num);
+                kvalue=num_f; 
+            }      
+            count++;
+        }
+        obj.insertarVertice(value,kvalue);
+    }
+    return is;    
 }
 
 
