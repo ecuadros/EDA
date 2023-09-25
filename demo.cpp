@@ -7,6 +7,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "bplustree.h"
 using namespace std;
 
 template <typename T, int N>
@@ -375,30 +376,64 @@ void DemoHash()
 
 // }
 
-void DemoMap(){
-    map<int, string> m;
-    m[1000] = "Francisco";
-    m[500]  = "Guiomar";
-    m[1300] = "Jorge";
-    m[2000] = "Eduardo";
-    m[600]  = "Lucero";
-    m[100]  = "Edson";
-    m[800]  = "Luis";
-    m[700]  = "Cristian";
-    m[900]  = "Pier";
-    m[750]  = "Ernesto";
+template<typename Node>
+void printAsTree(Node &pNode, ostream &os)
+{
+    os << string(" | ") * pNode.getLevel() << pNode.getDataRef() << "(" << (pNode.getParent() ? to_string(pNode.getParent()->getData()) : "Root") << ")" << endl;
+}
 
-    // iterate using C++17 facilities
-    for (const auto& [key, value] : m)
-        cout << '[' << key << "] = " << value << "; " << endl;
+template<typename Container>
+void demoBTree(Container &myBTree)
+{
+    typedef typename Container::value_type          value_type;
+    typedef typename Container::Node          Node;
+    auto nElem = 8;
+    value_type key_vector[nElem] = {50,30,20,80,60,70,40,90};
+    for (auto i = 0; i < 1; i++)
+    {
+        myBTree.insert(key_vector[i],i);
+    }
+
+    myBTree.print(myBTree.getRoot());
+}
+
+void DemoBPlusTree()
+{
+    cout << endl << "================================================" <<endl;
+    BPlusTree < BPlusTreeAscTraits<TX, TX> > myBTreeAsc;
+    demoBTree(myBTreeAsc);
+
+
+    cout << endl << "Hello from DemoBinaryTree Desc" <<endl;
+
+    // BinaryTree < BinaryTreeDescTraits<TX, TX> > myBTreeDesc;
+    // demoBTree(myBTreeDesc);
+}
+
+// void DemoMap(){
+//     map<int, string> m;
+//     m[1000] = "Francisco";
+//     m[500]  = "Guiomar";
+//     m[1300] = "Jorge";
+//     m[2000] = "Eduardo";
+//     m[600]  = "Lucero";
+//     m[100]  = "Edson";
+//     m[800]  = "Luis";
+//     m[700]  = "Cristian";
+//     m[900]  = "Pier";
+//     m[750]  = "Ernesto";
+
+//     // iterate using C++17 facilities
+//     for (const auto& [key, value] : m)
+//         cout << '[' << key << "] = " << value << "; " << endl;
     
-    // C++11 alternative:
-    //  for (const auto& n : m)
-    //      cout << n.first << " = " << n.second << "; ";
-    //
-    // C++98 alternative modified to use auto
-    for (auto it = m.rbegin(); it != m.rend(); it++)
-        cout << it->first << " = " << it->second << "; " << endl;
+//     // C++11 alternative:
+//     //  for (const auto& n : m)
+//     //      cout << n.first << " = " << n.second << "; ";
+//     //
+//     // C++98 alternative modified to use auto
+//     for (auto it = m.rbegin(); it != m.rend(); it++)
+//         cout << it->first << " = " << it->second << "; " << endl;
  
 
-}
+// }
