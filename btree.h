@@ -72,14 +72,35 @@ public:
                      Insert(key, objID);
               };
        }
+
+       /*
        void            ForEach( lpfnForEach2 lpfn, void *pExtra1 )
        {               m_Root.ForEach(lpfn, 0, pExtra1);              }
        void            ForEach( lpfnForEach3 lpfn, void *pExtra1, void *pExtra2)
        {               m_Root.ForEach(lpfn, 0, pExtra1, pExtra2);     }
+       */
+
+       // Se generaliza la funcion ForEach mediante el template siguiente:
+       template <typename lpfnForEachX, typename... Args>
+       void ForEach(lpfnForEachX lpfn, Args... args)
+       {
+              m_Root.ForEach(lpfn, 0, args...);
+       }
+
+       /*
        ObjectInfo*     FirstThat( lpfnFirstThat2 lpfn, void *pExtra1 )
        {               return m_Root.FirstThat(lpfn, 0, pExtra1);     }
        ObjectInfo*     FirstThat( lpfnFirstThat3 lpfn, void *pExtra1, void *pExtra2)
        {               return m_Root.FirstThat(lpfn, 0, pExtra1, pExtra2);   }
+       */
+      
+       template <typename lpfnForEachX, typename... Args>
+       void FirstThat(lpfnForEachX lpfn, Args... args)
+       {
+              m_Root.FirstThat(lpfn, 0, args...);
+       }
+
+
        //typedef               ObjectInfo iterator;
 
 protected:
