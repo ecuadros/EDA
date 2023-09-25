@@ -3,6 +3,10 @@
 #include <map>
 #include <cmath>
 #include <memory>
+#include <random>
+#include <thread>
+#include <mutex>
+#include <vector>
 #include "demo.h"
 #include "array.h"
 #include "matrix.h"
@@ -29,10 +33,10 @@ void Fx1(int n ) {    n++;    }
 void Fx2(int &n) {    n++;    }
 void Fx3(int *pi){    ++*pi;  pi = nullptr; }
 void Fx4(int *&rp){   ++*rp;  rp = nullptr; }
-
+/*
 void DemoBasicPointers(){
     int i = 10, j = 20, &r = i; 
-    int *b /*Peligro*/, *p = nullptr, *q = nullptr, **pp = nullptr;
+    int *b, *p = nullptr, *q = nullptr, **pp = nullptr;
     p = &i;     q = &j;     pp = &p;
     float f = 3.14;
     cout << "***** Fx1 *****" << endl;
@@ -375,30 +379,34 @@ void DemoHash()
 
 // }
 
-void DemoMap(){
-    map<int, string> m;
-    m[1000] = "Francisco";
-    m[500]  = "Guiomar";
-    m[1300] = "Jorge";
-    m[2000] = "Eduardo";
-    m[600]  = "Lucero";
-    m[100]  = "Edson";
-    m[800]  = "Luis";
-    m[700]  = "Cristian";
-    m[900]  = "Pier";
-    m[750]  = "Ernesto";
+#include "BPlus.h"
 
-    // iterate using C++17 facilities
-    for (const auto& [key, value] : m)
-        cout << '[' << key << "] = " << value << "; " << endl;
-    
-    // C++11 alternative:
-    //  for (const auto& n : m)
-    //      cout << n.first << " = " << n.second << "; ";
-    //
-    // C++98 alternative modified to use auto
-    for (auto it = m.rbegin(); it != m.rend(); it++)
-        cout << it->first << " = " << it->second << "; " << endl;
- 
+template <typename Node>
+void printIter(Node *pActual){
+    cout << pActual->getKeyRef() << "->[" << pActual->getValueRef() << "] ";
+}
+
+void DemoBPlusTree() {
+
+    CBPlus<CBPlusTrait<int,int>> arbol(3);
+
+	ifstream input("test.txt");
+    input >> arbol;
+
+	cout << "La linea de valores del arbol\n";
+	cout << arbol;
+	cout << endl;
+
+	arbol.remove(30);
+
+	cout << "La linea de valores despues de remover 30\n";
+	cout << arbol;
+	cout << endl;
+
+    //TODO: Tarea 41: B+: foreach
+    typedef typename CBPlus<CBPlusTrait<int,int>>::Node Node;
+    cout << "Iterando la linea de valores del arbol\n";
+    foreach(arbol.begin(), arbol.end(), ::printIter<Node>);
+    cout << endl;
 
 }

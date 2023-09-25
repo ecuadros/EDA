@@ -16,4 +16,6 @@ void DemoHash();
 
 void DemoMap();
 
+void DemoBPlusTree();
+
 #endif // __DEMO_H__
