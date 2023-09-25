@@ -389,12 +389,12 @@ void demoBTree(Container &myBTree)
     typedef typename Container::Node          Node;
     auto nElem = 8;
     value_type key_vector[nElem] = {50,30,20,80,60,70,40,90};
-    for (auto i = 0; i < 1; i++)
+    for (auto i = 0; i < nElem; i++)
     {
         myBTree.insert(key_vector[i],i);
     }
 
-    myBTree.print(myBTree.getRoot());
+    myBTree.print(myBTree.getRoot(), cout, 0);
 }
 
 void DemoBPlusTree()

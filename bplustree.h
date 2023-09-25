@@ -1,12 +1,13 @@
-#ifndef __BPLUS_TREE_H__
-#define __BPLUS_TREE_H__
+#ifndef __BPlus_TREE_H__
+#define __BPlus_TREE_H__
 // #include <utility>
 // #include <algorithm>
 #include <cassert>
 #include "types.h"
 #include "keynode.h"
+#include <mutex>
+#define DEFAULT_BTREE_ORDER 3
 // #include "util.h"
-#define MAX 3
 using namespace std;
 
 template <typename T, typename V>
@@ -27,31 +28,22 @@ public:
     vector<Node *> m_pChild = {nullptr, nullptr}; // 2 hijos inicializados en nullptr
     size_t m_level = 0;
     bool m_flag = false;
-    bool is_leaf = false;
-    Node **ptr;
-    value_type * keys;
-    int size;
 
 public:
-    // NodeBPlusTree();
-    NodeBPlusTree(Node *pParent, KeyNode<T, V> data, size_t level = 0, bool leaf = 0, int data_size = 0, Node *p0 = nullptr, Node *p1 = nullptr)
+    NodeBPlusTree(Node *pParent, KeyNode<T, V> data, size_t level = 0, Node *p0 = nullptr, Node *p1 = nullptr)
         : m_pParent(pParent), m_data(data)
     {
         m_pChild[0] = p0;
         m_pChild[1] = p1;
         m_level = level;
-        is_leaf = leaf;
-        size = data_size;
     }
 
-    NodeBPlusTree(Node *pParent, value_type data, LinkedValueType value, size_t level = 0, bool leaf = 0, int data_size = 0, Node *p0 = nullptr, Node *p1 = nullptr)
+    NodeBPlusTree(Node *pParent, value_type data, LinkedValueType value, size_t level = 0, Node *p0 = nullptr, Node *p1 = nullptr)
         : m_pParent(pParent), m_data(data, value)
     {
         m_pChild[0] = p0;
         m_pChild[1] = p1;
         m_level = level;
-        is_leaf = leaf;
-        size = data_size;
     }
 
     // TODO: Keynode
@@ -116,175 +108,46 @@ protected:
     Node *m_pRoot = nullptr;
     size_t m_size = 0;
     CompareFn Compfn;
+    mutex mutex_;
 
 public:
-    size_t size() const { return m_size; }
-    bool empty() const { return size() == 0; }
-    Node* getRoot()
-    {
+    Node * getRoot() {
         return m_pRoot;
     }
+    size_t size() const { return m_size; }
+    bool empty() const { return size() == 0; }
     // TODO: insert must receive two paramaters: elem and LinkedValueType value
-    void insert(value_type &key, LinkedValueType value) { internal_insert1(key, value, nullptr, m_pRoot, 0); }
+    void insert(value_type &key, LinkedValueType value) { lock_guard<mutex> lock(mutex_); internal_insert1(key, value, nullptr, m_pRoot, 0); }
 
 protected:
-    Node *CreateNode(Node *pParent, value_type &key, LinkedValueType value, size_t level, bool leaf, int size) { return new Node(pParent, key, value, level, leaf, size); }
-    // Node *internal_insert1(value_type &key, LinkedValueType value, Node *pParent, Node *&rpOrigin, size_t level = 0)
-    // {
-    //     if (rpOrigin) //  llegué al fondo de una rama
-    //     {
-    //         ++m_size;
-    //         return (rpOrigin = CreateNode(pParent, key, value, level));
-    //     }
-    //     // size_t branch = Compfn(key, rpOrigin->getDataRef());
-    //     // return internal_insert1(key, value, rpOrigin, rpOrigin->getChildRef(branch), level + 1);
-    // }
-
-    void internal_insert1(value_type &key, LinkedValueType value, Node *pParent, Node *&rpOrigin, size_t level = 0)
+    Node *CreateNode(Node *pParent, value_type &key, LinkedValueType value, size_t level) { return new Node(pParent, key, value, level); }
+    Node *internal_insert1(value_type &key, LinkedValueType value, Node *pParent, Node *&rpOrigin, size_t level = 0)
     {
-        if (m_pRoot == nullptr)
+        if (!rpOrigin) //  llegué al fondo de una rama
         {
-            m_pRoot = CreateNode(pParent, key, value, level, 1, 1);
             ++m_size;
+            return (rpOrigin = CreateNode(pParent, key, value, level));
         }
+        size_t branch = Compfn(key, rpOrigin->getDataRef());
+        return internal_insert1(key, value, rpOrigin, rpOrigin->getChildRef(branch), level + 1);
     }
-    
-    // void insertInternal(int x, Node *cursor, Node *child)
-    // {
-    //     if (cursor->size < MAX)
-    //     {
-    //         // if cursor is not full
-    //         // find the correct position for new key
-    //         int i = 0;
-    //         while (x > cursor->keys[i] && i < cursor->size)
-    //             i++;
-    //         // make space for new key
-    //         for (int j = cursor->size; j > i; j--)
-    //         {
-    //             cursor->keys[j] = cursor->keys[j - 1];
-    //         } // make space for new pointer
-    //         for (int j = cursor->size + 1; j > i + 1; j--)
-    //         {
-    //             cursor->ptr[j] = cursor->ptr[j - 1];
-    //         }
-    //         cursor->keys[i] = x;
-    //         cursor->size++;
-    //         cursor->ptr[i + 1] = child;
-    //         cout << "Inserted key in an Internal node successfully\n";
-    //     }
-    //     else
-    //     {
-    //         cout << "Inserted key in an Internal node successfully\n";
-    //         cout << "Overflow in internal node!\nSplitting internal node\n";
-    //         // if overflow in internal node
-    //         // create new internal node
-    //         Node *newInternal = new Node;
-    //         // create virtual Internal Node;
-    //         int virtualKey[MAX + 1];
-    //         Node *virtualPtr[MAX + 2];
-    //         for (int i = 0; i < MAX; i++)
-    //         {
-    //             virtualKey[i] = cursor->keys[i];
-    //         }
-    //         for (int i = 0; i < MAX + 1; i++)
-    //         {
-    //             virtualPtr[i] = cursor->ptr[i];
-    //         }
-    //         int i = 0, j;
-    //         while (x > virtualKey[i] && i < MAX)
-    //             i++;
-    //         // make space for new key
-    //         for (int j = MAX + 1; j > i; j--)
-    //         {
-    //             virtualKey[j] = virtualKey[j - 1];
-    //         }
-    //         virtualKey[i] = x;
-    //         // make space for new ptr
-    //         for (int j = MAX + 2; j > i + 1; j--)
-    //         {
-    //             virtualPtr[j] = virtualPtr[j - 1];
-    //         }
-    //         virtualPtr[i + 1] = child;
-    //         newInternal->is_leaf = false;
-    //         // split cursor into two nodes
-    //         cursor->size = (MAX + 1) / 2;
-    //         newInternal->size = MAX - (MAX + 1) / 2;
-    //         // give elements and pointers to the new node
-    //         for (i = 0, j = cursor->size + 1; i < newInternal->size; i++, j++)
-    //         {
-    //             newInternal->keys[i] = virtualKey[j];
-    //         }
-    //         for (i = 0, j = cursor->size + 1; i < newInternal->size + 1; i++, j++)
-    //         {
-    //             newInternal->ptr[i] = virtualPtr[j];
-    //         }
-    //         // m = cursor->key[cursor->size]
-    //         if (cursor == m_pRoot)
-    //         {
-    //             // if cursor is a root node, we create a new root
-    //             Node *newRoot = new Node;
-    //             newRoot->keys[0] = cursor->keys[cursor->size];
-    //             newRoot->ptr[0] = cursor;
-    //             newRoot->ptr[1] = newInternal;
-    //             newRoot->is_leaf = false;
-    //             newRoot->size = 1;
-    //             m_pRoot = newRoot;
-    //             cout << "Created new root\n";
-    //         }
-    //         else
-    //         {
-    //             // recursion
-    //             // find depth first search to find parent of cursor
-    //             insertInternal(cursor->keys[cursor->size], findParent(m_pRoot, cursor), newInternal);
-    //         }
-    //     }
-    // }
-
-    // Node *findParent(Node *cursor, Node *child)
-    // {
-    //     // finds parent using depth first traversal and ignores leaf nodes as they cannot be parents
-    //     // also ignores second last level because we will never find parent of a leaf node during insertion using this function
-    //     Node *parent;
-    //     if (cursor->is_leaf || (cursor->ptr[0])->is_leaf)
-    //     {
-    //         return NULL;
-    //     }
-    //     for (int i = 0; i < cursor->size + 1; i++)
-    //     {
-    //         if (cursor->ptr[i] == child)
-    //         {
-    //             parent = cursor;
-    //             return parent;
-    //         }
-    //         else
-    //         {
-    //             parent = findParent(cursor->ptr[i], child);
-    //             if (parent != NULL)
-    //                 return parent;
-    //         }
-    //     }
-    //     return parent;
-    // }
 
 public:
-    // TODO: generalize this function by using iterators and apply any function
-    void print(Node* cursor)
+    string lines(string txt, size_t lvl)
     {
-        //depth first display
-        if(cursor!=nullptr)
+        for (auto i = 0; i < lvl; i++)
+            txt += txt;
+        return txt;
+    }
+    void print(Node *pNode, ostream &os, size_t level)
+    {
+        if (pNode)
         {
-            for(int i = 0; i < cursor->size; i++)
-            {
-                cout<<cursor->keys[i]<<" ";
-            }
-            cout<<"\n";
-            if(cursor->is_leaf != true)
-            {
-                for(int i = 0; i < cursor->size+1; i++)
-                {
-                    print(cursor->ptr[i]);
-                }
-            }
+            Node *pParent = pNode->getParent();
+            print(pNode->getChild(1), cout, level + 1);
+            // os << string(" | ") * level << pNode->getDataRef() << "(" << (pParent?(pNode->getBranch()?"R-":"L-") + to_string(pParent->getData()):"Root") << ")" <<endl;
+            cout << lines(" | ",  level) << pNode->getDataRef() << "(" << (pParent ? to_string(pParent->getData()) : "Root") << ")" << endl;
+            print(pNode->getChild(0), cout, level + 1);
         }
     }
 };
