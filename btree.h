@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "btreepage.h"
+#include <mutex>
 #define DEFAULT_BTREE_ORDER 3
 
 const size_t MaxHeight = 5; 
@@ -22,6 +23,8 @@ class BTree // this is the full version of the BTree
        
        typedef CBTreePage <Trait> BTNode;// useful shorthand
 
+private: 
+       mutex BTree_mutex;
 public:
        //typedef ObjectInfo iterator;
        // TODO replace thius functions by foreach
@@ -93,7 +96,7 @@ public:
        ObjectInfo*     FirstThat( lpfnFirstThat3 lpfn, void *pExtra1, void *pExtra2)
        {               return m_Root.FirstThat(lpfn, 0, pExtra1, pExtra2);   }
        */
-      
+
        template <typename lpfnForEachX, typename... Args>
        void FirstThat(lpfnForEachX lpfn, Args... args)
        {
@@ -113,7 +116,12 @@ protected:
 
 // TODO change ObjID by LinkedValueType value
 template <typename Trait>
-bool BTree<Trait>::Insert(const keyType key, const long ObjID){
+bool BTree<Trait>::Insert(const keyType key, const long ObjID)
+{
+       // Se agrega el mutex para que bloquee una sección
+       // crítica de btree, en este caso la inserción de 
+       // nuevos elementos.
+       lock_guard<mutex> guard(BTree_mutex);
        bt_ErrorCode error = m_Root.Insert(key, ObjID);
        if( error == bt_duplicate )
                return false;
@@ -129,6 +137,11 @@ bool BTree<Trait>::Insert(const keyType key, const long ObjID){
 template <typename Trait>
 bool BTree<Trait>::Remove (const keyType key, const long ObjID)
 {
+       // Del mismo modo se agrega mutex para que bloquee 
+       // esta etapa crítica de btree, siendo la eliminación
+       // de elementos.
+       lock_guard<mutex> guard(BTree_mutex);
+
        bt_ErrorCode error = m_Root.Remove(key, ObjID);
        if( error == bt_duplicate || error == bt_nofound )
                return false;
