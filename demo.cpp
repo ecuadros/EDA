@@ -7,6 +7,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "hash.h"
 using namespace std;
 
 template <typename T, int N>
@@ -110,7 +111,7 @@ void DemoDynamicMatrixes(){
     cout << "----------------Iterator matrix--------------------" << endl;
     // TODO #2: Create Iterator for CMatrix
     cout <<endl<< "----mat1----" << endl;
-    foreach(mat1, ::print<TX>);
+    // foreach(mat1, ::print<TX>);
     cout << endl;
 
     cout <<endl<< "----mat1 sumando un contador----" << endl;
@@ -210,22 +211,22 @@ void DemoIterators(){
     // array_forward_iterator<CArray< TraitArrayIntInt >> iter = v1.begin();
     //CArray< TraitArrayIntInt >::iterator iter = v1.begin();
     auto iter = v1.begin();
-    foreach(iter, v1.end(), ::increment<TX, 7>);
+    // foreach(iter, v1.end(), ::increment<TX, 7>);
     cout << v1 << endl;
-    foreach(v1, ::increment<TX, 4>);
+    // foreach(v1, ::increment<TX, 4>);
     cout << v1 << endl;
 
-    foreach(v1, ::print<TX>);
+    // foreach(v1, ::print<TX>);
     cout << endl;
     // Lambda function
     int x = 3;
-    foreach(v1, [x](TX &n){ n *= 2*x; });
-    foreach(v1, ::print<TX>); cout << endl;
+    // foreach(v1, [x](TX &n){ n *= 2*x; });
+    // foreach(v1, ::print<TX>); cout << endl;
     ClassX<TX> ope(5);
-    foreach(v1, ope);
-    foreach(v1, ::print<TX>); cout << endl;
-    foreach(v1, ClassX<TX>(8) );
-    foreach(v1, ::print<TX>); cout << endl;
+    // foreach(v1, ope);
+    // foreach(v1, ::print<TX>); cout << endl;
+    // foreach(v1, ClassX<TX>(8) );
+    // foreach(v1, ::print<TX>); cout << endl;
 }
 
 void DemoReverseIterators(){
@@ -241,7 +242,7 @@ void DemoReverseIterators(){
     cout << "Printing asc : " << endl;
     cout << v1 << endl;
     cout << "Printing desc : " << endl;
-    foreach(v1.rbegin(), v1.rend(), ::print<TX>);
+    // foreach(v1.rbegin(), v1.rend(), ::print<TX>);
 }
 
 void DemoHeap()
@@ -375,7 +376,18 @@ void DemoHash()
 
 // }
 
-void DemoMap(){
+
+template <typename Node>
+void printHash(Node *pList, ostream &os){
+    os << "[" << pList->getDataRef() << " = " << pList->getValueRef() << "] " << endl;
+}
+
+template <typename Container>
+void demoHash(Container &myHash)
+{
+    typedef typename Container::value_type value_type;
+    typedef typename Container::LinkedValueType LinkedValueType;
+    typedef typename Container::Node Node;
     map<int, string> m;
     m[1000] = "Francisco";
     m[500]  = "Guiomar";
@@ -387,18 +399,31 @@ void DemoMap(){
     m[700]  = "Cristian";
     m[900]  = "Pier";
     m[750]  = "Ernesto";
-
-    // iterate using C++17 facilities
+    cout << endl;
     for (const auto& [key, value] : m)
-        cout << '[' << key << "] = " << value << "; " << endl;
-    
-    // C++11 alternative:
-    //  for (const auto& n : m)
-    //      cout << n.first << " = " << n.second << "; ";
-    //
-    // C++98 alternative modified to use auto
-    for (auto it = m.rbegin(); it != m.rend(); it++)
-        cout << it->first << " = " << it->second << "; " << endl;
- 
+        // cout << '[' << key << "] = " << value << "; " << endl;
+        myHash.insert(key, value);
+
+    foreach(myHash.begin(), myHash.end(), ::printHash<Node>);
+    // mylist.print(printList<Node>);
+    cout << endl;
+
+    cout << "Reading from test.txt" << endl;
+    ifstream testFile("test.txt");
+    testFile >> myHash;
+    cout << myHash;
+    cout << endl;
+}
+
+void DemoMap(){
+
+    Hash< HTraitAsc<TX, string> > myAscHash;
+    demoHash(myAscHash); 
+
+
+    cout << "Descending" << endl;
+
+    Hash< HTraitDesc<TX, string> > myDescHash;
+    demoHash(myDescHash); 
 
 }

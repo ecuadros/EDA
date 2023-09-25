@@ -16,8 +16,9 @@ void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
 {
   auto iter = ItBegin;
   for(; iter != ItEnd ; ++iter)
-      ope(*iter);
+      ope(*iter, cout);
 }
+
 
 // Variadic templates
 // template <typename Iterator, typename Callable, typename... Args>
