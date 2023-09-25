@@ -16,7 +16,6 @@ class iterator_list{
     public:
         typedef typename Container::Node Node;
         typedef typename Node::value_type     value_type;
-         typedef typename Node::LinkedValueType   LinkedValueType;
         typedef iterator_list<Container> myself;
     protected:
         Container *m_pContainer;
@@ -33,7 +32,6 @@ class iterator_list{
         bool operator==(myself iter)   { return m_pNode == iter.m_pNode; }
         bool operator!=(myself iter)   { return !(*this == iter);        }
         value_type &operator*() { return m_pNode->getDataRef();}
-        LinkedValueType getLinkedValue(){return m_pNode->getValue();}
         iterator_list & operator++() {
             m_pNode=m_pNode->getpNext();
             return *this;
@@ -66,35 +64,33 @@ class NodeLinkedList{
     // TODO Move to KeyNode
     value_type getData(){ return m_data.getData();}
     value_type &getDataRef(){return m_data.getDataRef();}
-    LinkedValueType getValue(){ return m_data.getValue();}
-    LinkedValueType &getValueRef(){return m_data.getValueRef();}
 
     void      setpNext(Node *pNext)  {   m_pNext = pNext;  }
     Node     *getpNext()               {   return getpNextRef();   }
     Node    *&getpNextRef()            {   return m_pNext;   }
 };
-// template <typename Traits>
-// struct LLTraitAsc
-// {
-//     using  value_type = typename Traits::value_type;
-//     using  LinkedValueType= typename Traits::LinkedValueType;
-//     using  Node      = NodeLinkedList<Traits>;
-//     using  CompareFn = less<value_type>;
-// };
+template <typename Traits>
+struct LLTraitAsc
+{
+    using  value_type = typename Traits::value_type;
+    using  LinkedValueType= typename Traits::LinkedValueType;
+    using  Node      = NodeLinkedList<Traits>;
+    using  CompareFn = less<value_type>;
+};
 
-// template <typename Traits>
-// struct LLTraitDesc
-// {
-//     using  value_type = typename Traits::value_type;
-//     using  LinkedValueType= typename Traits::LinkedValueType;
-//     using  Node      = NodeLinkedList<Traits>;
-//     using  CompareFn = greater<value_type>;
-// };
+template <typename Traits>
+struct LLTraitDesc
+{
+    using  value_type = typename Traits::value_type;
+    using  LinkedValueType= typename Traits::LinkedValueType;
+    using  Node      = NodeLinkedList<Traits>;
+    using  CompareFn = greater<value_type>;
+};
 
-// //Declaration of Traits in order to use in my LinkedList
-// using TraitLLIntInt= XTrait<int,int>;
-// using Traits_LLAsc= LLTraitAsc<TraitLLIntInt>;
-// using Traits_LLDesc= LLTraitDesc<TraitLLIntInt>;
+//Declaration of Traits in order to use in my LinkedList
+using TraitLLIntInt= XTrait<int,int>;
+using Traits_LLAsc= LLTraitAsc<TraitLLIntInt>;
+using Traits_LLDesc= LLTraitDesc<TraitLLIntInt>;
 
 template <typename Traits>
 class LinkedList
@@ -118,7 +114,7 @@ class LinkedList
 
   public:
     LinkedList() {}
-    void insert(const value_type &val_1,const LinkedValueType &val_2){ 
+    void insert(value_type &val_1,LinkedValueType &val_2){ 
       insert_forward(val_1,val_2);
       m_size++;
     }
@@ -187,18 +183,18 @@ class LinkedList
       }
     }
     
-    Node **findPrev(const value_type &elem) {
+    Node **findPrev(value_type &elem) {
       return findPrev(m_pHead, elem);
     }
-    Node **findPrev(Node *&rpPrev, const value_type &elem){   
+    Node **findPrev(Node *&rpPrev, value_type &elem){   
       if(!rpPrev || Compfn(elem, rpPrev->getData()) )
         return &rpPrev; // Retorna la direccion del puntero que me apunta
       return findPrev((Node *&)rpPrev->getpNextRef(), elem);
     }
-    Node *CreateNode(const value_type &val_1, const LinkedValueType &val_2 ,Node *pNext=nullptr){
+    Node *CreateNode(value_type &val_1, LinkedValueType &val_2 ,Node *pNext=nullptr){
        return new Node(val_1,val_2 ,pNext); 
     }
-    Node **insert_forward(const value_type &elem,const LinkedValueType &elem_2)
+    Node **insert_forward(value_type &elem,LinkedValueType &elem_2)
     {
         Node **pParent = findPrev(elem);
         Node *pNew = CreateNode(elem,elem_2);
@@ -217,27 +213,6 @@ class LinkedList
         return pParent;
     }
   public:
-    void DeleteNode(value_type key,size_t pos){
-      cout<<"\nsize: "<<size()<<endl;
-      assert(pos <= size());
-      Node *pTmp = m_pHead;
-      for(auto i= 0 ; i < pos ; i++)
-        pTmp = pTmp->getpNext();
-      Node **pParent = findPrev(key);//Get Father
-      //cout<<*pParent<<endl;
-      if(*pParent){
-        (*pParent)->setpNext(pTmp->getpNext());
-        if(pTmp==m_pTail)
-          m_pTail=*pParent;
-      }
-      else{
-        //cout<<pTmp<<"--"<<pTmp->getpNext()<<endl;
-        if(pTmp->getpNext())
-          m_pHead=pTmp->getpNext();
-      }  
-      delete pTmp;
-      m_size--;
-    }
     value_type PopHead(){
         if(m_pHead){
             Node *pNode = m_pHead;

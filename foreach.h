@@ -11,13 +11,14 @@ template <typename T>
 void f1(T &x)
 {  x+= 5; }
 
-template <typename Iterator, typename F>
-void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
+template <typename Iterator, typename F, typename... Args>
+void foreach(Iterator ItBegin, Iterator ItEnd, F ope, Args... args)
 {
-  auto iter = ItBegin;
-  for(; iter != ItEnd ; ++iter)
-      ope(*iter);
+    auto iter = ItBegin;
+    for(; iter != ItEnd ; ++iter)
+        ope(*iter, args...);
 }
+
 
 // Variadic templates
 // template <typename Iterator, typename Callable, typename... Args>
@@ -41,15 +42,26 @@ void foreach(Iterator ItBegin, Iterator ItEnd, F ope)
 // }
 
 // #1
-template <typename Container, typename F>
-void foreach(Container &container, F ope){
-    foreach(container. begin(), container.end() , ope);
+// template <typename Container, typename F>
+// void foreach(Container &container, F ope){
+//     foreach(container. begin(), container.end() , ope);
+// }
+
+template <typename Container, typename F, typename... Args>
+void foreach(Container &container, F ope, Args... args)
+{
+    foreach(container.begin(), container.end(), ope, args...);
+}
+template <typename Container, typename F, typename... Args>
+void foreach_reverse(Container &container, F ope, Args... args)
+{
+    foreach(container.rbegin(), container.rend(), ope, args...);
 }
 
-template <typename Container, typename F>
-void foreach_reverse(Container &container, F ope){
-    foreach(container. rbegin(), container.rend() , ope);
-}
+// template <typename Container, typename F>
+// void foreach_reverse(Container &container, F ope){
+//     foreach(container. rbegin(), container.rend() , ope);
+// }
 
 // template <typename Iterator, typename Callable, typename... Args>
 // void foreach(Iterator ItBegin, Iterator ItEnd, Callable op, Args&&... args)
