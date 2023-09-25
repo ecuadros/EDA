@@ -8,6 +8,7 @@
 #include "keynode.h"
 #include "xtrait.h"
 #include "array.h"
+#include <mutex>
 
 using namespace std;
 
@@ -27,6 +28,7 @@ public:
 private:
     
     string    m_name = "Empty";
+    mutex BPlusTree_mutex;
 public:
     CBPlus(string name)  : m_name(name){ destroy();  }
     CBPlus()                           { destroy();  }
@@ -43,7 +45,16 @@ public:
         
     // }
     
-    void insert(const value_type &key, LinkedValueType value){
+    void insert(const value_type &key, LinkedValueType value)
+    {
+        lock_guard<mutex> guard(BPlusTree_mutex);
+
+    }
+
+    void remove(const value_type &key, LinkedValueType value)
+    {
+        lock_guard<mutex> guard(BplusTree_mutex);
+        
     }
 
     void print        (ostream &os){

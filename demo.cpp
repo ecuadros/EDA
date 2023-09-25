@@ -7,6 +7,7 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include <string>
 using namespace std;
 
 template <typename T, int N>
