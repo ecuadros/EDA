@@ -393,10 +393,7 @@ void DemoMap(){
     for (const auto& [key, value] : m)
         cout << '[' << key << "] = " << value << "; " << endl;
     
-    // C++11 alternative:
-    //  for (const auto& n : m)
-    //      cout << n.first << " = " << n.second << "; ";
-    //
+    
     // C++98 alternative modified to use auto
     for (auto it = m.rbegin(); it != m.rend(); it++)
         cout << it->first << " = " << it->second << "; " << endl;
