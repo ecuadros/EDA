@@ -30,7 +30,6 @@ class BTree // this is the full version of the BTree
        typedef forward_iterator<myself> iterator;
 
 public:
-
        typedef typename BTNode::ObjectInfo ObjectInfo;
 
 public:
@@ -64,9 +63,10 @@ public:
               m_Root.Print(os);
        }
 
-       void print(void (*func) (BTNode& node, ostream &os), ostream &os)
+       void print(void (*func)(BTNode &node, ostream &os), ostream &os)
        {
-              foreach(begin(),end(), func, os);
+              foreach (begin(), end(), func, os)
+                     ;
        }
 
        iterator begin()
@@ -78,6 +78,12 @@ public:
        {
               iterator iter(this, nullptr);
               return iter;
+       }
+
+       template <typename lpfnForEachX, typename... Args>
+       void ForEach(lpfnForEachX lpfn, Args... args)
+       {
+              m_Root.ForEach(lpfn, 0, args...);
        }
 
        // typedef               ObjectInfo iterator;
