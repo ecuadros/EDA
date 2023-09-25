@@ -7,6 +7,8 @@
 #include "array.h"
 #include "matrix.h"
 #include "foreach.h"
+#include "graph.h"
+
 using namespace std;
 
 template <typename T, int N>
@@ -400,5 +402,46 @@ void DemoMap(){
     for (auto it = m.rbegin(); it != m.rend(); it++)
         cout << it->first << " = " << it->second << "; " << endl;
  
+
+}
+
+// #include <algorithm>
+// #include <iostream>
+void DemoGraph(){
+
+    cout<<endl<<"-----------------------------------DemoGraph------------------------------------"<<endl;
+
+    using trait1 = VertexTrait< INT,string >;
+    using trait2 = VertexTrait< TX,INT >;
+
+    cout << "---------------------Building a graph------------------"<<endl;
+
+    CGraph< trait1 > graph1;
+
+    graph1.addVertex(1,"a");
+    graph1.addVertex(2,"b");
+    graph1.addVertex(3,"c");
+    graph1.addVertex(4,"d");
+
+    graph1.addEdge(1,2,10);
+    graph1.addEdge(2,1,10);
+    graph1.addEdge(2,3,15);
+    graph1.addEdge(3,2,15);
+    graph1.addEdge(3,4,5);
+    graph1.addEdge(4,3,5);
+    graph1.addEdge(1,4,20);
+    graph1.addEdge(4,1,20);
+
+    cout<<"Printing using operator<< : "<<graph1;
+
+    cout<<endl;
+
+    cout<<"-------------Reading from test.txt-------------"<<endl;
+    CGraph< trait2 > graph2;
+    ifstream test("test.txt");
+    test>>graph2;
+    cout<<"Printing using << : "<<graph2<<endl;
+
+    cout<<endl;
 
 }
