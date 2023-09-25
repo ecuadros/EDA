@@ -5,6 +5,7 @@
 #include "types.h"
 #include "btreepage.h"
 #include "xtrait.h"
+#include <mutex>
 
 #define DEFAULT_BTREE_ORDER 3
 
@@ -20,6 +21,7 @@ struct BTreeTrait
 };
 
 using bTreeIntInt = BTreeTrait<XTrait<IX,IX>>;
+using bTreeIntString= BTreeTrait<XTrait<IX,SX>>;
 //=======================  clase BTree ===============================
 template <typename BTrait>
 
@@ -34,7 +36,8 @@ public:
   
     typedef typename BTNode::ObjectInfo      ObjectInfo;
   
-
+private:
+   mutex Mutex; 
 public:
        BTree(size_t order = DEFAULT_BTREE_ORDER, bool unique = true)
               : m_Order(order),
@@ -120,7 +123,8 @@ protected:
 template <typename Trait>
 
 bool BTree<Trait>::Insert(const value_type key, const LinkedValueType value){
-  
+        //Bloquear el mutex
+      std::lock_guard<mutex> lock(Mutex); 
        bt_ErrorCode error = m_Root.Insert(key, value);
        
        if( error == bt_duplicate )
@@ -138,7 +142,8 @@ bool BTree<Trait>::Insert(const value_type key, const LinkedValueType value){
 
 template <typename Trait>
 bool BTree<Trait>::Remove (const value_type key, const LinkedValueType value)
-{
+{       //Bloquear el mutex
+      std::lock_guard<mutex> lock(Mutex);    
        bt_ErrorCode error = m_Root.Remove(key, value);
        if( error == bt_duplicate || error == bt_nofound )
                return false;

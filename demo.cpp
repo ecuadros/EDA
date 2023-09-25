@@ -9,6 +9,8 @@
 #include "matrix.h"
 #include "foreach.h"
 #include "btree.h"
+#include <thread>
+#include <mutex>
 
 using namespace std;
 
@@ -275,7 +277,7 @@ void showing(T Node, size_t level, Cout &OS){
 
 template <typename Container>
 void demoBTree(){
-  
+
    using value_type        = typename Container::value_type;
     using Node              = typename Container::BNode;
     
@@ -290,27 +292,43 @@ void demoBTree(){
     
     cout<<"---------------Printing current Btree----------"<<endl;
     cout<<BTOne<<endl;
-   
+
+    cout<<"--------- Testing Mutex ---------------"<<endl;
+    BTree<bTreeIntString> BThree;
+     vector<thread> Threads;
+
+    //--------  Several threads -------------
+    for (auto i = 0; i < 10; ++i) {
+        Threads.emplace_back([&BThree, i](){
+            value_type key = i;
+            auto value = "Value_" + to_string(i);
+            BThree.Insert(key, value);
+            //cout<<"Done"<<endl;
+        });
+     }
+    cout<< BThree<<endl;
+     
    cout<<"-------------Searching 105--------------";
   if(BTOne.Search(105)) cout<<" Found it! "<<endl;
 
     BTOne.Remove(105,100);
     cout<<"--------After removing 105--------"<<endl;
     cout << BTOne<<endl;
-     
+ 
     BTree<bTreeIntInt> BTwo;
      cout<<"------------Reading  File-----------"<<endl;
      ifstream IN("FileTest.txt");
      IN>>BTwo;
      cout<<"-----------Printing the content----------------"<<endl;
      cout<<BTwo;
-      
+         
        
 }   
 
  void DemoBTree(){
     
     demoBTree<bTreeIntInt>();
+    demoBTree<bTreeIntString>();
 
      }
     
